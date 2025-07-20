@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Icon Generator for Atomify PWA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .icon-item {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .icon-item canvas {
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+        .download-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .download-btn:hover {
+            background: #5a6fd8;
+        }
+        .instructions {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Icon Generator pentru Atomify PWA</h1>
+        
+        <div class="instructions">
+            <h3>📋 Instrucțiuni:</h3>
+            <ol>
+                <li>Încarcă logo-ul original în canvas-ul de mai jos</li>
+                <li>Generează iconițele pentru toate dimensiunile necesare</li>
+                <li>Descarcă fiecare iconiță și salvează-o în folderul <code>app/</code></li>
+                <li>Actualizează <code>manifest.json</code> cu noile iconițe</li>
+            </ol>
+        </div>
+
+        <div>
+            <label for="logoInput">Selectează logo-ul original:</label>
+            <input type="file" id="logoInput" accept="image/*">
+        </div>
+
+        <div class="icon-grid" id="iconGrid">
+            <!-- Icons will be generated here -->
+        </div>
+    </div>
+
+    <script>
+        const sizes = [
+            { size: 72, name: '72x72' },
+            { size: 96, name: '96x96' },
+            { size: 128, name: '128x128' },
+            { size: 144, name: '144x144' },
+            { size: 152, name: '152x152' },
+            { size: 192, name: '192x192' },
+            { size: 384, name: '384x384' },
+            { size: 512, name: '512x512' }
+        ];
+
+        let originalImage = null;
+
+        document.getElementById('logoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    originalImage = new Image();
+                    originalImage.onload = function() {
+                        generateIcons();
+                    };
+                    originalImage.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function generateIcons() {
+            const grid = document.getElementById('iconGrid');
+            grid.innerHTML = '';
+
+            sizes.forEach(({ size, name }) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+
+                // Create a circular or rounded background
+                ctx.fillStyle = '#667eea';
+                ctx.beginPath();
+                ctx.arc(size/2, size/2, size/2, 0, 2 * Math.PI);
+                ctx.fill();
+
+                // Calculate image dimensions to fit in circle
+                const imgSize = size * 0.7;
+                const imgX = (size - imgSize) / 2;
+                const imgY = (size - imgSize) / 2;
+
+                // Draw the original image
+                ctx.drawImage(originalImage, imgX, imgY, imgSize, imgSize);
+
+                const iconItem = document.createElement('div');
+                iconItem.className = 'icon-item';
+                
+                const label = document.createElement('div');
+                label.textContent = name;
+                label.style.fontWeight = 'bold';
+                label.style.marginBottom = '10px';
+
+                const downloadBtn = document.createElement('button');
+                downloadBtn.className = 'download-btn';
+                downloadBtn.textContent = 'Descarcă';
+                downloadBtn.onclick = () => downloadCanvas(canvas, `icon-${name}.png`);
+
+                iconItem.appendChild(label);
+                iconItem.appendChild(canvas);
+                iconItem.appendChild(downloadBtn);
+                
+                grid.appendChild(iconItem);
+            });
+        }
+
+        function downloadCanvas(canvas, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        // Auto-generate with a placeholder if no file is selected
+        window.addEventListener('load', function() {
+            // Create a simple placeholder icon
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+
+            // Draw a simple atom icon
+            ctx.fillStyle = '#667eea';
+            ctx.fillRect(0, 0, 512, 512);
+
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 200px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('⚛', 256, 256);
+
+            // Convert to image
+            const img = new Image();
+            img.onload = function() {
+                originalImage = img;
+                generateIcons();
+            };
+            img.src = canvas.toDataURL();
+        });
+    </script>
+</body>
+</html> 
