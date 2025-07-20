@@ -20,6 +20,8 @@
 - [Securitate](#securitate)
 - [Testare](#testare)
 - [Deployment](#deployment)
+- [Structura Fișierelor](#structura-fișierelor)
+- [Demo-uri și Capturi de Ecran](#demo-uri-și-capturi-de-ecran)
 - [Contribuitori](#contribuitori)
 
 ## 🎯 Despre Proiect
@@ -48,6 +50,8 @@
 - **bcrypt v6.0.0** - Criptarea parolelor
 - **Nodemailer v7.0.5** - Sistem de notificări prin email
 - **Puppeteer v24.12.1** - Generarea de rapoarte PDF
+- **MAYGEN v1.8** - Algoritm open-source pentru generarea izomerilor
+- **Open Babel** - Utilitar pentru conversia formatelor chimice
 
 #### **Frontend Stack:**
 - **HTML5** - Structura semantică
@@ -55,6 +59,7 @@
 - **JavaScript ES6+** - Logica client-side
 - **PWA** - Service Workers pentru instalare ca aplicație nativă
 - **Google Translate API** - Internaționalizare
+- **MathJax** - Rendering LaTeX pentru formule matematice
 
 #### **Justificarea Tehnologiilor:**
 
@@ -62,6 +67,8 @@
 2. **SQLite**: Ușurință în deployment, nu necesită server separat, perfect pentru aplicații educaționale
 3. **PWA**: Accesibilitate pe toate dispozitivele, instalare ca aplicație nativă
 4. **Google OAuth**: Securitate ridicată, experiență utilizator simplificată
+5. **MAYGEN**: Algoritm recunoscut în comunitatea științifică pentru generarea izomerilor
+6. **Open Babel**: Standard în chimia computațională pentru conversii de formate
 
 ### Secțiunea I.2. - Proiectarea Arhitecturală
 
@@ -256,7 +263,7 @@ Point System:
 - Calcul masă molară: 3 puncte
 - Zi consecutivă: 2 puncte
 - Răspuns perfect rapid: Bonus 10 puncte
-
+```
 
 #### **👥 Clase Virtuale - Management Educațional**
 
@@ -378,7 +385,6 @@ PWA Installation Process:
 - **Push Notifications**: Notificări real-time
 - **App Shortcuts**: Acces rapid la funcții principale
 
-
 ##### **Istoricul Activităților:**
 - **Timeline View**: Vizualizare cronologică a activităților
 - **Search & Filter**: Căutare în istoric după dată/tip
@@ -420,52 +426,171 @@ Translation Features:
 - **Touch Gestures**: Suport pentru swipe, pinch-to-zoom
 - **Dark/Light Mode**: Comutare automată bazată pe preferințele sistemului
 
-
 ## 🛠️ Instalare și Configurare
 
 ### Cerințe Sistem
 - Node.js v18.19.1 sau mai nou
 - npm v9.2.0 sau mai nou
 - SQLite3
+- OpenJDK (Java Runtime) pentru MAYGEN
+- Open Babel pentru conversii chimice
 
-### Pași de Instalare
+### Pași de Instalare Detaliați
 
-1. **Clonează Repository-ul**
+#### **1. Instalare dependențe de sistem (Ubuntu 20.04 LTS):**
+
 ```bash
+# Actualizați lista de pachete și sistemul
+sudo apt update && sudo apt upgrade -y
+
+# Instalați Node.js (versiunea LTS recomandată) și npm
+sudo apt install -y nodejs npm
+
+# Verificați instalarea
+node -v
+npm -v
+
+# Instalați OpenJDK (Java Runtime) necesar pentru a rula MAYGEN
+sudo apt install -y default-jre
+
+# Instalați Open Babel – utilitarul pentru conversia formatelor chimice
+sudo apt install -y openbabel
+
+# Verificați instalarea Open Babel
+obabel -V
+```
+
+#### **2. Obținerea codului sursă Atomify:**
+
+```bash
+# Clonează repository-ul
 git clone https://github.com/your-username/atomify.git
 cd atomify
+
+# Sau transferați manual fișierele pe server, menținând structura de directoare
 ```
 
-2. **Instalează Dependențele**
+#### **3. Instalare pachete Node.js:**
+
 ```bash
+# Din directorul rădăcină al aplicației
 npm install
+
+# (Opțional) Instalați PM2 global pentru producție
+sudo npm install -g pm2
 ```
 
-3. **Configurează Variabilele de Mediu**
-```bash
-cp .env.example .env
-# Editează .env cu configurațiile tale
+#### **4. Configurarea autentificării Google OAuth 2.0:**
+
+1. **Creați o cheie OAuth pentru aplicație din Google Cloud Console**
+2. **Configurați un OAuth Client ID de tip "Web application"**
+3. **Adăugați URL-urile permise:**
+   - `https://atomify.info` și `https://atomify.info/app` pentru producție
+   - `http://localhost:3000` pentru dezvoltare locală
+4. **La "Authorized redirect URIs" adăugați:**
+   - `https://atomify.info/auth-success.html`
+
+**Configurare în fișierul ecosystem.config.js:**
+```javascript
+env: {
+  NODE_ENV: "production",
+  GOOGLE_CLIENT_ID: "YOUR_CLIENT_ID",
+  GOOGLE_CLIENT_SECRET: "YOUR_CLIENT_SECRET",
+  SESSION_SECRET: "oFraseSecretaPentruCookie"
+}
 ```
 
-4. **Inițializează Baza de Date**
+#### **5. Inițializarea bazelor de date locale:**
+
 ```bash
-node init_users_db.js
-node init_badges_db.js
+# Rulați scripturile de inițializare
 node init_elements_db.js
+node init_badges_db.js
 node init_profanity_db.js
 ```
 
-5. **Configurează Google OAuth**
-- Creează un proiect în Google Cloud Console
-- Activează Google+ API
-- Configurează OAuth 2.0
-- Adaugă credențialele în .env
+#### **6. Testare locală (opțional):**
 
-6. **Pornește Serverul**
 ```bash
-npm start
-# sau
+# Porniți aplicația local
 node server.js
+
+# Deschideți browser și accesați http://localhost:3000
+```
+
+#### **7. Instalare și configurare server web Nginx + SSL:**
+
+```bash
+# Instalați Nginx
+sudo apt install -y nginx
+
+# Asigurați-vă că rulează
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
+# Creați configurația pentru domeniu
+sudo nano /etc/nginx/sites-available/atomify.conf
+```
+
+**Conținutul fișierului atomify.conf:**
+```nginx
+server {
+  listen 80;
+  server_name atomify.info www.atomify.info;
+  location / {
+    return 301 https://$host$request_uri;
+  }
+}
+
+server {
+  listen 443 ssl http2;
+  server_name atomify.info www.atomify.info;
+  root /var/www/atomify/public/app;
+  index index.html;
+  
+  ssl_certificate /etc/letsencrypt/live/atomify.info/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/atomify.info/privkey.pem;
+  include /etc/letsencrypt/options-ssl-nginx.conf;
+  ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+  
+  location / {
+    try_files $uri $uri/ /index.html =404;
+  }
+  
+  location /api/ {
+    proxy_pass http://127.0.0.1:3000/;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+  }
+}
+```
+
+```bash
+# Activați configurația
+sudo ln -s /etc/nginx/sites-available/atomify.conf /etc/nginx/sites-enabled/atomify.conf
+sudo nginx -t
+sudo systemctl reload nginx
+
+# Obțineți certificate SSL
+sudo apt install -y certbot python3-certbot-nginx
+sudo certbot --nginx -d atomify.info -d www.atomify.info
+```
+
+#### **8. Pornirea serverului Node.js cu PM2 (producție):**
+
+```bash
+# Porniți aplicația folosind PM2
+pm2 start ecosystem.config.js --env production
+
+# Verificați log-urile
+pm2 logs Atomify
+
+# Salvați configurația PM2 pentru restart automat
+pm2 save
+pm2 startup
 ```
 
 ### Configurare Google OAuth
@@ -543,6 +668,7 @@ POST /api/award-badge
 GET /api/badge-requirements
 ```
 
+## 🔒 Securitate
 
 #### **Modalități de Testare:**
 
@@ -615,6 +741,134 @@ sudo apt install certbot python3-certbot-nginx
 sudo certbot --nginx -d atomify.info
 ```
 
+## 🔄 Comenzi și Automatizare cu PM2 + Ecosystem File
+
+PM2 este un manager de procese pentru Node.js care asigură rularea aplicației în background, re-pornirea în caz de crash, logarea unificată și ușurința administrării.
+
+### Principalele comenzi PM2 utile:
+
+```bash
+# Pornirea aplicației
+pm2 start ecosystem.config.js --env production
+
+# Verificarea statusului
+pm2 list
+
+# Vizualizarea jurnalelor
+pm2 logs Atomify
+
+# Repornirea aplicației
+pm2 restart Atomify
+
+# Oprirea aplicației
+pm2 stop Atomify
+
+# Ștergerea din lista PM2
+pm2 delete Atomify
+
+# Salvarea configurației curente
+pm2 save
+```
+
+### Fișierul ecosystem.config.js:
+
+```javascript
+module.exports = {
+  apps: [{
+    name: "Atomify",
+    script: "server.js",
+    cwd: "/var/www/atomify",
+    instances: 1,
+    exec_mode: "fork",
+    watch: false,
+    env: {
+      NODE_ENV: "production",
+      GOOGLE_CLIENT_ID: "<<<YOUR_OAUTH2_CLIENT_ID>>>",
+      GOOGLE_CLIENT_SECRET: "<<<YOUR_OAUTH2_CLIENT_SECRET>>>",
+      SESSION_SECRET: "<<<UN_SECRET_RANDOM_PENTRU_SESSION>>>"
+    }
+  }]
+};
+```
+
+## 📦 Structura Fișierelor
+
+Proiectul Atomify are o structură relativ simplă, constând dintr-o parte back-end (serverul Node.js și scripturile asociate) și o parte front-end (fișierele statice HTML/CSS/JS).
+
+```
+Atomify/    (directorul rădăcină al aplicației)
+├── ecosystem.config.js         # Configurația PM2 (pornire proces Node cu variabile de mediu)
+├── server.js                   # Codul sursă al serverului Node.js (Express + logica aplicației)
+├── package.json                # Metadate proiect și dependențe Node
+├── package-lock.json           # Fișier generat de npm, cu versiunile exacte ale dependențelor
+├── quiz-data.js                # Baza de întrebări pentru chestionare (întrebări, variante, răspunsuri)
+├── init_elements_db.js         # Script de inițializare a bazei de date cu elementele chimice
+├── init_badges_db.js           # Script de inițializare a bazei de date cu insigne (achievements)
+├── init_profanity_db.js        # Script de inițializare a bazei de date cu cuvinte blocate (profanități)
+├── MAYGEN-1.8.jar              # Fișierul JAR al generatorului de izomeri (MAYGEN)
+├── start.sh                    # Script opțional de pornire rapidă a serverului via PM2
+├── users.db                    # Baza de date SQLite principală (utilizatori, elemente, insigne etc.)
+├── sessions.db                 # Baza de date SQLite pentru stocarea sesiunilor de login
+└── public/                     # Director ce conține fișierele statice servite către front-end
+    └── app/                    # (Poate fi accesat prin URL-ul https://atomify.info/app/)
+        ├── index.html                  # Pagina principală (landing page) a aplicației
+        ├── admin.html                  # Interfața de administrare (doar pentru admini)
+        ├── isomers.html                # Modul Izomeri – generatorul de structuri moleculare
+        ├── chestionare.html            # Modul Chestionare – listă teste și acces la quiz-uri
+        ├── calcule.html                # Modul Calcule Cristalografice
+        ├── equations.html              # Modul Echilibrare Ecuații Chimice
+        ├── masa.html                   # Modul Masa Atomică (calculator de masă moleculară)
+        ├── istoric.html                # Pagina Istoric – rezultate anterioare ale utilizatorului
+        ├── leaderboard.html            # Pagina Clasament – topul utilizatorilor după punctaj
+        ├── profile.html                # Pagina Profil Utilizator – informații personale, insigne, progres
+        ├── privacy.html                # Pagina Politica de confidențialitate
+        ├── logo.png                    # Logo-ul Atomify (versiune standard)
+        ├── logo_dark.png               # Logo Atomify pe fundal închis (dark mode)
+        ├── logo_light.png              # Logo Atomify pe fundal deschis (light mode)
+        ├── logo-theme-switch.js        # Script pentru schimbarea temei
+        ├── landing-tutorial.js         # Script pentru animații/tutorial pe pagina principală
+        ├── google-translate.js         # Script de integrare Google Translate
+        ├── generate-icons.html         # Pagină/utilitar pentru generarea de iconițe
+        ├── manifest.json               # Manifestul PWA (nume, iconițe, theme colors pentru instalare)
+        ├── sw.js                       # Service Worker pentru PWA (cache & offline support)
+        ├── pwa.js                      # Script de inițializare a comportamentului PWA
+        ├── styles.css                  # Fișier CSS principal pentru stilizarea paginilor
+        └── tutorial.js                 # Script pentru secțiuni tutorial
+```
+
+### Observații despre structura proiectului:
+
+- **Fișierele JavaScript de inițializare** (init_*.js) pot fi rulate independent pentru a (re)popula datele de bază
+- **quiz-data.js** conține structuri de date reprezentând întrebările testelor, gruplate pe teste
+- **server.js** este "inima" aplicației: pornește un server Express, configurează rutele, gestionează autentificarea
+- **MAYGEN-1.8.jar** este folosit pentru generarea izomerilor prin apelul Java
+- **Directorul public/app** conține întregul front-end cu fiecare funcționalitate având pagina sa HTML
+
+## 📽️ Demo-uri și Capturi de Ecran
+
+### 1. Generarea de Izomeri – Exemplu practic
+
+Imaginați-vă un elev care dorește să înțeleagă mai bine conceptul de izomerie constituțională. Acesta accesează secțiunea Izomeri a Atomify. I se prezintă un formular unde poate introduce o formulă moleculară. Introduce formula C4H10 (butan) și apasă "Generează". Platforma procesează cererea: trimite formula către server, unde MAYGEN generează toate structurile posibile. Pentru C4H10, rezultatul sunt două molecule (n-butan și izobutan). Serverul apoi folosește Open Babel pentru a genera reprezentările vizuale 2D ale acestor molecule. În interfață, elevul vede afișate cele două structuri desenate ale butanului normal și izobutanului, alături de formulele lor dezvoltate.
+
+### 2. Echilibrarea unei ecuații chimice
+
+Un utilizator are de echilibrat ecuația reacției de combustie a metanului. Accesează secțiunea Echilibrare Ecuații. Introduce: CH4 + O2 -> CO2 + H2O și solicită echilibrarea. Instantaneu, Atomify procesează input-ul și returnează coeficienții corecți. Pe ecran apare soluția: CH4 + 2 O2 -> CO2 + 2 H2O, cu elementele evidențiate colorat pentru a arăta că balanța C, H, O e acum egală de o parte și de alta.
+
+### 3. Calculatorul de Masă Atomică – exemplu rapid
+
+La pregătirea pentru examen, un elev trebuie să calculeze masa moleculară pentru diferite substanțe. Intră la Masă Atomică, introduce formula KMnO4 (permanganat de potasiu). Imediat, aplicația îi afișează: Masa molară = 158,04 g/mol. În plus, prezintă și detalii intermediare: K (39,10) + Mn (54,94) + O4 (4 × 16,00) = 158,04.
+
+### 4. Calcule Cristalografice – exemplu de densitate cristalină
+
+Un elev curioz despre structura cristalelor accesează modulul Calcule Cristalografice. Să presupunem că vrea să calculeze densitatea teoretică a unui cristal de NaCl pe baza datelor celulei elementare. Interfața îi cere: masa molară a substanței (58,44 g/mol pentru NaCl), constanta rețelei (~5,64 Å), și numărul de formule unit pe celulă (pentru NaCl, 4 formule unitare per celulă cubică). După introducerea datelor și alegerea unităților, apasă "Calculează". Rezultatul afișat: ~2,17 g/cm³.
+
+### 5. Chestionare și Clasament – experiența de gamificare
+
+Un utilizator se autentifică cu Google și intră la Chestionare pentru a-și testa cunoștințele. Alege Test 1: Chimie Organică. Întrebările apar una câte una, cu 4 opțiuni de răspuns fiecare. La finalul testului, primește un scor (de ex. 8/10 răspunsuri corecte) și un feedback pe fiecare întrebare. Platforma îi acordă o insignă "Primul test finalizat" ce apare acum în profilul său. Curios, accesează pagina Clasament unde vede lista top 10 utilizatori: apare și numele lui, de exemplu pe locul 5, cu un total de 80 de puncte.
+
+
+Atomify se remarcă prin abordarea sa integrată: îmbină componenta științifică (generare de molecule, calcule exacte) cu cea educațională (teste, explicații, interfață prietenoasă) și cu elemente de software modern (PWA, cloud integration, gamification). Această platformă aduce inovație în modul în care elevii interacționează cu chimia, transformând conceptele teoretice în experiențe practice interactive.
+
 ## 👥 Contribuitori
 
 ### Echipa de Dezvoltare
@@ -628,7 +882,6 @@ sudo certbot --nginx -d atomify.info
 - 🏆 Participant la Olimpiada Națională de Matematică
 - Expert în algoritmi și programare
 - Responsabil pentru arhitectura tehnică
-
 
 ## 📞 Contact
 
