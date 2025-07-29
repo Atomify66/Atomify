@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atomify - Platforma Educațională de Chimie și Matematică</title>
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#667eea">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Atomify">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Atomify">
+  <meta name="msapplication-TileColor" content="#667eea">
+  <meta name="msapplication-tap-highlight" content="no">
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Apple Touch Icons -->
+  <link rel="apple-touch-icon" href="app/logo_light.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="app/logo_light.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="app/logo_light.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="app/logo_light.png">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="app/logo_light.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="app/logo_light.png">
+  <link rel="shortcut icon" href="app/logo_light.png">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Translate Component -->
+  <script src="app/google-translate.js"></script>
+  
+  <!-- PWA Registration -->
+  <script src="app/pwa.js"></script>
+  
+  <!-- Tutorial System -->
+  <script src="app/tutorial.js"></script>
+  
+  <!-- Landing Tutorial -->
+  <script src="landing-tutorial.js"></script>
+</head>
+<body class="landing-page">
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <img src="logo.png" alt="Atomify" class="logo-img">
+        <span class="logo-text">Atomify</span>
+      </div>
+      <div class="nav-menu">
+        <a href="#home" class="nav-link">Acasă</a>
+        <a href="#features" class="nav-link">Funcționalități</a>
+        <a href="#founders" class="nav-link">Fondatori</a>
+        <a href="#about" class="nav-link">Despre Noi</a>
+        
+        
+        <button class="btn-primary" onclick="window.location.href='app/isomers.html'">
+          <i class="fas fa-rocket"></i>
+          Intră în Atomify
+        </button>
+      </div>
+      <div class="nav-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">
+          <span class="gradient-text">Revolutionează</span> educația în 
+          <span class="highlight">Chimie</span> și <span class="highlight">Matematică</span>
+        </h1>
+        <p class="hero-description">
+          Descoperă o platformă educațională inovatoare creată de campioni olimpici. 
+          Învață chimia și matematica printr-o experiență interactivă și captivantă.
+        </p>
+        <div class="hero-buttons">
+          <button class="btn-hero primary" onclick="window.location.href='app/isomers.html'">
+            <i class="fas fa-play"></i>
+            Începe Aventura
+          </button>
+          <button class="btn-hero secondary" onclick="scrollToSection('features')">
+            <i class="fas fa-info-circle"></i>
+            Află Mai Mult
+          </button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-number">50+</div>
+            <div class="stat-label">Chestionare</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number">99%</div>
+            <div class="stat-label">Satisfacție</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-image-container">
+          <div class="hero-cards">
+            <div class="feature-card floating-card">
+              <div class="card-icon">🧮</div>
+              <h3>Calculatoare Avansate</h3>
+              <p>Instrumente matematice pentru rezolvări rapide</p>
+            </div>
+            <div class="feature-card floating-card delay-1">
+              <div class="card-icon">📝</div>
+              <h3>Chestionare Interactive</h3>
+              <p>Teste personalizate pentru fiecare nivel</p>
+            </div>
+            <div class="feature-card floating-card delay-2">
+              <div class="card-icon">🏆</div>
+              <h3>Clasamente</h3>
+              <p>Competiții și provocări zilnice</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="features">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Funcționalități</h2>
+        <p class="section-subtitle">Totul de care ai nevoie pentru a excela la orice materie</p>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <i class="fas fa-calculator"></i>
+          </div>
+          <h3>Calculatoare Specializate</h3>
+          <p>Calculatoare avansate pentru masă molară, formule chimice și ecuații matematice complexe.</p>
+        </div>
+        
+        <div class="feature-item">
+          <div class="feature-icon">
+            <i class="fas fa-flask"></i>
+          </div>
+          <h3>Generare Izomeri</h3>
+          <p>Tehnologie unică pentru generarea și analiza izomerilor organici cu algoritmi avansați.</p>
+        </div>
+        
+        <div class="feature-item">
+          <div class="feature-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <h3>Clase Virtuale</h3>
+          <p>Profesorii pot crea clase, invita studenți și gestiona progresul în timp real.</p>
+        </div>
+        
+        <div class="feature-item">
+          <div class="feature-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3>Statistici Detaliate</h3>
+          <p>Urmărește progresul cu grafice interactive și analize performanțe personalizate.</p>
+        </div>
+        
+        <div class="feature-item">
+          <div class="feature-icon">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <h3>Sistem de Insigne</h3>
+          <p>Câștigă insigne și recompense pentru realizări și activitate constantă.</p>
+        </div>
+        
+        <div class="feature-item">
+          <div class="feature-icon">
+            <i class="fas fa-mobile-alt"></i>
+          </div>
+          <h3>Responsive Design</h3>
+          <p>Funcționează perfect pe orice dispozitiv - telefon, tabletă sau desktop.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Founders Section -->
+  <section id="founders" class="founders">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Creatori de Excepție</h2>
+        <p class="section-subtitle">Platformă dezvoltată de campioni olimpici pasionați de educație</p>
+      </div>
+      
+      <div class="founders-grid">
+        <div class="founder-card">
+          <div class="founder-image">
+            <div class="founder-avatar">
+              <img src="zevri.png" alt="Zevri Matei-Tudor" class="founder-photo">
+            </div>
+            <div class="founder-badge chemistry">
+              <i class="fas fa-medal"></i>
+              <span>Chimie</span>
+            </div>
+          </div>
+          <div class="founder-info">
+            <h3>Zevri Matei-Tudor</h3>
+            <p class="founder-title">Co-Fondator & Expert Chimie</p>
+            <p class="founder-achievement">🏆 Participant la Olimpiada Națională de Chimie</p>
+            <p class="founder-description">
+              Matei este motorul chimiei din spatele Atomify, cu o pasiune profundă pentru chimia organică și anorganică. De două ori calificat la Olimpiada Națională de Chimie și câștigător al mai multor concursuri de specialitate, el transformă conceptele complexe în exerciții clare și bine structurate. Expertiza sa se regăsește în fiecare explicație de pe platformă, garantând calitate și rigoare științifică.
+            </p>
+            <div class="founder-skills">
+              <span class="skill-tag">Chimie Organică</span>
+              <span class="skill-tag">Olimpiade</span>
+              <span class="skill-tag">Educație</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="founder-card">
+          <div class="founder-image">
+            <div class="founder-avatar">
+              <img src="siret.png" alt="Siret Luca-Alexandru" class="founder-photo">
+            </div>
+            <div class="founder-badge mathematics">
+              <i class="fas fa-medal"></i>
+              <span>Matematică</span>
+            </div>
+          </div>
+          <div class="founder-info">
+          <h3>Siret Luca-Alexandru</h3>
+          <p class="founder-title">Co-Fondator & Expert Matematică & Informatică</p>
+          <p class="founder-achievement">🏆 Participant la Olimpiada Națională de Matematică</p>
+          <p class="founder-description">
+            Luca este arhitectul algoritmilor din spatele Atomify, combinând o minte analitică remarcabilă cu o vastă experiență în matematică și informatică. Câștigător al numeroaselor concursuri naționale și internaționale în aceste domenii, el dezvoltă soluții complexe care asigură precizia și performanța tuturor instrumentelor noastre.
+          </p>
+          <div class="founder-skills">
+            <span class="skill-tag">Algoritmi</span>
+            <span class="skill-tag">Informatică</span>
+            <span class="skill-tag">Programare</span>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="about">
+    <div class="container">
+      <div class="about-content">
+        <div class="about-text">
+          <h2 class="section-title">Despre Atomify</h2>
+          <p class="about-description">
+            Atomify este mai mult decât o simplă platformă educațională - este o revoluție în modul 
+            în care învățăm chimia și matematica. Creată de campioni olimpici, platforma combină 
+            expertiza academică de top cu tehnologia modernă pentru a oferi o experiență de învățare 
+            unică și captivantă.
+          </p>
+          
+          <div class="about-features">
+            <div class="about-feature">
+              <div class="feature-number">01</div>
+              <div class="feature-content">
+                <h4>Inovație Educațională</h4>
+                <p>Metode de învățare interactive și instrumente avansate pentru înțelegerea conceptelor complexe.</p>
+              </div>
+            </div>
+            
+            <div class="about-feature">
+              <div class="feature-number">02</div>
+              <div class="feature-content">
+                <h4>Expertiza Olimpică</h4>
+                <p>Conținut creat de campioni olimpici cu experiență vastă în competițiile naționale şi internaționale.</p>
+              </div>
+            </div>
+            
+            <div class="about-feature">
+              <div class="feature-number">03</div>
+              <div class="feature-content">
+                <h4>Comunitate Activă</h4>
+                <p>O rețea de studenți, profesori și pasionați de știință care se ajută reciproc.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="about-visual">
+          <div class="stats-container">
+
+            
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-graduation-cap"></i>
+              </div>
+              <div class="stat-info">
+                <div class="stat-number counter" data-target="50">0</div>
+                <div class="stat-label">Lecții Interactive</div>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-award"></i>
+              </div>
+              <div class="stat-info">
+                <div class="stat-number counter" data-target="99">0</div>
+                <div class="stat-label">% Satisfacție</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="cta">
+    <div class="container">
+      <div class="cta-content">
+        <h2>Începe Aventura Ta Educațională</h2>
+        <p>Alătură-te studențiilor şi profesorilor care au ales să învețe cu Atomify</p>
+        <button class="btn-cta" onclick="window.location.href='app/isomers.html'">
+          <i class="fas fa-rocket"></i>
+          Începe Acum - Gratuit
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <div class="footer-logo">
+            <img src="logo.png" alt="Atomify" class="logo-img">
+            <span class="logo-text">Atomify</span>
+          </div>
+          <p>Platforma educațională care revoluționează învățarea chimiei și matematicii.</p>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Platformă</h4>
+          <ul>
+            <li><a href="app/isomers.html">Aplicația Principală</a></li>
+            <li><a href="app/chestionare.html">Chestionare</a></li>
+            <li><a href="app/calcule.html">Calculatoare</a></li>
+            <li><a href="app/leaderboard.html">Clasamente</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Despre</h4>
+          <ul>
+            <li><a href="#founders">Fondatori</a></li>
+            <li><a href="#features">Funcționalități</a></li>
+            <li><a href="privacy.html">Confidențialitate</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:atomify66@gmail.com">atomify66@gmail.com</a></li>
+            <li><a href="https://atomify.info">www.atomify.info</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2025 Atomify. Toate drepturile rezervate.</p>
+        <p>Creat cu ❤️ de campioni olimpici</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile Navigation Toggle
+    const navToggle = document.querySelector('.nav-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+
+    navToggle.addEventListener('click', () => {
+      navToggle.classList.toggle('active');
+      navMenu.classList.toggle('active');
+    });
+
+    // Smooth Scrolling
+    function scrollToSection(sectionId) {
+      document.getElementById(sectionId).scrollIntoView({
+        behavior: 'smooth'
+      });
+    }
+
+    // Navigation Links Smooth Scroll
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href').substring(1);
+        scrollToSection(targetId);
+        
+        // Close mobile menu
+        navToggle.classList.remove('active');
+        navMenu.classList.remove('active');
+      });
+    });
+
+    // Counter Animation
+    function animateCounters() {
+      const counters = document.querySelectorAll('.counter');
+      counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-target'));
+        const current = parseInt(counter.innerText);
+        const increment = target / 100;
+        
+        if (current < target) {
+          counter.innerText = Math.ceil(current + increment);
+          setTimeout(() => animateCounters(), 20);
+        }
+      });
+    }
+
+    // Intersection Observer for Animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+          
+          // Start counter animation when stats section is visible
+          if (entry.target.classList.contains('stats-container')) {
+            animateCounters();
+          }
+        }
+      });
+    }, observerOptions);
+
+    // Observe elements for animation
+    document.addEventListener('DOMContentLoaded', () => {
+      const animateElements = document.querySelectorAll('.feature-item, .founder-card, .about-feature, .stats-container, .about-text, .about-visual');
+      animateElements.forEach(el => observer.observe(el));
+      
+      // Add scroll effect to navbar
+      window.addEventListener('scroll', () => {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 100) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+      });
+    });
+
+    // Floating elements animation
+    document.addEventListener('DOMContentLoaded', () => {
+      const floatingElements = document.querySelectorAll('.floating-element');
+      floatingElements.forEach((element, index) => {
+        element.style.animationDelay = `${index * 0.5}s`;
+      });
+    });
+  </script>
+</body>
+</html> 
