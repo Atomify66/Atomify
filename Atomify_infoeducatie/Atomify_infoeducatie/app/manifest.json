@@ -1,0 +1,101 @@
+{
+  "name": "Atomify - Platforma Educațională de Chimie",
+  "short_name": "Atomify",
+  "description": "Platformă educațională pentru învățarea chimiei organice și generarea de izomeri",
+  "start_url": "/app/isomers.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#667eea",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "ro",
+  "categories": ["education", "science", "chemistry"],
+  "icons": [
+    {
+      "src": "/app/logo_light.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/app/logo_light.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/app/logo_light.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app/logo_light.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app/logo_light.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app/logo_light.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app/logo_light.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app/logo_light.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Generare Izomeri",
+      "short_name": "Izomeri",
+      "description": "Generează izomeri pentru formule chimice",
+      "url": "/app/isomers.html",
+      "icons": [
+        {
+          "src": "/app/logo_light.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Chestionare",
+      "short_name": "Teste",
+      "description": "Teste de chimie pentru pregătirea BAC",
+      "url": "/app/chestionare.html",
+      "icons": [
+        {
+          "src": "/app/logo_light.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Calculatoare",
+      "short_name": "Calcule",
+      "description": "Calculatoare pentru masă molară și ecuații",
+      "url": "/app/calcule.html",
+      "icons": [
+        {
+          "src": "/app/logo_light.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+} 

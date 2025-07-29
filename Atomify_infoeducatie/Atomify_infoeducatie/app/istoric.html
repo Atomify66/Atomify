@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <title>Atomify – Istoricul Meu</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css" />
+  
+  <!-- Logo Theme Switcher -->
+  <script src="logo-theme-switcher.js"></script>
+  
+  <!-- Google Translate Component -->
+  <script src="google-translate.js"></script>
+
+  <script>
+    // Theme toggle functionality
+    function setupThemeToggle() {
+      const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+      const currentTheme = localStorage.getItem('theme');
+
+      if (currentTheme) {
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        
+        if (currentTheme === 'dark') {
+          toggleSwitch.checked = true;
+        }
+      }
+
+      function switchTheme(e) {
+        if (e.target.checked) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          localStorage.setItem('theme', 'dark');
+          
+          // Update logos for dark theme
+          const logoImages = document.querySelectorAll('.logo-image, .footer-logo');
+          logoImages.forEach(img => {
+            img.onerror = function() {
+              console.warn('Failed to load logo_dark.png, falling back to logo.png');
+              this.src = 'logo.png';
+              this.onerror = null;
+            };
+            img.src = 'logo_dark.png';
+          });
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+          localStorage.setItem('theme', 'light');
+          
+          // Update logos for light theme
+          const logoImages = document.querySelectorAll('.logo-image, .footer-logo');
+          logoImages.forEach(img => {
+            img.onerror = function() {
+              console.warn('Failed to load logo_light.png, falling back to logo.png');
+              this.src = 'logo.png';
+              this.onerror = null;
+            };
+            img.src = 'logo_light.png';
+          });
+        }    
+      }
+
+      toggleSwitch.addEventListener('change', switchTheme, false);
+    }
+
+    document.addEventListener('DOMContentLoaded', setupThemeToggle);
+  </script>
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'ro',
+          includedLanguages: 'en,fr,de,es,it,pt,ru,zh-CN,ja,ko,ar,hi',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false,
+          gaTrack: false
+        }, 'google_translate_element');
+      }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
+    <!-- PWA Registration -->
+    <script src="pwa.js"></script>
+    
+    <!-- Tutorial System -->
+    <script src="tutorial.js"></script>
+</head>
+<body>
+  <!-- Modern Redesigned Navigation -->
+  <header class="site-header">
+    <nav class="navbar">
+      <!-- Logo Section -->
+      <div class="logo-section">
+        <a href="isomers.html" class="logo-link">
+          <img src="logo_light.png" alt="Atomify Logo" class="logo-image">
+          <span class="logo-text">Atomify</span>
+        </a>
+      </div>
+      
+      <!-- Mobile Menu Toggle -->
+      <button id="mobileMenuBtn" class="mobile-menu-toggle" aria-label="Toggle mobile menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+      
+      <!-- Navigation Container -->
+      <div class="nav-container">
+        <!-- Mobile Close Button -->
+        <button id="menuCloseBtn" class="mobile-close-btn" aria-label="Close mobile menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"></path>
+          </svg>
+        </button>
+        
+        <!-- Navigation Links -->
+        <ul class="nav-links">
+          <li class="nav-item">
+            <button class="nav-link isomer-dropdown-trigger" id="isomerDropdownTrigger">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <circle cx="7" cy="7" r="2"/>
+                <circle cx="17" cy="7" r="2"/>
+                <circle cx="12" cy="15" r="2"/>
+                <circle cx="7" cy="19" r="2"/>
+                <circle cx="17" cy="19" r="2"/>
+                <path d="M9 7h6m-8 8l2-4m6 4l-2-4m-3 6h6"/>
+              </svg>
+              <span>Izomeri</span>
+              <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+            
+            <div class="isomer-dropdown-menu" id="isomerDropdownMenu">
+              <a href="isomers.html" class="dropdown-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="7" cy="7" r="2"/>
+                  <circle cx="17" cy="7" r="2"/>
+                  <circle cx="12" cy="15" r="2"/>
+                  <circle cx="7" cy="19" r="2"/>
+                  <circle cx="17" cy="19" r="2"/>
+                  <path d="M9 7h6m-8 8l2-4m6 4l-2-4m-3 6h6"/>
+                </svg>
+                <span>Izomeri</span>
+              </a>
+              <a href="structure.html" class="dropdown-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 3h18v18H3z"/>
+                  <path d="M9 9h6v6H9z"/>
+                  <path d="M12 3v18"/>
+                  <path d="M3 12h18"/>
+                </svg>
+                <span>Structură</span>
+              </a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a href="chestionare.html" class="nav-link">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M9 11h6m-6 4h3m5-7v8a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h7l5 5z"/>
+                <path d="M14 3v4a2 2 0 002 2h4"/>
+                <circle cx="8" cy="11" r="1" fill="currentColor"/>
+                <circle cx="8" cy="15" r="1" fill="currentColor"/>
+              </svg>
+              <span>Chestionar</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="leaderboard.html" class="nav-link">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 16v-3a2 2 0 00-4 0v3m-4 0v-6a2 2 0 014 0v6m8-2V7a2 2 0 00-4 0v9M5 16V4a2 2 0 014 0v12"/>
+              </svg>
+              <span>Clasament</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="equations.html" class="nav-link">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M3 12h18M8 8l4-4 4 4M8 16l4 4 4-4"/>
+                <text x="6" y="6" fill="currentColor" font-size="6" font-weight="bold">H</text>
+                <text x="15" y="6" fill="currentColor" font-size="6" font-weight="bold">O</text>
+                <text x="18" y="6" fill="currentColor" font-size="5">2</text>
+              </svg>
+              <span>Ecuații</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="masa.html" class="nav-link">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M7 18h10l-2-6H9l-2 6z"/>
+                <path d="M5 18h14"/>
+                <path d="M12 6v6"/>
+                <circle cx="12" cy="4" r="2"/>
+                <path d="M8 10l8 8M16 10l-8 8"/>
+              </svg>
+              <span>Masa Atomică</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link calcule-dropdown-trigger" id="calculeDropdownTrigger">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="4" y="2" width="16" height="20" rx="2"/>
+                <path d="M8 6h8M8 10h3m5 0h-2M8 14h8"/>
+                <text x="7" y="9" fill="currentColor" font-size="4">Δ</text>
+                <text x="12.5" y="9" fill="currentColor" font-size="4">+</text>
+                <text x="10.5" y="13" fill="currentColor" font-size="4">∑</text>
+              </svg>
+              <span>Calcule</span>
+              <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+            
+            <div class="calcule-dropdown-menu" id="calculeDropdownMenu">
+              <a href="calcule.html" class="dropdown-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="4" y="2" width="16" height="20" rx="2"/>
+                  <path d="M8 6h8M8 10h3m5 0h-2M8 14h8"/>
+                  <text x="7" y="9" fill="currentColor" font-size="4">Δ</text>
+                  <text x="12.5" y="9" fill="currentColor" font-size="4">+</text>
+                  <text x="10.5" y="13" fill="currentColor" font-size="4">∑</text>
+                </svg>
+                <span>Cristalizare</span>
+              </a>
+              <a href="bio.html" class="dropdown-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  <path d="M8 12l2 2 4-4"/>
+                </svg>
+                <span>Genetică</span>
+              </a>
+            </div>
+          </li>
+        </ul>
+        
+        <!-- Right Side Controls -->
+        <div class="nav-controls">
+          <!-- Google Translate -->
+          <div class="translate-container">
+            <div id="google_translate_element"></div>
+          </div>
+          
+          <!-- Theme Toggle -->
+          <div class="theme-toggle">
+            <label class="theme-switch" for="themeCheckbox" aria-label="Toggle dark mode">
+              <input type="checkbox" id="themeCheckbox" />
+              <div class="theme-slider">
+                <div class="theme-icon-container sun-icon-container">
+                  <svg class="theme-icon sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                  </svg>
+                </div>
+                <div class="theme-icon-container moon-icon-container">
+                  <svg class="theme-icon moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                  </svg>
+                </div>
+              </div>
+            </label>
+          </div>
+          
+          <!-- Authentication Section -->
+          <div class="auth-section">
+            <!-- Login/Register Buttons -->
+            <div id="authButtons" class="auth-buttons">
+              <button id="loginBtn" class="auth-btn login-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+                </svg>
+                <span>Intră în cont</span>
+              </button>
+              <button id="registerBtn" class="auth-btn register-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12.5 7a4 4 0 11-8 0 4 4 0 018 0zM20 8v6M23 11h-6"/>
+                </svg>
+                <span>Creează cont</span>
+              </button>
+            </div>
+            
+            <!-- User Info Dropdown -->
+            <div id="userInfo" class="user-dropdown" style="display: none;">
+              <button class="user-dropdown-trigger" id="userDropdownTrigger">
+                <div class="user-avatar">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </div>
+                <span class="user-name" id="username"></span>
+                <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </button>
+              
+              <div class="user-dropdown-menu" id="userDropdownMenu">
+                <div class="dropdown-header">
+                  <div class="user-info-display">
+                    <div class="user-avatar-large">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                      </svg>
+                    </div>
+                    <div class="user-details">
+                      <span class="user-greeting">Bună,</span>
+                      <span class="user-name-display" id="usernameDisplay"></span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="dropdown-divider"></div>
+                
+                <div class="dropdown-links">
+                  <a href="istoric.html" class="dropdown-link active">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>Istoric</span>
+                  </a>
+                  <a href="profile.html" class="dropdown-link">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                      <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    <span>Profilul Meu</span>
+                  </a>
+                  <a href="admin.html" class="dropdown-link">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                      <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span>Administrare</span>
+                  </a>
+                </div>
+                
+                <div class="dropdown-divider"></div>
+                
+                <button id="logoutBtn" class="dropdown-link logout-btn">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+                  </svg>
+                  <span>Ieși din cont</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="site-main">
+    <div id="authRequired" class="auth-required-message" style="display: none;">
+      <h1>Acces Restricționat</h1>
+      <p>Trebuie să fii autentificat pentru a vedea istoricul tău.</p>
+      <button id="loginPromptBtn" class="btn-generate">Intră în cont</button>
+    </div>
+
+    <div id="historyContent" class="history-content" style="display: none;">
+      <h1>Istoricul Meu</h1>
+      <p class="welcome-message">Aici poți vedea toate activitățile tale pe Atomify, <span id="historyUsername"></span>!</p>
+
+      <!-- Navigation Tabs -->
+      <div class="history-tabs">
+        <button class="tab-button active" data-tab="isomers">Izomeri Generați</button>
+        <button class="tab-button" data-tab="quizzes">Rezultate Chestionare</button>
+      </div>
+
+      <!-- Isomers History Tab -->
+      <div id="isomersTab" class="tab-content active">
+        <div class="tab-header">
+          <h2>Izomeri Generați</h2>
+          <div class="stats-summary">
+            <div class="stat-card">
+              <div class="stat-number" id="totalIsomers">0</div>
+              <div class="stat-label">Formule Generate</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="totalStructures">0</div>
+              <div class="stat-label">Structuri Totale</div>
+            </div>
+          </div>
+        </div>
+        
+        <div id="isomersHistory" class="history-list">
+          <div class="loading-message">Se încarcă istoricul...</div>
+        </div>
+      </div>
+
+      <!-- Quizzes History Tab -->
+      <div id="quizzesTab" class="tab-content">
+        <div class="tab-header">
+          <h2>Rezultate Chestionare</h2>
+          <div class="stats-summary">
+            <div class="stat-card">
+              <div class="stat-number" id="totalQuizzes">0</div>
+              <div class="stat-label">Teste Luate</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="averageScore">0%</div>
+              <div class="stat-label">Scor Mediu</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Best Scores Section -->
+        <div class="section-divider">
+          <h3>Cele Mai Bune Scoruri</h3>
+        </div>
+        <div id="bestScores" class="best-scores-list">
+          <div class="loading-message">Se încarcă scorurile...</div>
+        </div>
+
+        <!-- All Quiz Attempts -->
+        <div class="section-divider">
+          <h3>Toate Încercările</h3>
+        </div>
+        <div id="allQuizResults" class="history-list">
+          <div class="loading-message">Se încarcă rezultatele...</div>
+        </div>
+      </div>
+
+      <div id="historyMessage" class="history-message"></div>
+    </div>
+  </main>
+
+  <!-- Authentication Modal -->
+  <div id="authModal" class="auth-modal">
+    <div class="auth-modal-content">
+      <span class="auth-close">&times;</span>
+      
+      <!-- Login Form -->
+      <div id="loginForm" class="auth-form">
+        <h2>Intră în cont</h2>
+        <form id="loginFormElement">
+          <div class="form-group">
+            <label for="loginUsername">Nume utilizator:</label>
+            <input type="text" id="loginUsername" required maxlength="50">
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Parolă:</label>
+            <input type="password" id="loginPassword" required>
+          </div>
+          <button type="submit" class="auth-submit-btn">Intră în cont</button>
+        </form>
+        
+        <div class="auth-divider">
+          <span>sau</span>
+        </div>
+        
+        <button type="button" id="googleLoginBtn" class="google-auth-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          <span>Intră cu Google</span>
+        </button>
+        
+        <p class="auth-switch">
+          Nu ai cont? <a href="#" id="showRegister">Creează unul aici</a>
+        </p>
+      </div>
+      
+      <!-- Register Form -->
+      <div id="registerForm" class="auth-form" style="display: none;">
+        <h2>Creează cont</h2>
+        <form id="registerFormElement">
+          <div class="form-group">
+            <label for="registerUsername">Nume utilizator:</label>
+            <input type="text" id="registerUsername" required maxlength="50">
+          </div>
+          <div class="form-group">
+            <label for="registerPassword">Parolă:</label>
+            <input type="password" id="registerPassword" required>
+            <div class="password-requirements">
+              <div class="requirement" id="req-length">
+                <span class="req-icon">✗</span> Cel puțin 8 caractere
+              </div>
+              <div class="requirement" id="req-uppercase">
+                <span class="req-icon">✗</span> Cel puțin o literă mare (A-Z)
+              </div>
+              <div class="requirement" id="req-digit">
+                <span class="req-icon">✗</span> Cel puțin o cifră (0-9)
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="registerPasswordConfirm">Confirmă parola:</label>
+            <input type="password" id="registerPasswordConfirm" required>
+          </div>
+          <button type="submit" class="auth-submit-btn">Creează cont</button>
+        </form>
+        
+        <div class="auth-divider">
+          <span>sau</span>
+        </div>
+        
+        <button type="button" id="googleRegisterBtn" class="google-auth-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          <span>Înregistrează-te cu Google</span>
+        </button>
+        
+        <p class="auth-switch">
+          Ai deja cont? <a href="#" id="showLogin">Intră în cont aici</a>
+        </p>
+      </div>
+      
+      <div id="authMessage" class="auth-message"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <!-- Main Footer Section -->
+      <div class="footer-main">
+        <div class="footer-section">
+          <div class="footer-brand">
+            <img src="logo_light.png" alt="Atomify Logo" class="footer-logo">
+            <h3>Atomify</h3>
+            <p>Platformă educațională pentru învățarea chimiei organice și generarea de izomeri</p>
+          </div>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Funcționalități</h4>
+          <ul class="footer-links">
+            <li><a href="isomers.html">Generare Izomeri</a></li>
+            <li><a href="equations.html">Echilibrare Ecuații</a></li>
+            <li><a href="masa.html">Calcul Masă Molară</a></li>
+            <li><a href="chestionare.html">Chestionare</a></li>
+            <li><a href="calcule.html">Calcule Chimice</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Resurse</h4>
+          <ul class="footer-links">
+            <li><a href="leaderboard.html">Clasament</a></li>
+            <li><a href="istoric.html">Istoric Personal</a></li>
+            <li><a href="admin.html">Administrare</a></li>
+            <li><a href="privacy.html">Politica de Confidențialitate</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Contact & Suport</h4>
+          <div class="footer-contact">
+            <div class="contact-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+              <span>atomify66@gmail.com</span>
+            </div>
+            <div class="contact-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span>Constanța, România</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <div class="footer-bottom-content">
+          <div class="footer-copyright">
+            <p>&copy; 2025 Atomify. Toate drepturile rezervate.</p>
+            <p class="team-credits">Proiect realizat de <strong>Siret Luca-Alexandru</strong> și <strong>Zevri Matei-Tudor</strong></p>
+          </div>
+          
+          <div class="footer-legal">
+            <a href="privacy.html" class="legal-link">Politica de Confidențialitate</a>
+          </div>
+          
+          <div class="footer-social">
+            <a href="https://github.com/Atomify66/Atomify" class="social-link" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    let currentUser = null;
+    let userHistory = null;
+    let userTimezone = null; // Cache for user timezone
+
+    // Get user timezone based on IP using geolittle
+    async function getUserTimezone() {
+      // Return cached timezone if available
+      if (userTimezone) {
+        return userTimezone;
+      }
+
+      // Clear cache if testing with different IPs (for development)
+      const clearCache = localStorage.getItem('clearTimezoneCache');
+      if (clearCache === 'true') {
+        userTimezone = null;
+        localStorage.removeItem('clearTimezoneCache');
+      }
+
+      try {
+        // Try multiple geolocation APIs for better reliability
+        const apis = [
+          'https://api.geolittle.com/ip',
+          'https://ipapi.co/json/',
+          'https://ipapi.co/timezone/',
+          'https://worldtimeapi.org/api/ip'
+        ];
+
+        for (const api of apis) {
+          try {
+            const response = await fetch(api);
+            if (response.ok) {
+              const data = await response.json();
+              
+              // Handle different API response formats
+              let timezone = null;
+              if (data.timezone) {
+                timezone = data.timezone;
+              } else if (data.time_zone) {
+                timezone = data.time_zone;
+              } else if (typeof data === 'string' && data.includes('/')) {
+                // Direct timezone response
+                timezone = data;
+              }
+              
+              if (timezone) {
+                userTimezone = timezone;
+                console.log('Timezone detected:', timezone);
+                return userTimezone;
+              }
+            }
+          } catch (apiError) {
+            console.warn(`API ${api} failed:`, apiError);
+            continue;
+          }
+        }
+      } catch (error) {
+        console.warn('All geolocation APIs failed:', error);
+      }
+
+      // Fallback to browser's timezone if all APIs fail
+      const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      console.log('Using browser timezone as fallback:', browserTimezone);
+      return browserTimezone;
+    }
+
+    // Authentication functions (shared)
+    async function checkAuthentication() {
+      try {
+        const response = await fetch('/user');
+        if (response.ok) {
+          const data = await response.json();
+          currentUser = data.user;
+          updateAuthUI();
+          showHistoryContent();
+          loadUserHistory();
+        } else {
+          currentUser = null;
+          updateAuthUI();
+          showAuthRequired();
+        }
+      } catch (error) {
+        console.error('Error checking authentication:', error);
+        currentUser = null;
+        updateAuthUI();
+        showAuthRequired();
+      }
+    }
+
+    function updateAuthUI() {
+      const authButtons = document.getElementById('authButtons');
+      const userInfo = document.getElementById('userInfo');
+      const username = document.getElementById('username');
+      const usernameDisplay = document.getElementById('usernameDisplay');
+      const historyUsername = document.getElementById('historyUsername');
+
+      if (currentUser) {
+        authButtons.style.display = 'none';
+        userInfo.style.display = 'block';
+        username.textContent = currentUser.username;
+        if (usernameDisplay) usernameDisplay.textContent = currentUser.username;
+        if (historyUsername) historyUsername.textContent = currentUser.username;
+        
+        // Ensure mobile menu button is visible after login
+        setTimeout(() => {
+          const isMobile = window.innerWidth <= 900;
+          const menuBtn = document.getElementById('mobileMenuBtn');
+          const navContainer = document.querySelector('.nav-container');
+          if (menuBtn && isMobile && navContainer && !navContainer.classList.contains('open')) {
+            menuBtn.style.display = 'flex';
+          }
+        }, 50);
+      } else {
+        authButtons.style.display = 'flex';
+        userInfo.style.display = 'none';
+        
+        // Ensure mobile menu button is visible when logged out
+        setTimeout(() => {
+          const isMobile = window.innerWidth <= 900;
+          const menuBtn = document.getElementById('mobileMenuBtn');
+          const navContainer = document.querySelector('.nav-container');
+          if (menuBtn && isMobile && navContainer && !navContainer.classList.contains('open')) {
+            menuBtn.style.display = 'flex';
+          }
+        }, 50);
+      }
+    }
+
+    // Setup user dropdown functionality
+    function setupUserDropdown() {
+      const dropdownTrigger = document.getElementById('userDropdownTrigger');
+      const dropdownMenu = document.getElementById('userDropdownMenu');
+      
+      if (!dropdownTrigger || !dropdownMenu) return;
+      
+      // Toggle dropdown on click
+      dropdownTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle('show');
+        dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+      });
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+      
+      // Close dropdown when pressing Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+          dropdownTrigger.focus();
+        }
+      });
+    }
+
+    function showHistoryContent() {
+      document.getElementById('authRequired').style.display = 'none';
+      document.getElementById('historyContent').style.display = 'block';
+    }
+
+    function showAuthRequired() {
+      document.getElementById('authRequired').style.display = 'block';
+      document.getElementById('historyContent').style.display = 'none';
+    }
+
+    // Load user history from server
+    async function loadUserHistory() {
+      try {
+        const response = await fetch('/user-history');
+        if (response.ok) {
+          userHistory = await response.json();
+          await displayIsomersHistory();
+          await displayQuizHistory();
+          updateStatistics();
+        } else {
+          showHistoryMessage('Eroare la încărcarea istoricului', 'error');
+        }
+      } catch (error) {
+        console.error('Error loading history:', error);
+        showHistoryMessage('Eroare de conexiune la încărcarea istoricului', 'error');
+      }
+    }
+
+    // Display isomers history
+    async function displayIsomersHistory() {
+      const container = document.getElementById('isomersHistory');
+      
+      if (!userHistory.isomers || userHistory.isomers.length === 0) {
+        container.innerHTML = '<div class="empty-message">Nu ai generat încă niciun izomer. <a href="isomers.html">Începe aici!</a></div>';
+        return;
+      }
+
+      // Get user timezone first
+      const userTimezone = await getUserTimezone();
+
+      let html = '';
+      userHistory.isomers.forEach(isomer => {
+        // Convert UTC time to user's timezone based on IP
+        const utcDate = new Date(isomer.generated_at + 'Z'); // Add Z to ensure UTC parsing
+        const localDate = utcDate.toLocaleString('ro-RO', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZone: userTimezone
+        });
+        
+        html += `
+          <div class="history-item isomer-item">
+            <div class="item-header">
+              <h3 class="formula">${isomer.formula}</h3>
+              <span class="date">${localDate}</span>
+            </div>
+            <div class="item-details">
+              <span class="count">${isomer.isomer_count} izomeri găsiți</span>
+              <div class="item-actions">
+                <button class="btn-small btn-regenerate" onclick="regenerateIsomers('${isomer.formula}')">
+                  Regenerează
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
+    }
+
+    // Display quiz history
+    async function displayQuizHistory() {
+      const bestScoresContainer = document.getElementById('bestScores');
+      const allResultsContainer = document.getElementById('allQuizResults');
+      
+      // Get user timezone first
+      const userTimezone = await getUserTimezone();
+      
+      // Best scores
+      if (!userHistory.quizSummary || userHistory.quizSummary.length === 0) {
+        bestScoresContainer.innerHTML = '<div class="empty-message">Nu ai completat încă niciun chestionar. <a href="chestionare.html">Încearcă aici!</a></div>';
+      } else {
+        let bestHtml = '';
+        userHistory.quizSummary.forEach(quiz => {
+          const percentage = Math.round((quiz.best_score / quiz.total_questions) * 100);
+          const utcDate = new Date(quiz.last_attempt + 'Z');
+          const localDate = utcDate.toLocaleString('ro-RO', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZone: userTimezone
+          });
+          
+          bestHtml += `
+            <div class="best-score-item">
+              <div class="quiz-info">
+                <h4>${quiz.quiz_name}</h4>
+                <div class="score-details">
+                  <span class="score">${quiz.best_score}/${quiz.total_questions}</span>
+                  <span class="percentage ${percentage >= 80 ? 'excellent' : percentage >= 60 ? 'good' : 'needs-improvement'}">${percentage}%</span>
+                </div>
+              </div>
+              <div class="quiz-stats">
+                <span class="attempts">${quiz.attempts} încercări</span>
+                <span class="last-attempt">Ultima: ${localDate}</span>
+              </div>
+              <button class="btn-small btn-retake" onclick="retakeQuiz('${quiz.quiz_name}')">
+                Încearcă din nou
+              </button>
+            </div>
+          `;
+        });
+        bestScoresContainer.innerHTML = bestHtml;
+      }
+
+      // All quiz results
+      if (!userHistory.allQuizResults || userHistory.allQuizResults.length === 0) {
+        allResultsContainer.innerHTML = '<div class="empty-message">Niciun rezultat disponibil</div>';
+      } else {
+        let allHtml = '';
+        userHistory.allQuizResults.forEach(result => {
+          const percentage = Math.round((result.score / result.total_questions) * 100);
+          const utcDate = new Date(result.completed_at + 'Z');
+          const localDate = utcDate.toLocaleString('ro-RO', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZone: userTimezone
+          });
+          
+          allHtml += `
+            <div class="history-item quiz-item">
+                          <div class="item-header">
+              <h3>${result.quiz_name}</h3>
+              <span class="date">${localDate}</span>
+            </div>
+              <div class="item-details">
+                <div class="score-display">
+                  <span class="score">${result.score}/${result.total_questions}</span>
+                  <span class="percentage ${percentage >= 80 ? 'excellent' : percentage >= 60 ? 'good' : 'needs-improvement'}">${percentage}%</span>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        allResultsContainer.innerHTML = allHtml;
+      }
+    }
+
+    // Update statistics
+    function updateStatistics() {
+      // Isomer statistics
+      const totalIsomers = userHistory.isomers ? userHistory.isomers.length : 0;
+      const totalStructures = userHistory.isomers ? 
+        userHistory.isomers.reduce((sum, item) => sum + item.isomer_count, 0) : 0;
+      
+      document.getElementById('totalIsomers').textContent = totalIsomers;
+      document.getElementById('totalStructures').textContent = totalStructures;
+
+      // Quiz statistics
+      const totalQuizzes = userHistory.allQuizResults ? userHistory.allQuizResults.length : 0;
+      let averageScore = 0;
+      
+      if (userHistory.allQuizResults && userHistory.allQuizResults.length > 0) {
+        const totalScore = userHistory.allQuizResults.reduce((sum, result) => 
+          sum + (result.score / result.total_questions), 0);
+        averageScore = Math.round((totalScore / userHistory.allQuizResults.length) * 100);
+      }
+
+      document.getElementById('totalQuizzes').textContent = totalQuizzes;
+      document.getElementById('averageScore').textContent = averageScore + '%';
+    }
+
+    // Action functions
+    function regenerateIsomers(formula) {
+      // Store the formula in localStorage to be picked up by isomers.html
+      localStorage.setItem('regenerateFormula', formula);
+      window.location.href = 'isomers.html';
+    }
+
+    function retakeQuiz(quizName) {
+      window.location.href = 'chestionare.html';
+    }
+
+    // Tab switching
+    function setupTabs() {
+      const tabButtons = document.querySelectorAll('.tab-button');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const targetTab = button.getAttribute('data-tab');
+          
+          // Remove active class from all buttons and contents
+          tabButtons.forEach(b => b.classList.remove('active'));
+          tabContents.forEach(content => content.classList.remove('active'));
+          
+          // Add active class to clicked button and corresponding content
+          button.classList.add('active');
+          document.getElementById(targetTab + 'Tab').classList.add('active');
+        });
+      });
+    }
+
+    function showHistoryMessage(message, type = 'error') {
+      const historyMessage = document.getElementById('historyMessage');
+      historyMessage.textContent = message;
+      historyMessage.className = `history-message ${type}`;
+      historyMessage.style.display = 'block';
+      
+      setTimeout(() => {
+        historyMessage.style.display = 'none';
+      }, 5000);
+    }
+
+    // Modal and authentication functions (shared with other pages)
+    function showAuthModal(mode = 'login') {
+      const modal = document.getElementById('authModal');
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      const authMessage = document.getElementById('authMessage');
+
+      authMessage.style.display = 'none';
+      authMessage.className = 'auth-message';
+
+      if (mode === 'login') {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+      } else {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        updatePasswordRequirements('');
+      }
+
+      modal.style.display = 'block';
+    }
+
+    function hideAuthModal() {
+      const modal = document.getElementById('authModal');
+      modal.style.display = 'none';
+      
+      document.getElementById('loginFormElement').reset();
+      document.getElementById('registerFormElement').reset();
+      updatePasswordRequirements('');
+    }
+
+    function showAuthMessage(message, type = 'error') {
+      const authMessage = document.getElementById('authMessage');
+      authMessage.textContent = message;
+      authMessage.className = `auth-message ${type}`;
+      authMessage.style.display = 'block';
+    }
+
+    // Password validation functions
+    function validatePassword(password) {
+      return {
+        length: password.length >= 8,
+        uppercase: /[A-Z]/.test(password),
+        digit: /[0-9]/.test(password)
+      };
+    }
+
+    function updatePasswordRequirements(password) {
+      const requirements = validatePassword(password);
+      
+      const lengthReq = document.getElementById('req-length');
+      const uppercaseReq = document.getElementById('req-uppercase');
+      const digitReq = document.getElementById('req-digit');
+
+      if (lengthReq) lengthReq.className = requirements.length ? 'requirement met' : 'requirement not-met';
+      if (uppercaseReq) uppercaseReq.className = requirements.uppercase ? 'requirement met' : 'requirement not-met';
+      if (digitReq) digitReq.className = requirements.digit ? 'requirement met' : 'requirement not-met';
+      
+      return requirements.length && requirements.uppercase && requirements.digit;
+    }
+
+    function isPasswordValid(password) {
+      const requirements = validatePassword(password);
+      return requirements.length && requirements.uppercase && requirements.digit;
+    }
+
+    // Authentication handlers
+    async function handleLogin(event) {
+      event.preventDefault();
+      
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+
+      try {
+        const response = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showAuthMessage('Autentificare reușită!', 'success');
+          setTimeout(() => {
+            hideAuthModal();
+            checkAuthentication();
+          }, 1000);
+        } else {
+          showAuthMessage(data.error || 'Eroare la autentificare');
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        showAuthMessage('Eroare de conexiune. Încearcă din nou.');
+      }
+    }
+
+    async function handleRegister(event) {
+      event.preventDefault();
+      
+      const username = document.getElementById('registerUsername').value;
+      const password = document.getElementById('registerPassword').value;
+      const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
+
+      if (!isPasswordValid(password)) {
+        showAuthMessage('Parola nu îndeplinește toate cerințele');
+        return;
+      }
+
+      if (password !== passwordConfirm) {
+        showAuthMessage('Parolele nu coincid');
+        return;
+      }
+
+      try {
+        const response = await fetch('/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showAuthMessage('Cont creat cu succes! Te poți autentifica acum.', 'success');
+          setTimeout(() => {
+            showAuthModal('login');
+          }, 1500);
+        } else {
+          showAuthMessage(data.error || 'Eroare la crearea contului');
+        }
+      } catch (error) {
+        console.error('Registration error:', error);
+        showAuthMessage('Eroare de conexiune. Încearcă din nou.');
+      }
+    }
+
+    async function handleLogout() {
+      try {
+        const response = await fetch('/logout', { method: 'POST' });
+        if (response.ok) {
+          currentUser = null;
+          updateAuthUI();
+          showAuthRequired();
+        }
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+    }
+
+    // Handle Google OAuth authentication
+    function handleGoogleAuth() {
+      window.location.href = '/auth/google';
+    }
+
+    // Clear timezone cache for testing different IPs
+    function clearTimezoneCache() {
+      userTimezone = null;
+      localStorage.setItem('clearTimezoneCache', 'true');
+      console.log('Timezone cache cleared. Reload the page to detect new timezone.');
+    }
+
+    // Check authentication status from URL parameters
+    function checkAuthenticationStatus() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const authStatus = urlParams.get('auth');
+      
+      if (authStatus === 'success') {
+        // Show success message
+        showAuthMessage('Autentificare cu Google reușită!', 'success');
+        // Clean up URL
+        const url = new URL(window.location);
+        url.searchParams.delete('auth');
+        window.history.replaceState({}, document.title, url);
+        // Check authentication status
+        setTimeout(() => {
+          checkAuthentication();
+        }, 1000);
+      } else if (authStatus === 'failed') {
+        // Show error message
+        showAuthMessage('Autentificarea cu Google a eșuat. Încearcă din nou.', 'error');
+        // Clean up URL
+        const url = new URL(window.location);
+        url.searchParams.delete('auth');
+        window.history.replaceState({}, document.title, url);
+      }
+    }
+
+    // Mobile menu setup
+    function setupMobileMenu() {
+      const menuBtn = document.getElementById('mobileMenuBtn');
+      const closeBtn = document.getElementById('menuCloseBtn');
+      const navContainer = document.querySelector('.nav-container');
+      const backdrop = document.createElement('div');
+      backdrop.className = 'menu-backdrop';
+      document.body.appendChild(backdrop);
+
+      function updateMenuButtonVisibility() {
+        const isMobile = window.innerWidth <= 900;
+        if (navContainer.classList.contains('open')) {
+          menuBtn.style.display = 'none';
+        } else {
+          menuBtn.style.display = isMobile ? 'flex' : 'none';
+        }
+      }
+
+      function openMenu() {
+        if (window.innerWidth > 900) return;
+        navContainer.classList.add('open');
+        backdrop.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        updateMenuButtonVisibility();
+      }
+      
+      function closeMenu() {
+        navContainer.classList.remove('open');
+        backdrop.classList.remove('show');
+        document.body.style.overflow = '';
+        updateMenuButtonVisibility();
+      }
+
+      function handleResize() {
+        if (window.innerWidth > 900 && navContainer.classList.contains('open')) {
+          closeMenu();
+        }
+        updateMenuButtonVisibility();
+      }
+      
+      if (menuBtn) menuBtn.addEventListener('click', openMenu);
+      if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+      backdrop.addEventListener('click', closeMenu);
+      window.addEventListener('resize', handleResize);
+      
+      const navLinks = document.querySelectorAll('.nav-link, .nav-links a');
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          // Don't close menu if it's a dropdown trigger
+          if (link.classList.contains('isomer-dropdown-trigger') || link.classList.contains('user-dropdown-trigger')) {
+            return; // Let the dropdown handle its own behavior
+          }
+          if (window.innerWidth <= 900) {
+            closeMenu();
+          }
+        });
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && navContainer.classList.contains('open')) {
+          closeMenu();
+        }
+      });
+
+      updateMenuButtonVisibility();
+    }
+
+    // Setup isomer dropdown functionality
+    function setupIsomerDropdown() {
+      const dropdownTrigger = document.getElementById('isomerDropdownTrigger');
+      const dropdownMenu = document.getElementById('isomerDropdownMenu');
+      
+      if (!dropdownTrigger || !dropdownMenu) return;
+      
+      // Toggle dropdown on click
+      dropdownTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        console.log('Isomer dropdown clicked, screen width:', window.innerWidth);
+        
+        // On mobile, we want the dropdown to stay open within the mobile menu
+        if (window.innerWidth <= 900) {
+          dropdownMenu.classList.toggle('show');
+          dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+          console.log('Mobile dropdown toggled, show class:', dropdownMenu.classList.contains('show'));
+        } else {
+          // Desktop behavior
+          dropdownMenu.classList.toggle('show');
+          dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+        }
+      });
+      
+      // Only close on outside click for desktop
+      document.addEventListener('click', (e) => {
+        if (window.innerWidth > 900 && !dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+      
+      // Close dropdown when pressing Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+          dropdownTrigger.focus();
+        }
+      });
+    }
+
+    // Setup calcule dropdown functionality
+    function setupCalculeDropdown() {
+      const dropdownTrigger = document.getElementById('calculeDropdownTrigger');
+      const dropdownMenu = document.getElementById('calculeDropdownMenu');
+      
+      if (!dropdownTrigger || !dropdownMenu) return;
+      
+      // Toggle dropdown on click
+      dropdownTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        console.log('Calcule dropdown clicked, screen width:', window.innerWidth);
+        
+        // On mobile, we want the dropdown to stay open within the mobile menu
+        if (window.innerWidth <= 900) {
+          dropdownMenu.classList.toggle('show');
+          dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+          console.log('Mobile dropdown toggled, show class:', dropdownMenu.classList.contains('show'));
+        } else {
+          // Desktop behavior
+          dropdownMenu.classList.toggle('show');
+          dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+        }
+      });
+      
+      // Only close on outside click for desktop
+      document.addEventListener('click', (e) => {
+        if (window.innerWidth > 900 && !dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+      
+      // Close dropdown when pressing Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+          dropdownTrigger.focus();
+        }
+      });
+    }
+
+    // Setup user dropdown functionality
+    function setupUserDropdown() {
+      const dropdownTrigger = document.getElementById('userDropdownTrigger');
+      const dropdownMenu = document.getElementById('userDropdownMenu');
+      
+      if (!dropdownTrigger || !dropdownMenu) return;
+      
+      // Ensure dropdown is initially closed in mobile
+      dropdownMenu.classList.remove('show');
+      dropdownTrigger.setAttribute('aria-expanded', 'false');
+      
+      // Toggle dropdown on click
+      dropdownTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle('show');
+        dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+      });
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+      
+      // Close dropdown when pressing Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+          dropdownTrigger.focus();
+        }
+      });
+      
+      // Ensure mobile dropdown behavior is consistent
+      window.addEventListener('resize', () => {
+        if (window.innerWidth <= 900) {
+          // In mobile view, ensure dropdown starts closed
+          if (!dropdownMenu.closest('.nav-container.open')) {
+            dropdownMenu.classList.remove('show');
+            dropdownTrigger.setAttribute('aria-expanded', 'false');
+          }
+        }
+      });
+    }
+
+    // Make clearTimezoneCache available globally for testing
+    window.clearTimezoneCache = clearTimezoneCache;
+    window.getUserTimezone = getUserTimezone;
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize authentication
+      checkAuthentication();
+      
+      // Check for authentication success/failure from URL
+      checkAuthenticationStatus();
+      
+      // Setup tabs
+      setupTabs();
+      
+      // Setup mobile menu
+      setupMobileMenu();
+      
+      // Setup isomer dropdown
+      setupIsomerDropdown();
+      setupCalculeDropdown();
+      
+      // Setup user dropdown
+      setupUserDropdown();
+      
+      // Force mobile menu button visibility check after authentication loads
+      setTimeout(() => {
+        const isMobile = window.innerWidth <= 900;
+        const menuBtn = document.getElementById('mobileMenuBtn');
+        const navContainer = document.querySelector('.nav-container');
+        if (menuBtn && isMobile) {
+          if (navContainer && !navContainer.classList.contains('open')) {
+            menuBtn.style.display = 'flex';
+          }
+        }
+      }, 100);
+      
+      // Additional mobile compatibility check
+      setTimeout(() => {
+        const isMobile = window.innerWidth <= 900;
+        if (isMobile) {
+          // Force mobile layout
+          const navbar = document.querySelector('.navbar');
+          const menuBtn = document.getElementById('mobileMenuBtn');
+          const navContainer = document.querySelector('.nav-container');
+          const userDropdownMenu = document.getElementById('userDropdownMenu');
+          
+          if (navbar) navbar.classList.add('mobile-layout');
+          if (menuBtn && !navContainer?.classList.contains('open')) {
+            menuBtn.style.display = 'flex';
+            menuBtn.style.visibility = 'visible';
+          }
+          if (userDropdownMenu) {
+            userDropdownMenu.classList.remove('show');
+          }
+          
+          console.log('Mobile navbar forced initialization completed');
+        }
+      }, 200);
+      
+      // Setup authentication event listeners
+      document.getElementById('loginBtn').addEventListener('click', () => showAuthModal('login'));
+      document.getElementById('registerBtn').addEventListener('click', () => showAuthModal('register'));
+      document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+      document.getElementById('loginPromptBtn').addEventListener('click', () => showAuthModal('login'));
+      
+      // Google OAuth event listeners
+      document.getElementById('googleLoginBtn').addEventListener('click', handleGoogleAuth);
+      document.getElementById('googleRegisterBtn').addEventListener('click', handleGoogleAuth);
+      
+      // Auth modal event listeners
+      document.querySelector('.auth-close').addEventListener('click', hideAuthModal);
+      document.getElementById('showRegister').addEventListener('click', (e) => {
+        e.preventDefault();
+        showAuthModal('register');
+      });
+      document.getElementById('showLogin').addEventListener('click', (e) => {
+        e.preventDefault();
+        showAuthModal('login');
+      });
+      
+      // Form submissions
+      document.getElementById('loginFormElement').addEventListener('submit', handleLogin);
+      document.getElementById('registerFormElement').addEventListener('submit', handleRegister);
+      
+      // Real-time password validation
+      document.getElementById('registerPassword').addEventListener('input', function(e) {
+        updatePasswordRequirements(e.target.value);
+      });
+      
+      // Close modal when clicking outside
+      window.addEventListener('click', (event) => {
+        const modal = document.getElementById('authModal');
+        if (event.target === modal) {
+          hideAuthModal();
+        }
+      });
+    });
+  </script>
+</body>
+</html> 
