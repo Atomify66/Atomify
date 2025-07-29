@@ -1,0 +1,2527 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <title>Atomify – Generare Izomeri</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#667eea">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Atomify">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Atomify">
+  <meta name="msapplication-TileColor" content="#667eea">
+  <meta name="msapplication-tap-highlight" content="no">
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- Apple Touch Icons -->
+  <link rel="apple-touch-icon" href="logo_light.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="logo_light.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="logo_light.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="logo_light.png">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="logo_light.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="logo_light.png">
+  <link rel="shortcut icon" href="logo_light.png">
+
+  <!-- CSS general -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- Core functionality first -->
+  <script>
+    // Funcție pentru comutarea temei - inclusă direct în HTML ca să se încarce mai repede
+    function setupThemeToggle() {
+      const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+      const currentTheme = localStorage.getItem('theme');
+
+      if (currentTheme) {
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        
+        if (currentTheme === 'dark') {
+          toggleSwitch.checked = true;
+        }
+      }
+
+      function switchTheme(e) {
+        if (e.target.checked) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          localStorage.setItem('theme', 'dark');
+          // Actualizează logo-ul pentru tema întunecată
+          const logoImages = document.querySelectorAll('.logo-image, .footer-logo');
+          logoImages.forEach(img => {
+            img.onerror = function() {
+              console.warn('Failed to load logo_dark.png, falling back to logo.png');
+              this.src = 'logo.png';
+              this.onerror = null;
+            };
+            img.src = 'logo_dark.png';
+          });
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+          localStorage.setItem('theme', 'light');
+          // Actualizează logo-ul pentru tema deschisă
+          const logoImages = document.querySelectorAll('.logo-image, .footer-logo');
+          logoImages.forEach(img => {
+            img.onerror = function() {
+              console.warn('Failed to load logo_light.png, falling back to logo.png');
+              this.src = 'logo.png';
+              this.onerror = null;
+            };
+            img.src = 'logo_light.png';
+          });
+        }    
+      }
+
+      toggleSwitch.addEventListener('change', switchTheme, false);
+    }
+
+    // Inițializăm tema cât mai repede posibil, după ce structura DOM e gata
+    document.addEventListener('DOMContentLoaded', setupThemeToggle);
+  </script>
+
+  <!-- Atomic masses data for formula validation -->
+  <script>
+    // Atomic masses for formula validation (copied from masa.html)
+    const atomicMasses = {
+      'H': 1.0079, 'He': 4.0026, 'Li': 6.941, 'Be': 9.0122, 'B': 10.811, 'C': 12.011, 'N': 14.007, 'O': 15.999, 'F': 18.998, 'Ne': 20.180,
+      'Na': 22.990, 'Mg': 24.305, 'Al': 26.982, 'Si': 28.086, 'P': 30.974, 'S': 32.065, 'Cl': 35.453, 'Ar': 39.948, 'K': 39.098, 'Ca': 40.078,
+      'Sc': 44.956, 'Ti': 47.867, 'V': 50.942, 'Cr': 51.996, 'Mn': 54.938, 'Fe': 55.845, 'Co': 58.933, 'Ni': 58.693, 'Cu': 63.546, 'Zn': 65.380,
+      'Ga': 69.723, 'Ge': 72.640, 'As': 74.922, 'Se': 78.960, 'Br': 79.904, 'Kr': 83.798, 'Rb': 85.468, 'Sr': 87.620, 'Y': 88.906, 'Zr': 91.224,
+      'Nb': 92.906, 'Mo': 95.960, 'Tc': 98.000, 'Ru': 101.070, 'Rh': 102.906, 'Pd': 106.420, 'Ag': 107.868, 'Cd': 112.411, 'In': 114.818, 'Sn': 118.710,
+      'Sb': 121.760, 'Te': 127.600, 'I': 126.904, 'Xe': 131.293, 'Cs': 132.905, 'Ba': 137.327, 'La': 138.905, 'Ce': 140.116, 'Pr': 140.908, 'Nd': 144.242,
+      'Pm': 145.000, 'Sm': 150.360, 'Eu': 151.964, 'Gd': 157.250, 'Tb': 158.925, 'Dy': 162.500, 'Ho': 164.930, 'Er': 167.259, 'Tm': 168.934, 'Yb': 173.054,
+      'Lu': 174.967, 'Hf': 178.490, 'Ta': 180.948, 'W': 183.840, 'Re': 186.207, 'Os': 190.230, 'Ir': 192.217, 'Pt': 195.084, 'Au': 196.967, 'Hg': 200.590,
+      'Tl': 204.383, 'Pb': 207.200, 'Bi': 208.980, 'Po': 209.000, 'At': 210.000, 'Rn': 222.000, 'Fr': 223.000, 'Ra': 226.000, 'Ac': 227.000, 'Th': 232.038,
+      'Pa': 231.036, 'U': 238.029, 'Np': 237.000, 'Pu': 244.000, 'Am': 243.000, 'Cm': 247.000, 'Bk': 247.000, 'Cf': 251.000, 'Es': 252.000, 'Fm': 257.000
+    };
+  </script>
+
+  <!-- Logo Theme Switcher -->
+  <script src="logo-theme-switcher.js"></script>
+  
+  <!-- Google Translate Component -->
+  <script src="google-translate.js"></script>
+  
+  <!-- PWA Registration -->
+  <script src="pwa.js"></script>
+  
+  <!-- Tutorial System -->
+  <script src="tutorial.js"></script>
+  
+  <!-- Direct Google Translate Implementation -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'ro',
+        includedLanguages: 'en,fr,de,es,it,pt,ru,zh-CN,ja,ko,ar,hi',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false,
+        gaTrack: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  
+  <!-- Defer loading of heavy libraries until needed -->
+  <!-- They'll only be loaded when user interaction requires them -->
+</head>
+<body>
+  <!-- Modern Redesigned Navigation -->
+  <header class="site-header">
+    <nav class="navbar">
+      <!-- Logo Section -->
+      <div class="logo-section">
+        <a href="isomers.html" class="logo-link">
+          <img src="logo_light.png" alt="Atomify Logo" class="logo-image">
+          <span class="logo-text">Atomify</span>
+        </a>
+      </div>
+      
+      <!-- Mobile Menu Toggle -->
+      <button id="mobileMenuBtn" class="mobile-menu-toggle" aria-label="Toggle mobile menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+      
+      <!-- Navigation Container -->
+      <div class="nav-container">
+        <!-- Mobile Close Button -->
+        <button id="menuCloseBtn" class="mobile-close-btn" aria-label="Close mobile menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"></path>
+          </svg>
+        </button>
+        
+        <!-- Navigation Links -->
+        <ul class="nav-links">
+          <li class="nav-item">
+            <button class="nav-link isomer-dropdown-trigger active" id="isomerDropdownTrigger">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <circle cx="7" cy="7" r="2"/>
+                <circle cx="17" cy="7" r="2"/>
+                <circle cx="12" cy="15" r="2"/>
+                <circle cx="7" cy="19" r="2"/>
+                <circle cx="17" cy="19" r="2"/>
+                <path d="M9 7h6m-8 8l2-4m6 4l-2-4m-3 6h6"/>
+              </svg>
+              <span>Izomeri</span>
+              <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+            
+            <div class="isomer-dropdown-menu" id="isomerDropdownMenu">
+              <a href="isomers.html" class="dropdown-link active">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="7" cy="7" r="2"/>
+                  <circle cx="17" cy="7" r="2"/>
+                  <circle cx="12" cy="15" r="2"/>
+                  <circle cx="7" cy="19" r="2"/>
+                  <circle cx="17" cy="19" r="2"/>
+                  <path d="M9 7h6m-8 8l2-4m6 4l-2-4m-3 6h6"/>
+                </svg>
+                <span>Izomeri</span>
+              </a>
+              <a href="structure.html" class="dropdown-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 3h18v18H3z"/>
+                  <path d="M9 9h6v6H9z"/>
+                  <path d="M12 3v18"/>
+                  <path d="M3 12h18"/>
+                </svg>
+                <span>Structură</span>
+              </a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a href="chestionare.html" class="nav-link">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M9 11h6m-6 4h3m5-7v8a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h7l5 5z"/>
+                <path d="M14 3v4a2 2 0 002 2h4"/>
+                <circle cx="8" cy="11" r="1" fill="currentColor"/>
+                <circle cx="8" cy="15" r="1" fill="currentColor"/>
+              </svg>
+              <span>Chestionar</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="leaderboard.html" class="nav-link">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 16v-3a2 2 0 00-4 0v3m-4 0v-6a2 2 0 014 0v6m8-2V7a2 2 0 00-4 0v9M5 16V4a2 2 0 014 0v12"/>
+              </svg>
+              <span>Clasament</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="equations.html" class="nav-link">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M3 12h18M8 8l4-4 4 4M8 16l4 4 4-4"/>
+                <text x="6" y="6" fill="currentColor" font-size="6" font-weight="bold">H</text>
+                <text x="15" y="6" fill="currentColor" font-size="6" font-weight="bold">O</text>
+                <text x="18" y="6" fill="currentColor" font-size="5">2</text>
+              </svg>
+              <span>Ecuații</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="masa.html" class="nav-link">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M7 18h10l-2-6H9l-2 6z"/>
+                <path d="M5 18h14"/>
+                <path d="M12 6v6"/>
+                <circle cx="12" cy="4" r="2"/>
+                <path d="M8 10l8 8M16 10l-8 8"/>
+              </svg>
+              <span>Masa Atomică</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link calcule-dropdown-trigger" id="calculeDropdownTrigger">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="4" y="2" width="16" height="20" rx="2"/>
+                <path d="M8 6h8M8 10h3m5 0h-2M8 14h8"/>
+                <text x="7" y="9" fill="currentColor" font-size="4">Δ</text>
+                <text x="12.5" y="9" fill="currentColor" font-size="4">+</text>
+                <text x="10.5" y="13" fill="currentColor" font-size="4">∑</text>
+              </svg>
+              <span>Calcule</span>
+              <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+            
+            <div class="calcule-dropdown-menu" id="calculeDropdownMenu">
+              <a href="calcule.html" class="dropdown-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="4" y="2" width="16" height="20" rx="2"/>
+                  <path d="M8 6h8M8 10h3m5 0h-2M8 14h8"/>
+                  <text x="7" y="9" fill="currentColor" font-size="4">Δ</text>
+                  <text x="12.5" y="9" fill="currentColor" font-size="4">+</text>
+                  <text x="10.5" y="13" fill="currentColor" font-size="4">∑</text>
+                </svg>
+                <span>Cristalizare</span>
+              </a>
+              <a href="bio.html" class="dropdown-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  <path d="M8 12l2 2 4-4"/>
+                </svg>
+                <span>Genetică</span>
+              </a>
+            </div>
+          </li>
+        </ul>
+        
+        <!-- Right Side Controls -->
+        <div class="nav-controls">
+          <!-- Google Translate -->
+          <div class="translate-container">
+            <div id="google_translate_element">
+            </div>
+          </div>
+          
+          <!-- Theme Toggle -->
+          <div class="theme-toggle">
+            <label class="theme-switch" for="themeCheckbox" aria-label="Toggle dark mode">
+              <input type="checkbox" id="themeCheckbox" />
+              <div class="theme-slider">
+                <div class="theme-icon-container sun-icon-container">
+                  <svg class="theme-icon sun-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                  </svg>
+                </div>
+                <div class="theme-icon-container moon-icon-container">
+                  <svg class="theme-icon moon-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                  </svg>
+                </div>
+              </div>
+            </label>
+          </div>
+          
+          <!-- Authentication Section -->
+          <div class="auth-section">
+            <!-- Login/Register Buttons -->
+            <div id="authButtons" class="auth-buttons">
+              <button id="loginBtn" class="auth-btn login-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+                </svg>
+                <span>Intră în cont</span>
+              </button>
+              <button id="registerBtn" class="auth-btn register-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12.5 7a4 4 0 11-8 0 4 4 0 018 0zM20 8v6M23 11h-6"/>
+                </svg>
+                <span>Creează cont</span>
+              </button>
+            </div>
+            
+            <!-- User Info Dropdown -->
+            <div id="userInfo" class="user-dropdown" style="display: none;">
+              <button class="user-dropdown-trigger" id="userDropdownTrigger">
+                <div class="user-avatar">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </div>
+                <span class="user-name" id="username"></span>
+                <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </button>
+              
+              <div class="user-dropdown-menu" id="userDropdownMenu">
+                <div class="dropdown-header">
+                  <div class="user-info-display">
+                    <div class="user-avatar-large">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                      </svg>
+                    </div>
+                    <div class="user-details">
+                      <span class="user-greeting">Bună,</span>
+                      <span class="user-name-display" id="usernameDisplay"></span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="dropdown-divider"></div>
+                
+                <div class="dropdown-links">
+                  <a href="istoric.html" class="dropdown-link">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>Istoric</span>
+                  </a>
+                  <a href="profile.html" class="dropdown-link">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                      <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    <span>Profilul Meu</span>
+                  </a>
+                  <a href="admin.html" class="dropdown-link">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                      <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span>Administrare</span>
+                  </a>
+                </div>
+                
+                <div class="dropdown-divider"></div>
+                
+                <button id="logoutBtn" class="dropdown-link logout-btn">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+                  </svg>
+                  <span>Ieși din cont</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Conținut principal -->
+  <main class="site-main">
+    <section class="input-form-section">
+      <h1>Generare Izomeri (2D)</h1>
+      <form id="formulaForm" class="formula-form">
+        <label for="formulaInput">Introduceți formula moleculară:</label>
+        <input type="text" id="formulaInput" placeholder="Ex: C4H8" required />
+        <button type="submit" class="btn-generate">Generează</button>
+      </form>
+      <p class="note">Exemple: C2H6O, C4H10, C4H8 etc.</p>
+      
+      <!-- Buton "Descarcă PDF" - mutat aici -->
+      <div class="download-btn-container">
+        <button id="downloadPdfBtn" class="btn-download-pdf">Descarcă PDF</button>
+      </div>
+    </section>
+
+    <!-- Aici afișăm isomerii pentru "vizualizare normală" -->
+    <section id="results" class="results-section"></section>
+  </main>
+
+  <!-- Authentication Modals -->
+  <div id="authModal" class="auth-modal">
+    <div class="auth-modal-content">
+      <span class="auth-close">&times;</span>
+      
+      <!-- Login Form -->
+      <div id="loginForm" class="auth-form">
+        <h2>Intră în cont</h2>
+        <form id="loginFormElement">
+          <div class="form-group">
+            <label for="loginUsername">Nume utilizator:</label>
+            <input type="text" id="loginUsername" required maxlength="50">
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Parolă:</label>
+            <input type="password" id="loginPassword" required>
+          </div>
+          <button type="submit" class="auth-submit-btn">Intră în cont</button>
+        </form>
+        
+        <div class="auth-divider">
+          <span>sau</span>
+        </div>
+        
+        <button type="button" id="googleLoginBtn" class="google-auth-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          <span>Intră cu Google</span>
+        </button>
+        
+        <p class="auth-switch">
+          Nu ai cont? <a href="#" id="showRegister">Creează unul aici</a>
+        </p>
+      </div>
+      
+      <!-- Register Form -->
+      <div id="registerForm" class="auth-form" style="display: none;">
+        <h2>Creează cont</h2>
+        <form id="registerFormElement">
+          <div class="form-group">
+            <label for="registerUsername">Nume utilizator:</label>
+            <input type="text" id="registerUsername" required maxlength="50">
+          </div>
+          <div class="form-group">
+            <label for="registerPassword">Parolă:</label>
+            <input type="password" id="registerPassword" required>
+            <div class="password-requirements">
+              <div class="requirement" id="req-length">
+                <span class="req-icon">✗</span> Cel puțin 8 caractere
+              </div>
+              <div class="requirement" id="req-uppercase">
+                <span class="req-icon">✗</span> Cel puțin o literă mare (A-Z)
+              </div>
+              <div class="requirement" id="req-digit">
+                <span class="req-icon">✗</span> Cel puțin o cifră (0-9)
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="registerPasswordConfirm">Confirmă parola:</label>
+            <input type="password" id="registerPasswordConfirm" required>
+          </div>
+          <button type="submit" class="auth-submit-btn">Creează cont</button>
+        </form>
+        
+        <div class="auth-divider">
+          <span>sau</span>
+        </div>
+        
+        <button type="button" id="googleRegisterBtn" class="google-auth-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          <span>Înregistrează-te cu Google</span>
+        </button>
+        
+        <p class="auth-switch">
+          Ai deja cont? <a href="#" id="showLogin">Intră în cont aici</a>
+        </p>
+      </div>
+      
+      <div id="authMessage" class="auth-message"></div>
+    </div>
+  </div>
+
+  <!-- Animație loading (benzene ring) - modal overlay -->
+  <div id="loadingAnimation" class="loading-overlay">
+    <div class="loading-content">
+      <div class="benzene-container">
+        <div class="benzene-ring">
+          <!-- Plain hexagon shape is handled by CSS -->
+          <div class="carbon c1"></div>
+          <div class="carbon c2"></div>
+          <div class="carbon c3"></div>
+          <div class="carbon c4"></div>
+          <div class="carbon c5"></div>
+          <div class="carbon c6"></div>
+          <!-- Simplified bonds -->
+          <div class="hexagon-shape"></div>
+        </div>
+      </div>
+      <p id="loadingText" class="loading-text">Se generează PDF-ul...</p>
+    </div>
+  </div>
+
+  <!-- Modern Enhanced Footer -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <!-- Main Footer Section -->
+      <div class="footer-main">
+        <div class="footer-section">
+          <div class="footer-brand">
+            <img src="logo_light.png" alt="Atomify Logo" class="footer-logo">
+            <h3>Atomify</h3>
+            <p>Platformă educațională pentru învățarea chimiei organice și generarea de izomeri</p>
+          </div>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Funcționalități</h4>
+          <ul class="footer-links">
+            <li><a href="isomers.html">Generare Izomeri</a></li>
+            <li><a href="equations.html">Echilibrare Ecuații</a></li>
+            <li><a href="masa.html">Calcul Masă Molară</a></li>
+            <li><a href="chestionare.html">Chestionare</a></li>
+            <li><a href="calcule.html">Calcule Chimice</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Resurse</h4>
+          <ul class="footer-links">
+            <li><a href="leaderboard.html">Clasament</a></li>
+            <li><a href="istoric.html">Istoric Personal</a></li>
+            <li><a href="admin.html">Administrare</a></li>
+            <li><a href="privacy.html">Politica de Confidențialitate</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Contact & Suport</h4>
+          <div class="footer-contact">
+            <div class="contact-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+              <span>atomify66@gmail.com</span>
+            </div>
+            <div class="contact-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span>Constanța, România</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <div class="footer-bottom-content">
+          <div class="footer-copyright">
+            <p>&copy; 2025 Atomify. Toate drepturile rezervate.</p>
+            <p class="team-credits">Proiect realizat de <strong>Siret Luca-Alexandru</strong> și <strong>Zevri Matei-Tudor</strong></p>
+          </div>
+          
+          <div class="footer-legal">
+            <a href="privacy.html" class="legal-link">Politica de Confidențialitate</a>
+            <span class="separator">•</span>
+          </div>
+          
+          <div class="footer-social">
+            <a href="https://github.com/Atomify66/Atomify" class="social-link" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script principal - se încarcă după ce DOM-ul e gata -->
+  <script>
+    // Variabilă globală unde stocăm toți izomerii primiți de la server, pentru PDF. Utilă ca să nu facem iar cereri.
+    let allSmiles = [];
+
+    // Obiect ca să ținem minte ce biblioteci am încărcat deja, să n-o facem degeaba de mai multe ori
+    const loadedLibraries = {
+      smilesDrawer: false,
+      html2canvas: false,
+      jspdf: false
+    };
+
+    // Funcție pentru detectarea dispozitivelor mobile
+function isMobileDevice() {
+    return window.innerWidth <= 900 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  }
+
+  // Funcție pentru meniul mobil (hamburger menu)
+  function setupMobileMenu() {
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    const closeBtn = document.getElementById('menuCloseBtn');
+    const navContainer = document.querySelector('.nav-container');
+    const backdrop = document.createElement('div'); // Un fundal semi-transparent când meniul e deschis
+    backdrop.className = 'menu-backdrop';
+    document.body.appendChild(backdrop);
+
+    // Funcție internă ca să actualizăm vizibilitatea butonului de meniu (hamburger)
+    function updateMenuButtonVisibility() {
+      const isMobile = window.innerWidth <= 900; // Updated to match CSS breakpoint
+      if (navContainer.classList.contains('open')) {
+        menuBtn.style.display = 'none'; // Dacă meniul e deschis, ascundem butonul de deschidere
+      } else {
+        menuBtn.style.display = isMobile ? 'flex' : 'none'; // Show as flex for proper hamburger display
+      }
+    }
+
+    // Funcție pentru deschiderea meniului
+    function openMenu() {
+      if (window.innerWidth > 900) return; // Only open on mobile
+      navContainer.classList.add('open'); // Adăugăm clasa care face meniul vizibil (slide-in)
+      backdrop.classList.add('show'); // Afișăm fundalul
+      document.body.style.overflow = 'hidden'; // Blocăm scroll-ul paginii principale
+      updateMenuButtonVisibility();
+    }
+    
+    // Funcție pentru închiderea meniului
+    function closeMenu() {
+      navContainer.classList.remove('open'); // Ascundem meniul
+      backdrop.classList.remove('show'); // Ascundem fundalul
+      document.body.style.overflow = ''; // Permitem iar scroll-ul paginii
+      updateMenuButtonVisibility();
+    }
+
+    // Handle window resize to close menu on desktop
+    function handleResize() {
+      if (window.innerWidth > 900 && navContainer.classList.contains('open')) {
+        closeMenu();
+      }
+      updateMenuButtonVisibility();
+    }
+    
+    // Atașăm evenimentele la butoane și fundal
+    if (menuBtn) menuBtn.addEventListener('click', openMenu);
+    if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+    backdrop.addEventListener('click', closeMenu); // Închide meniul și la click pe fundal
+    window.addEventListener('resize', handleResize); // Recalculăm la redimensionarea ferestrei
+    
+    // Închidem meniul și când se dă click pe un link din navigație (util pe mobil)
+    const navLinks = document.querySelectorAll('.nav-link, .nav-links a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        // Don't close menu if it's a dropdown trigger
+        if (link.classList.contains('isomer-dropdown-trigger') || link.classList.contains('user-dropdown-trigger') || link.classList.contains('calcule-dropdown-trigger')) {
+          return; // Let the dropdown handle its own behavior
+        }
+        if (window.innerWidth <= 900) {
+          closeMenu();
+        }
+      });
+    });
+
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navContainer.classList.contains('open')) {
+        closeMenu();
+      }
+    });
+
+    updateMenuButtonVisibility(); // Setează starea inițială a butonului la încărcare
+  }
+
+  // Authentication functionality
+let currentUser = null;
+let notificationCheckInterval = null;
+
+// Check if user is authenticated
+async function checkAuthentication() {
+  try {
+    const response = await fetch('/user');
+    if (response.ok) {
+      const data = await response.json();
+      currentUser = data.user;
+      updateAuthUI();
+      startNotificationPolling();
+    } else {
+      currentUser = null;
+      updateAuthUI();
+      stopNotificationPolling();
+    }
+  } catch (error) {
+    console.error('Error checking authentication:', error);
+    currentUser = null;
+    updateAuthUI();
+  }
+}
+
+// Update the authentication UI based on user state
+function updateAuthUI() {
+  const authButtons = document.getElementById('authButtons');
+  const userInfo = document.getElementById('userInfo');
+  const username = document.getElementById('username');
+  const usernameDisplay = document.getElementById('usernameDisplay');
+
+  if (currentUser) {
+    authButtons.style.display = 'none';
+    userInfo.style.display = 'block';
+    username.textContent = currentUser.username;
+    if (usernameDisplay) usernameDisplay.textContent = currentUser.username;
+  } else {
+    authButtons.style.display = 'flex';
+    userInfo.style.display = 'none';
+  }
+}
+
+// Setup user dropdown functionality
+function setupUserDropdown() {
+  const dropdownTrigger = document.getElementById('userDropdownTrigger');
+  const dropdownMenu = document.getElementById('userDropdownMenu');
+  
+  if (!dropdownTrigger || !dropdownMenu) return;
+  
+  // Toggle dropdown on click
+  dropdownTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdownMenu.classList.toggle('show');
+    dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+  });
+  
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+      dropdownMenu.classList.remove('show');
+      dropdownTrigger.setAttribute('aria-expanded', 'false');
+    }
+  });
+  
+  // Close dropdown when pressing Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
+      dropdownMenu.classList.remove('show');
+      dropdownTrigger.setAttribute('aria-expanded', 'false');
+      dropdownTrigger.focus();
+    }
+  });
+}
+
+// Setup isomer dropdown functionality
+function setupIsomerDropdown() {
+  const dropdownTrigger = document.getElementById('isomerDropdownTrigger');
+  const dropdownMenu = document.getElementById('isomerDropdownMenu');
+  
+  if (!dropdownTrigger || !dropdownMenu) return;
+  
+  // Toggle dropdown on click
+  dropdownTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    console.log('Isomer dropdown clicked, screen width:', window.innerWidth);
+    
+    // On mobile, we want the dropdown to stay open within the mobile menu
+    if (window.innerWidth <= 900) {
+      dropdownMenu.classList.toggle('show');
+      dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+      console.log('Mobile dropdown toggled, show class:', dropdownMenu.classList.contains('show'));
+    } else {
+      // Desktop behavior
+      dropdownMenu.classList.toggle('show');
+      dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+    }
+  });
+  
+  // Only close on outside click for desktop
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth > 900 && !dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+      dropdownMenu.classList.remove('show');
+      dropdownTrigger.setAttribute('aria-expanded', 'false');
+    }
+  });
+  
+  // Close dropdown when pressing Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
+      dropdownMenu.classList.remove('show');
+      dropdownTrigger.setAttribute('aria-expanded', 'false');
+      dropdownTrigger.focus();
+    }
+  });
+}
+
+// Setup calcule dropdown functionality
+function setupCalculeDropdown() {
+  const dropdownTrigger = document.getElementById('calculeDropdownTrigger');
+  const dropdownMenu = document.getElementById('calculeDropdownMenu');
+  
+  if (!dropdownTrigger || !dropdownMenu) return;
+  
+  // Toggle dropdown on click
+  dropdownTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    console.log('Calcule dropdown clicked, screen width:', window.innerWidth);
+    
+    // On mobile, we want the dropdown to stay open within the mobile menu
+    if (window.innerWidth <= 900) {
+      dropdownMenu.classList.toggle('show');
+      dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+      console.log('Mobile dropdown toggled, show class:', dropdownMenu.classList.contains('show'));
+    } else {
+      // Desktop behavior
+      dropdownMenu.classList.toggle('show');
+      dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+    }
+  });
+  
+  // Only close on outside click for desktop
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth > 900 && !dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+      dropdownMenu.classList.remove('show');
+      dropdownTrigger.setAttribute('aria-expanded', 'false');
+    }
+  });
+  
+  // Close dropdown when pressing Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
+      dropdownMenu.classList.remove('show');
+      dropdownTrigger.setAttribute('aria-expanded', 'false');
+      dropdownTrigger.focus();
+    }
+  });
+}
+
+// Show authentication modal
+function showAuthModal(mode = 'login') {
+    const modal = document.getElementById('authModal');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const authMessage = document.getElementById('authMessage');
+
+    // Clear previous messages
+    authMessage.style.display = 'none';
+    authMessage.className = 'auth-message';
+
+    if (mode === 'login') {
+      loginForm.style.display = 'block';
+      registerForm.style.display = 'none';
+    } else {
+      loginForm.style.display = 'none';
+      registerForm.style.display = 'block';
+      // Reset password requirements when showing register form
+      updatePasswordRequirements('');
+    }
+
+    modal.style.display = 'block';
+  }
+
+  // Hide authentication modal
+  function hideAuthModal() {
+    const modal = document.getElementById('authModal');
+    modal.style.display = 'none';
+    
+    // Clear forms
+    document.getElementById('loginFormElement').reset();
+    document.getElementById('registerFormElement').reset();
+    
+    // Reset password requirements
+    updatePasswordRequirements('');
+  }
+
+  // Show message in auth modal
+  function showAuthMessage(message, type = 'error') {
+    const authMessage = document.getElementById('authMessage');
+    authMessage.textContent = message;
+    authMessage.className = `auth-message ${type}`;
+    authMessage.style.display = 'block';
+  }
+
+  // Handle login
+  async function handleLogin(event) {
+    event.preventDefault();
+    
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+
+    try {
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        showAuthMessage('Autentificare reușită!', 'success');
+        setTimeout(() => {
+          hideAuthModal();
+          checkAuthentication();
+        }, 1000);
+      } else {
+        showAuthMessage(data.error || 'Eroare la autentificare');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      showAuthMessage('Eroare de conexiune. Încearcă din nou.');
+    }
+  }
+
+  // Password validation function
+  function validatePassword(password) {
+    const requirements = {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      digit: /[0-9]/.test(password)
+    };
+    return requirements;
+  }
+
+  // Update password requirements visual indicator
+  function updatePasswordRequirements(password) {
+    const requirements = validatePassword(password);
+    
+    // Update length requirement
+    const lengthReq = document.getElementById('req-length');
+    if (requirements.length) {
+      lengthReq.className = 'requirement met';
+    } else {
+      lengthReq.className = 'requirement not-met';
+    }
+    
+    // Update uppercase requirement
+    const uppercaseReq = document.getElementById('req-uppercase');
+    if (requirements.uppercase) {
+      uppercaseReq.className = 'requirement met';
+    } else {
+      uppercaseReq.className = 'requirement not-met';
+    }
+    
+    // Update digit requirement
+    const digitReq = document.getElementById('req-digit');
+    if (requirements.digit) {
+      digitReq.className = 'requirement met';
+    } else {
+      digitReq.className = 'requirement not-met';
+    }
+    
+    return requirements.length && requirements.uppercase && requirements.digit;
+  }
+
+  // Check if password meets all requirements
+  function isPasswordValid(password) {
+    const requirements = validatePassword(password);
+    return requirements.length && requirements.uppercase && requirements.digit;
+  }
+
+  // Handle registration
+  async function handleRegister(event) {
+    event.preventDefault();
+    
+    const username = document.getElementById('registerUsername').value;
+    const password = document.getElementById('registerPassword').value;
+    const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
+
+    if (!isPasswordValid(password)) {
+      showAuthMessage('Parola nu îndeplinește toate cerințele');
+      return;
+    }
+
+    if (password !== passwordConfirm) {
+      showAuthMessage('Parolele nu coincid');
+      return;
+    }
+
+    try {
+      const response = await fetch('/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        showAuthMessage('Cont creat cu succes! Te poți autentifica acum.', 'success');
+        setTimeout(() => {
+          showAuthModal('login');
+        }, 1500);
+      } else {
+        showAuthMessage(data.error || 'Eroare la crearea contului');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      showAuthMessage('Eroare de conexiune. Încearcă din nou.');
+    }
+  }
+
+  // Handle logout
+  async function handleLogout() {
+    try {
+      const response = await fetch('/logout', {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        currentUser = null;
+        updateAuthUI();
+        stopNotificationPolling();
+      } else {
+        console.error('Logout failed');
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  }
+
+  // Handle Google OAuth authentication
+  function handleGoogleAuth() {
+    window.location.href = '/auth/google';
+  }
+
+  // Check authentication status from URL parameters
+  function checkAuthenticationStatus() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const authStatus = urlParams.get('auth');
+    
+    if (authStatus === 'success') {
+      // Show success message
+      showAuthMessage('Autentificare cu Google reușită!', 'success');
+      // Clean up URL
+      const url = new URL(window.location);
+      url.searchParams.delete('auth');
+      window.history.replaceState({}, document.title, url);
+      // Check authentication status
+      setTimeout(() => {
+        checkAuthentication();
+      }, 1000);
+    } else if (authStatus === 'failed') {
+      // Show error message
+      showAuthMessage('Autentificarea cu Google a eșuat. Încearcă din nou.', 'error');
+      // Clean up URL
+      const url = new URL(window.location);
+      url.searchParams.delete('auth');
+      window.history.replaceState({}, document.title, url);
+    }
+  }
+
+  // Show auth message without modal
+  function showAuthMessage(message, type = 'info') {
+    // Create a temporary message element
+    const messageEl = document.createElement('div');
+    messageEl.className = `auth-notification ${type}`;
+    messageEl.textContent = message;
+    messageEl.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      color: white;
+      font-weight: 500;
+      z-index: 10000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      max-width: 300px;
+    `;
+    
+    if (type === 'success') {
+      messageEl.style.background = '#4CAF50';
+    } else if (type === 'error') {
+      messageEl.style.background = '#f44336';
+    } else {
+      messageEl.style.background = '#2196F3';
+    }
+    
+    document.body.appendChild(messageEl);
+    
+    // Animate in
+    setTimeout(() => {
+      messageEl.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remove after 5 seconds
+    setTimeout(() => {
+      messageEl.style.transform = 'translateX(100%)';
+      setTimeout(() => {
+        if (document.body.contains(messageEl)) {
+          document.body.removeChild(messageEl);
+        }
+      }, 300);
+    }, 5000);
+  }
+
+    // Funcție ajutătoare pentru a încărca scripturi dinamic (biblioteci externe)
+    function loadScript(url, callback) {
+      const script = document.createElement('script');
+      script.src = url;
+      script.defer = true; // `defer` e bun, execută scriptul după ce HTML-ul e parsat
+      script.onload = callback; // Ce facem după ce scriptul s-a încărcat cu succes
+      script.onerror = () => { // Ce facem dacă nu se poate încărca scriptul
+        console.error(`Ghinion, n-am putut încărca scriptul: ${url}`);
+        hideLoading(); // Ascundem animația de încărcare dacă o bibliotecă esențială pică
+        alert(`Eroare la încărcarea unei biblioteci necesare (${url}). S-ar putea ca unele chestii să nu meargă bine.`);
+      }
+      document.head.appendChild(script); // Adăugăm scriptul în <head>
+    }
+
+    // Funcție pentru a afișa animația de încărcare (overlay-ul cu benzen)
+    function showLoading(message) {
+      const loadingAnimation = document.getElementById("loadingAnimation");
+      const loadingText = document.getElementById("loadingText");
+      loadingText.textContent = message || "Se încarcă..."; // Mesaj personalizat sau implicit
+      loadingAnimation.style.display = "flex"; // Îl facem vizibil
+    }
+    
+    // Funcție pentru a ascunde animația de încărcare
+    function hideLoading() {
+      const loadingAnimation = document.getElementById("loadingAnimation");
+      loadingAnimation.style.display = "none"; // Îl ascundem
+    }
+
+    // Încarcă SmilesDrawer (biblioteca de desenat structuri chimice) doar dacă nu e deja încărcat
+    function loadSmilesDrawerIfNeeded(callback) {
+      if (!loadedLibraries.smilesDrawer) {
+        console.log("SmilesDrawer nu e încărcat. Încercăm să-l aducem...");
+        showLoading("Se încarcă biblioteca de desenare a structurilor...");
+        loadScript("https://unpkg.com/smiles-drawer/dist/smiles-drawer.min.js", () => {
+          console.log("Gata! SmilesDrawer a fost încărcat cu succes!");
+          loadedLibraries.smilesDrawer = true; // Marcam ca încărcat
+          if (callback) callback(); // Apelăm funcția specificată după încărcare
+        });
+      } else if (callback) {
+        // Era deja încărcat, deci doar executăm funcția callback
+        callback(); 
+      }
+    }
+
+    // Aplică SmilesDrawer pe elementele <img> pentru a desena structurile din atributul data-smiles
+    function applySmilesDrawer() {
+      console.log("Acum încercăm să aplicăm SmilesDrawer să deseneze moleculele...");
+      if (typeof SmiDrawer !== 'undefined') { // Verificăm dacă biblioteca e disponibilă global
+        try {
+          SmiDrawer.apply(); // Metoda magică a bibliotecii care caută imaginile și desenează
+          console.log("Super! SmilesDrawer a aplicat desenele!");
+        } catch (e) {
+          // Dacă apare o eroare la aplicare, o afișăm în consolă
+          console.error("Problemă la aplicarea SmilesDrawer:", e);
+        } finally {
+          // Indiferent ce se întâmplă (succes sau eroare), ascundem animația de încărcare
+          hideLoading(); 
+        }
+      } else {
+        console.error("Ups, SmilesDrawer nu pare încărcat. Nu putem desena structurile.");
+        hideLoading(); // Important să ascundem loading-ul și aici
+      }
+    }
+
+    // Funcție pentru încărcarea progresivă a izomerilor (în batches) ca să nu blocăm browserul pe mobile
+    async function loadIsomersProgressively(container, smilesArray) {
+      // Detectăm dacă suntem pe mobile și ajustăm batch size-ul
+      const isMobile = isMobileDevice();
+      const batchSize = isMobile ? 25 : 50; // Pe mobile încărcăm mai puține odată
+      const totalBatches = Math.ceil(smilesArray.length / batchSize);
+      let currentBatch = 0;
+      
+      // Afișăm un mesaj de progres
+      const progressDiv = document.createElement('div');
+      progressDiv.className = 'loading-progress';
+      progressDiv.style.textAlign = 'center';
+      progressDiv.style.margin = '20px 0';
+      progressDiv.style.fontSize = '16px';
+      progressDiv.style.fontWeight = 'bold';
+      progressDiv.innerHTML = `Se încarcă izomerii... 0%`;
+      container.appendChild(progressDiv);
+
+      // Funcție pentru încărcarea unui batch
+      function loadBatch() {
+        const startIndex = currentBatch * batchSize;
+        const endIndex = Math.min(startIndex + batchSize, smilesArray.length);
+        
+        // Creăm cardurile pentru batch-ul curent
+        for (let i = startIndex; i < endIndex; i++) {
+          const smiles = smilesArray[i];
+          const card = document.createElement("div");
+          card.className = "isomer-card";
+          card.innerHTML = `
+            <div class="isomer-2d">
+                <img data-smiles="${smiles}" id="isomer-img-${i}" alt="Izomer ${i + 1}" />
+            </div>
+            <div class="isomer-info">
+                <h3>Izomer ${i + 1}</h3>
+                <p>SMILES: ${smiles}</p>
+            </div>
+          `;
+          container.insertBefore(card, progressDiv); // Inserăm înainte de progress div
+        }
+        
+        currentBatch++;
+        const progress = Math.round((currentBatch / totalBatches) * 100);
+        progressDiv.innerHTML = `Se încarcă izomerii... ${progress}%`;
+        
+        // Aplicăm SmilesDrawer pentru batch-ul nou încărcat
+        if (typeof SmiDrawer !== 'undefined') {
+          try {
+            SmiDrawer.apply();
+          } catch (e) {
+            console.error("Eroare la aplicarea SmilesDrawer pentru batch:", e);
+          }
+        }
+        
+        // Dacă mai avem batch-uri de încărcat
+        if (currentBatch < totalBatches) {
+          // Pe mobile așteptăm mai mult între batch-uri pentru a nu supraîncărca browserul
+          const delay = isMobile ? 400 : 200;
+          setTimeout(loadBatch, delay);
+        } else {
+          // Am terminat, ascundem progress-ul și loading-ul principal
+          container.removeChild(progressDiv);
+          hideLoading();
+        }
+      }
+      
+      // Încărcăm SmilesDrawer mai întâi, apoi începem să încărcăm batch-urile
+      loadSmilesDrawerIfNeeded(() => {
+        loadBatch(); // Începem încărcarea batch-urilor
+      });
+    }
+        
+    // Funcție pentru a afișa izomerii pe pagină sub formă de carduri
+    function displayIsomersUI(smilesArray, formula, totalIsomers) {
+      const resultsContainer = document.getElementById("results");
+      resultsContainer.innerHTML = ""; // GOLIM ce era înainte în containerul de rezultate
+
+      // Verificăm dacă avem ce afișa, altfel arătăm un mesaj prietenos
+      if (!smilesArray || smilesArray.length === 0) {
+        resultsContainer.innerHTML = `<p class="note">Nu s-au găsit izomeri pentru ${formula} sau lista este goală. Mai încearcă!</p>`;
+        allSmiles = []; // Curățăm și lista globală
+        hideLoading(); // Dacă nu e nimic de afișat, nu mai lăsăm loading-ul
+        return;
+      }
+
+      // Pe mobile, limitam numărul de izomeri afișați pentru a evita crash-urile
+      const isMobile = isMobileDevice();
+      const maxIsomersForMobile = 500; // Maxim 500 de izomeri pe mobile
+      
+      let displayArray = smilesArray;
+      let wasTruncated = false;
+      
+      if (isMobile && smilesArray.length > maxIsomersForMobile) {
+        displayArray = smilesArray.slice(0, maxIsomersForMobile);
+        wasTruncated = true;
+      }
+      
+      allSmiles = smilesArray; // Salvăm lista completă pentru PDF (nu cea trunchiată)
+
+      // Creăm o secțiune de sumar cu numărul de izomeri
+      const summaryDiv = document.createElement('div');
+      summaryDiv.className = 'isomer-summary';
+      summaryDiv.style.marginBottom = '15px';
+      summaryDiv.style.padding = '10px';
+      summaryDiv.style.backgroundColor = '#f5f5f5'; // Un fundal deschis pentru lizibilitate
+      summaryDiv.style.borderRadius = '5px';
+      summaryDiv.style.textAlign = 'center';
+      
+      const countHeading = document.createElement('h3');
+      countHeading.style.margin = '0 0 5px 0';
+      
+      // -1 înseamnă că numărarea totală a eșuat (timeout din backend)
+      if (totalIsomers && totalIsomers !== -1) { 
+        // Cazul 1: Știm numărul total de izomeri
+        countHeading.textContent = `Formula ${formula} are ${totalIsomers} izomeri în total`;
+        if (smilesArray.length < totalIsomers) {
+          // Dacă afișăm doar o parte din ei (ex. primii 1500)
+          const showingP = document.createElement('p');
+          showingP.style.margin = '0';
+          showingP.textContent = `Se afișează primii ${smilesArray.length} izomeri`;
+          summaryDiv.appendChild(countHeading);
+          summaryDiv.appendChild(showingP);
+        } else {
+          // Afișăm toți izomerii găsiți (egal cu totalul)
+          summaryDiv.appendChild(countHeading);
+        }
+      } else if (totalIsomers === -1) {
+        // Cazul 2: Numărarea totală a durat prea mult, backend-ul ne-a dat -1
+        countHeading.textContent = `S-au generat ${smilesArray.length} izomeri pentru formula ${formula}`;
+        const noteP = document.createElement('p');
+        noteP.style.margin = '0';
+        noteP.style.fontSize = '0.9em';
+        noteP.textContent = `Numărul total exact este necunoscut (numărarea în backend a depășit timpul alocat)`;
+        summaryDiv.appendChild(countHeading);
+        summaryDiv.appendChild(noteP);
+      } else {
+        // Cazul implicit/fallback: Afișăm câți izomeri am primit, fără alte detalii despre total
+        countHeading.textContent = `S-au generat ${smilesArray.length} izomeri pentru formula ${formula}`;
+        summaryDiv.appendChild(countHeading);
+      }
+      
+      // Dacă am trunchiat pentru mobile, adăugăm o notificare
+      if (wasTruncated) {
+        const mobileWarning = document.createElement('div');
+        mobileWarning.style.marginTop = '10px';
+        mobileWarning.style.padding = '8px';
+        mobileWarning.style.backgroundColor = '#fff3cd';
+        mobileWarning.style.border = '1px solid #ffeaa7';
+        mobileWarning.style.borderRadius = '4px';
+        mobileWarning.style.fontSize = '14px';
+        mobileWarning.innerHTML = `
+          <strong>📱 Afișare optimizată pentru mobil:</strong><br>
+          Se afișează doar primii ${displayArray.length} izomeri din ${smilesArray.length} pentru a evita blocarea dispozitivului.
+          <br><small>PDF-ul va conține toți ${smilesArray.length} izomeri.</small>
+        `;
+        summaryDiv.appendChild(mobileWarning);
+      }
+      
+      resultsContainer.appendChild(summaryDiv);
+
+      // Creăm un container pentru cardurile cu izomeri (le punem pe un grid)
+      const cardsContainer = document.createElement('div');
+      cardsContainer.className = 'isomer-cards-container';
+      resultsContainer.appendChild(cardsContainer);
+
+            // Pentru a evita crash-urile pe mobile cu multe izomeri, folosim progressive loading
+      if (displayArray.length > 100) {
+        // Pentru multe izomeri, le încărcăm în batches ca să nu blocăm browserul
+        loadIsomersProgressively(cardsContainer, displayArray);
+      } else {
+        // Pentru puțini izomeri, încărcăm tot dintr-o dată
+        for (let i = 0; i < displayArray.length; i++) {
+          const smiles = displayArray[i];
+          const card = document.createElement("div");
+          card.className = "isomer-card";
+          // Aici folosim atributul data-smiles pentru ca SmilesDrawer să știe ce să deseneze
+          card.innerHTML = `
+          <div class="isomer-2d">
+              <img data-smiles="${smiles}" id="isomer-img-${i}" alt="Izomer ${i + 1}" />
+          </div>
+          <div class="isomer-info">
+              <h3>Izomer ${i + 1}</h3>
+              <p>SMILES: ${smiles}</p>
+          </div>
+        `;
+          cardsContainer.appendChild(card);
+        }
+        
+        // Încărcăm biblioteca de desenare dacă e nevoie și apoi desenăm structurile.
+        // Funcția applySmilesDrawer se va ocupa și de ascunderea animației de încărcare.
+        loadSmilesDrawerIfNeeded(applySmilesDrawer);
+      } 
+    }
+    
+    // ================== Parse Molecule Formula (with validation) ==================
+    function parseMolecule(formula) {
+      let i = 0; 
+      function parseSegment() {
+        let atomsMap = {};
+        while (i < formula.length) {
+          let c = formula[i];
+          if (/[A-Z]/.test(c)) { // Element starts
+            let elem = c; i++;
+            if (i < formula.length && /[a-z]/.test(formula[i])) { elem += formula[i]; i++; }
+            if (!atomicMasses[elem]) { 
+              if (elem.length === 1) {
+                throw new Error(`Simbol '${elem}' necunoscut. Verificați capitalizarea. Folosiți doar litere mari pentru primul caracter (ex: H, O, N, C).`);
+              } else {
+                throw new Error(`Simbol '${elem}' necunoscut. Verificați capitalizarea. Folosiți literă mare pentru primul caracter și literă mică pentru al doilea (ex: Cl, Na, Fe).`);
+              }
+            }
+            let numStr = ""; while (i < formula.length && /\d/.test(formula[i])) { numStr += formula[i]; i++; }
+            let count = numStr ? parseInt(numStr, 10) : 1;
+            if (isNaN(count) || count <= 0) { throw new Error(`Număr invalid ('${numStr || 'implicit 1'}') după ${elem}.`); }
+            atomsMap[elem] = (atomsMap[elem] || 0) + count;
+          } else if (c === '(') { // Parenthesis block starts
+            i++; let subBlock = parseSegment();
+            if (i >= formula.length || formula[i] !== ')') { throw new Error("Paranteză '(' fără pereche ')'."); }
+            i++; 
+            let numStr = ""; while (i < formula.length && /\d/.test(formula[i])) { numStr += formula[i]; i++; }
+            let factor = numStr ? parseInt(numStr, 10) : 1;
+            if (isNaN(factor) || factor <= 0) { throw new Error(`Număr invalid ('${numStr || 'implicit 1'}') după ')'.`); }
+            for (let e in subBlock) { atomsMap[e] = (atomsMap[e] || 0) + subBlock[e] * factor; }
+          } else if (c === ')') { // End current segment (for recursive calls)
+             break; 
+          } else { // Invalid character (ignore whitespace)
+             if (!/\s/.test(c)) { 
+               if (/[a-z]/.test(c)) {
+                 throw new Error(`Caracter invalid '${c}' în formulă. Folosiți doar litere mari pentru primul caracter al elementului (ex: H, Cl, Na).`);
+               } else {
+                 throw new Error(`Caracter invalid '${c}' în formulă. Folosiți doar litere mari pentru primul caracter al elementului și litere mici pentru al doilea caracter dacă există (ex: H, Cl, Na).`);
+               }
+             }
+             i++; 
+           }
+        }
+        return atomsMap;
+      }
+      // --- Start parsing and perform final checks ---
+      let result = parseSegment();
+      let formulaTrimmedEnd = formula.trimEnd(); 
+      if (i < formulaTrimmedEnd.length) { throw new Error(`Procesare oprită prematur la '${formula.substring(i)}'. Posibil ')' în plus.`); }
+      if (Object.keys(result).length === 0 && formula.trim().length > 0) { throw new Error("Nu s-au identificat elemente valide."); }
+      return result;
+    }
+
+    // ================== Format Formula from Atoms Map ==================
+    function formatFormulaFromAtoms(atomsMap) {
+      let formula = '';
+      for (let elem in atomsMap) {
+        formula += elem;
+        if (atomsMap[elem] > 1) {
+          formula += atomsMap[elem];
+        }
+      }
+      return formula;
+    }
+
+    // Funcția principală care se ocupă de generarea izomerilor când se apasă butonul "Generează"
+    async function handleGenerate(event) {
+      event.preventDefault(); // Oprim comportamentul implicit al formularului (care ar reîncărca pagina)
+      
+      // Check if user is authenticated
+      if (!currentUser) {
+        showAuthModal('login');
+        return;
+      }
+      
+      let formula = document.getElementById("formulaInput").value.trim();
+      // Dacă nu e introdusă nicio formulă, nu facem nimic (butonul de submit e oricum dezactivat de 'required')
+      if (!formula) return;
+
+      // Validate and parse the formula
+      try {
+        const atomsMap = parseMolecule(formula);
+        const correctedFormula = formatFormulaFromAtoms(atomsMap);
+        
+        // If the formula was corrected, update the input and show a message
+        if (correctedFormula !== formula) {
+          document.getElementById("formulaInput").value = correctedFormula;
+          formula = correctedFormula;
+          
+          const resultsContainer = document.getElementById("results");
+          resultsContainer.innerHTML = '';
+          
+          const correctionMessage = document.createElement('p');
+          correctionMessage.className = 'note';
+          correctionMessage.style.color = '#2196F3';
+          correctionMessage.innerHTML = `💡 Formula a fost corectată automat: <strong>${correctedFormula}</strong>`;
+          resultsContainer.appendChild(correctionMessage);
+        }
+      } catch (error) {
+        const resultsContainer = document.getElementById("results");
+        resultsContainer.innerHTML = '';
+        
+        const errorMessage = document.createElement('p');
+        errorMessage.className = 'note';
+        errorMessage.style.color = '#f44336';
+        errorMessage.innerHTML = `❌ Eroare în formula: <strong>${error.message}</strong>`;
+        resultsContainer.appendChild(errorMessage);
+        return;
+      } 
+
+      const resultsContainer = document.getElementById("results");
+      resultsContainer.innerHTML = ''; // Curățăm containerul de rezultate de conținutul anterior (dacă există)
+      showLoading(`Se procesează formula ${formula}... Așteaptă puțin!`);
+      allSmiles = []; // Resetăm lista globală de SMILES pentru noua generare
+
+      try {
+        // Facem cererea către API-ul nostru (backend)
+        const response = await fetch(`/api/isomers?formula=${encodeURIComponent(formula)}`);
+        const responseText = await response.text(); // Luăm textul brut, pt debug în caz că nu e JSON
+        let data;
+        try {
+          // Încercăm să parsam răspunsul ca JSON
+          data = JSON.parse(responseText);
+        } catch (e) {
+          console.error("Problemă la parsarea JSON-ului de la server:", responseText);
+          throw new Error(`Serverul a returnat un răspuns ciudat (nu e JSON valid). Status: ${response.status}`);
+        }
+        
+        console.log("Date brute primite de la API (apel inițial):", data);
+
+        if (data.error) {
+          // Dacă serverul raportează o eroare specifică (ex: formulă invalidă)
+          displaySmartError(data, resultsContainer);
+          hideLoading();
+        } else if (data.warning === true && data.message) {
+          // Nouă funcționalitate: avertisment pentru formule complexe
+          displayComplexityWarning(data, formula, resultsContainer);
+          hideLoading();
+        } else if (data.big === true && data.message) {
+          // Dacă sunt prea mulți izomeri, serverul ne-a zis "big: true" și ne-a dat un mesaj.
+          // Aici cerem confirmare utilizatorului.
+          const messageP = document.createElement('p');
+          messageP.className = 'note';
+          messageP.textContent = data.message; 
+          resultsContainer.appendChild(messageP);
+
+          if (data.count !== undefined) { // Dacă avem și o estimare a numărului
+            const countP = document.createElement('p');
+            countP.className = 'note';
+            countP.textContent = `Număr total estimat de izomeri: ${data.count}. Ești sigur?`;
+            resultsContainer.appendChild(countP);
+          }
+
+          const buttonDiv = document.createElement('div');
+          buttonDiv.className = 'confirmation-buttons';
+          const yesButton = document.createElement('button');
+          // Detectăm mobile pentru a oferi un mesaj diferit
+          const isMobileForButton = isMobileDevice();
+          const buttonText = isMobileForButton 
+            ? "Da, afișează (optimizat pentru mobil)" 
+            : "Da, afișează primii 1500 (sau câți poate serverul)";
+          yesButton.textContent = buttonText;
+          yesButton.className = 'btn btn-confirm-yes';
+          // Dacă zice da, facem un nou request cu "confirm=1"
+          yesButton.onclick = () => {
+            // Pe mobile, afișăm un avertisment suplimentar pentru multe izomeri
+            if (isMobileForButton && data.count && data.count > 500) {
+              const confirmMobile = confirm(
+                `Atenție! Afișarea a ${data.count} izomeri pe dispozitivul mobil poate să dureze mult sau să blocheze browserul.\n\n` +
+                `Se vor afișa doar primii 500 izomeri pentru a proteja dispozitivul.\n\n` +
+                `Vrei să continui?`
+              );
+              if (confirmMobile) {
+                fetchAndDisplayConfirmedIsomers(formula);
+              }
+            } else {
+              fetchAndDisplayConfirmedIsomers(formula);
+            }
+          };
+          buttonDiv.appendChild(yesButton);
+          const noButton = document.createElement('button');
+          noButton.textContent = "Nu, mulțumesc, e prea mult";
+          noButton.className = 'btn btn-confirm-no';
+          noButton.onclick = () => { // Dacă zice nu, afișăm un mesaj și gata.
+            resultsContainer.innerHTML = '<p class="note">În regulă, izomerii nu vor fi afișați. Poți încerca o formulă mai mică.</p>';
+            hideLoading();
+          };
+          buttonDiv.appendChild(noButton);
+          resultsContainer.appendChild(buttonDiv);
+          hideLoading(); // Ascundem loading-ul, așteptăm decizia utilizatorului
+        } else if (data.timedOutEnumerationPartial === true) {
+          // Dacă generarea completă a durat prea mult, dar serverul a reușit să ne dea câțiva izomeri
+          const messageP = document.createElement('p');
+          messageP.className = 'note';
+          messageP.textContent = data.message; // Mesajul de la server ar trebui să explice situația
+          resultsContainer.appendChild(messageP);
+           if (data.actualTotalIsomers !== undefined) { // Poate știm totalul din numărarea inițială, chiar dacă listarea a eșuat
+            const actualTotalP = document.createElement('p');
+            actualTotalP.className = 'note';
+            actualTotalP.textContent = `Număr total de izomeri pentru formulă (calculat inițial de server): ${data.actualTotalIsomers}`;
+            resultsContainer.appendChild(actualTotalP);
+          }
+
+          // Dacă avem și o listă parțială de SMILES, întrebăm dacă vrea să o vadă
+          if (data.smilesList && data.smilesList.length > 0 && data.partialSmilesCount > 0) {
+            const buttonDiv = document.createElement('div');
+            buttonDiv.className = 'confirmation-buttons';
+            const yesButton = document.createElement('button');
+            yesButton.textContent = `Da, afișează cei ${data.partialSmilesCount} izomeri găsiți înainte de timeout`;
+            yesButton.className = 'btn btn-confirm-yes';
+            yesButton.onclick = () => {
+              showLoading(`Se afișează cei ${data.partialSmilesCount} izomeri parțiali...`);
+              // Afișăm ce avem, cu numărul total (care poate fi -1 dacă și numărarea a eșuat)
+              displayIsomersUI(data.smilesList, formula, data.actualTotalIsomers); 
+            };
+            buttonDiv.appendChild(yesButton);
+            const noButton = document.createElement('button'); // Butonul de "nu"
+            noButton.textContent = "Nu, mulțumesc";
+            noButton.className = 'btn btn-confirm-no';
+            noButton.onclick = () => {
+              resultsContainer.innerHTML = '<p class="note">Am înțeles. Izomerii parțiali nu vor fi afișați.</p>';
+              hideLoading();
+            };
+            buttonDiv.appendChild(noButton);
+            resultsContainer.appendChild(buttonDiv);
+        } else {
+             // Dacă nu avem nici măcar o listă parțială (poate a crapat de tot înainte să dea ceva)
+             resultsContainer.appendChild(document.createElement('hr')); // O linie de separare
+             const noPartialsP = document.createElement('p');
+             noPartialsP.className = 'note';
+             noPartialsP.textContent = "Din păcate, nu s-au putut extrage izomeri înainte de expirarea timpului sau lista parțială e goală.";
+             resultsContainer.appendChild(noPartialsP);
+          }
+          hideLoading(); // Oricum ascundem loading-ul general, utilizatorul decide ce face cu parțialele
+        } else if (data.smilesList && data.smilesList.length > 0) {
+          // Cazul de succes standard: avem o listă de SMILES și o afișăm
+          if (data.message) { // Dacă serverul a trimis și un mesaj (ex: info despre cum a filtrat)
+              const serverMessageP = document.createElement('p');
+              serverMessageP.className = 'note';
+              serverMessageP.textContent = data.message;
+              resultsContainer.appendChild(serverMessageP); 
+          }
+          
+          // Save to history if user is logged in (history is already saved by server automatically)
+          // Removed duplicate save here since server saves automatically
+          
+          displayIsomersUI(data.smilesList, formula, data.actualTotalIsomers); // Aici se va ascunde loading-ul după desenare
+        } else { 
+          // Cazul în care structura răspunsului e neașteptată, dar nu e o eroare clară de la server (ex: lista e goală fără motiv)
+          resultsContainer.innerHTML = `<p class="note">Răspuns neașteptat de la server pentru ${formula}. Nu sunt erori, dar nici izomeri.</p>`;
+          hideLoading();
+        }
+      } catch (error) { 
+        // Prindem orice altă eroare (de rețea, de parsare JSON eșuată mai sus, etc.)
+        console.error("Hopa! A apărut o eroare în funcția handleGenerate:", error); 
+        resultsContainer.innerHTML = `<p class="note" style="color: red;">Eroare generală: ${error.message}. Verifică consola pentru detalii.</p>`;
+        hideLoading(); 
+      }
+    }
+
+    // Funcție pentru a prelua și afișa izomerii DUPĂ ce utilizatorul a confirmat (pentru formule mari/complexe)
+    // E similară cu handleGenerate, dar trimite `confirm=1` la server
+    async function fetchAndDisplayConfirmedIsomers(formula) {
+      const resultsContainer = document.getElementById("results");
+      resultsContainer.innerHTML = ''; // Curățăm containerul de mesajele/butoanele de confirmare anterioare
+      showLoading('Se preiau și se afișează izomerii confirmați... Un pic de răbdare!');
+      allSmiles = []; // Resetăm lista globală de SMILES și pentru acest caz
+
+      try {
+        // Cererea e la fel, dar cu `&confirm=1`
+        const response = await fetch(`/api/isomers?formula=${encodeURIComponent(formula)}&confirm=1`);
+        const responseText = await response.text();
+        let data;
+        try {
+          data = JSON.parse(responseText);
+        } catch (e) {
+          console.error("Problemă la parsarea JSON-ului de la server (după confirmare):", responseText);
+          throw new Error(`Serverul a returnat un răspuns ciudat după confirmare (nu e JSON). Status: ${response.status}`);
+        }
+        
+        console.log("Date brute primite de la API (apel confirmat):", data);
+
+        // Logica de aici e foarte similară cu cea din handleGenerate
+        if (data.error) {
+          resultsContainer.innerHTML = `<p class="note" style="color: red;">Eroare de la server (după confirmare): ${data.error}</p>`;
+          hideLoading();
+        } else if (data.timedOutEnumerationPartial === true) {
+          // Și după confirmare, e posibil ca listarea să dureze prea mult
+          const messageP = document.createElement('p');
+          messageP.className = 'note';
+          messageP.textContent = data.message; 
+          resultsContainer.appendChild(messageP);
+           if (data.actualTotalIsomers !== undefined) {
+            const actualTotalP = document.createElement('p');
+            actualTotalP.className = 'note';
+            actualTotalP.textContent = `Număr total de izomeri pentru formulă (numărat inițial): ${data.actualTotalIsomers}`;
+            resultsContainer.appendChild(actualTotalP);
+          }
+
+          if (data.smilesList && data.smilesList.length > 0 && data.partialSmilesCount > 0) {
+            // Dacă avem totuși o listă parțială
+            const buttonDiv = document.createElement('div');
+            buttonDiv.className = 'confirmation-buttons';
+            const yesButton = document.createElement('button');
+            yesButton.textContent = `Da, afișează cei ${data.partialSmilesCount} izomeri găsiți (parțial, după confirmare)`;
+            yesButton.className = 'btn btn-confirm-yes';
+            yesButton.onclick = () => {
+              showLoading(`Se afișează ${data.partialSmilesCount} izomeri parțiali...`);
+              displayIsomersUI(data.smilesList, formula, data.actualTotalIsomers);
+            };
+            buttonDiv.appendChild(yesButton);
+            const noButton = document.createElement('button');
+            noButton.textContent = "Nu, mulțumesc";
+            noButton.className = 'btn btn-confirm-no';
+            noButton.onclick = () => {
+              resultsContainer.innerHTML = '<p class="note">Am înțeles. Izomerii parțiali (post-confirmare) nu vor fi afișați.</p>';
+              hideLoading();
+            };
+            buttonDiv.appendChild(noButton);
+            resultsContainer.appendChild(buttonDiv);
+          } else {
+             resultsContainer.appendChild(document.createElement('hr'));
+             const noPartialsP = document.createElement('p');
+             noPartialsP.className = 'note';
+             noPartialsP.textContent = "Din păcate, nu s-au putut extrage izomeri nici după confirmare, sau lista parțială e goală.";
+             resultsContainer.appendChild(noPartialsP);
+          }
+          hideLoading();
+        } else if (data.smilesList && data.smilesList.length > 0) {
+          // Succes și după confirmare!
+          if (data.message) {
+              const serverMessageP = document.createElement('p');
+              serverMessageP.className = 'note';
+              serverMessageP.textContent = data.message; // Poate serverul are un mesaj și aici
+              resultsContainer.appendChild(serverMessageP); 
+          }
+          
+          // Save to history if user is logged in
+          if (currentUser) {
+            saveIsomerToHistory(formula, data.smilesList.length);
+          }
+          
+          displayIsomersUI(data.smilesList, formula, data.actualTotalIsomers);
+        } else {
+          // Nicio eroare, dar nici listă de SMILES... ciudat.
+          resultsContainer.innerHTML = `<p class="note">Serverul nu a returnat o listă de SMILES pentru ${formula} după confirmare, deși nu a raportat erori.</p>`;
+          hideLoading();
+        }
+      } catch (error) {
+        console.error("Eroare la preluarea/afișarea izomerilor confirmați:", error);
+        resultsContainer.innerHTML = `<p class="note" style="color: red;">Eroare la faza de confirmare: ${error.message}. Detalii în consolă.</p>`;
+        hideLoading();
+      }
+    }
+
+    // Funcție pentru a încărca bibliotecile necesare pentru PDF (html2canvas și jsPDF)
+    // Se asigură că se încarcă în ordine, dacă ar fi fost dependințe (deși aici nu prea sunt)
+    function loadPdfLibraries(callback) {
+      // Mai întâi html2canvas, dacă nu e încărcat
+      if (!loadedLibraries.html2canvas) {
+        console.log("Încărcăm html2canvas pentru PDF...");
+        showLoading("Se pregătesc uneltele pentru PDF (html2canvas)...");
+        loadScript("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js", () => {
+          console.log("html2canvas încărcat!");
+          loadedLibraries.html2canvas = true;
+          // Apoi, după ce s-a încărcat html2canvas, încărcăm jsPDF, dacă nu e deja
+          if (!loadedLibraries.jspdf) {
+            console.log("Încărcăm jsPDF pentru PDF...");
+            showLoading("Se pregătesc uneltele pentru PDF (jsPDF)...");
+            loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js", () => {
+              console.log("jsPDF încărcat!");
+              loadedLibraries.jspdf = true;
+              if (callback) callback(); // Ambele încărcate, continuăm
+            });
+          } else if (callback) callback(); // html2canvas nou, jspdf era deja, continuăm
+        });
+      } else if (!loadedLibraries.jspdf) { 
+        // html2canvas era deja încărcat, încercăm să încărcăm doar jsPDF
+        console.log("html2canvas era deja aici. Încărcăm jsPDF pentru PDF...");
+        showLoading("Se pregătesc uneltele pentru PDF (jsPDF)...");
+        loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js", () => {
+          console.log("jsPDF încărcat!");
+          loadedLibraries.jspdf = true;
+          if (callback) callback(); // Continuăm
+        });
+      } else if (callback) {
+        // Dacă ambele erau deja încărcate, executăm direct callback-ul
+        console.log("Toate bibliotecile PDF erau deja încărcate. Super!");
+        callback();
+      }
+    }
+
+    // Funcție pentru a descărca izomerii ca fișier PDF
+    async function downloadPdf() {
+      // Verificăm dacă avem ce pune în PDF
+      if(allSmiles.length === 0) {
+        alert("Hopa! Nu există izomeri încărcați în listă. Generează mai întâi o listă, apoi descarcă PDF-ul.");
+        return;
+      }
+      
+      const formula = document.getElementById("formulaInput").value.trim() || "formulă_necunoscută";
+      showLoading("Se pregătește generarea PDF-ului... Asta poate dura un pic.");
+      
+      // Mai întâi ne asigurăm că SmilesDrawer e încărcat, că avem nevoie de el să deseneze structurile pt. PDF.
+      loadSmilesDrawerIfNeeded(async () => { // Am schimbat aici ca loadPdfLibraries să fie apelat în callback-ul lui loadSmilesDrawerIfNeeded
+        // Apoi încărcăm bibliotecile pentru PDF (html2canvas, jsPDF).
+        loadPdfLibraries(async () => {
+          showLoading(`Se generează PDF-ul pentru ${formula}...`); // Actualizăm mesajul
+          const { jsPDF } = window.jspdf; // Extragem constructorul jsPDF din obiectul global
+          const pdf = new jsPDF('p','mm','a4'); // Cream un PDF nou, portret, A4, unități în mm
+
+          // Salvăm conținutul actual al secțiunii de rezultate, ca să-l putem reface la final (dacă e cazul)
+          // Deși aici nu modificăm direct #results, e o măsură de siguranță "studențească"
+          const resultsSection = document.getElementById("results");
+          const originalScreenContentHTML = resultsSection.innerHTML; 
+
+          // Vom construi paginile PDF-ului într-un container temporar, ascuns (off-screen)
+          // Asta ca să nu deranjăm ce vede utilizatorul pe pagină
+          let tempRenderContainer = document.getElementById('pdf-temp-render-area');
+          if (!tempRenderContainer) {
+              tempRenderContainer = document.createElement('div');
+              tempRenderContainer.id = 'pdf-temp-render-area';
+              tempRenderContainer.style.position = 'absolute';
+              tempRenderContainer.style.left = '-9999px'; // Îl trimitem departe, să nu se vadă
+              tempRenderContainer.style.width = '210mm'; // Lățime A4, pentru consistență layout
+              tempRenderContainer.style.backgroundColor = 'white'; // Important pt html2canvas, să aibă un fundal
+              document.body.appendChild(tempRenderContainer);
+          }
+            
+          const isomersPerPage = 6; // Câți izomeri pe pagină (ex. 2 coloane x 3 rânduri)
+          const pagesNeeded = Math.ceil(allSmiles.length / isomersPerPage); // Câte pagini ne trebuie
+          
+          try {
+            // Trecem prin fiecare pagină necesară pentru PDF
+            for (let pageIndex = 0; pageIndex < pagesNeeded; pageIndex++) {
+              if (pageIndex > 0) pdf.addPage(); // Adăugăm o pagină nouă (dacă nu e prima)
+              showLoading(`Se generează PDF-ul: pagina ${pageIndex + 1} din ${pagesNeeded}... Încă puțin!`);
+
+              // Div-ul care va reprezenta o pagină A4 în containerul temporar
+              const pageDiv = document.createElement('div');
+              pageDiv.className = 'pdf-page-render-area'; // Poate vrem să-l stilizăm specific în CSS pt debug
+              pageDiv.style.padding = '10mm'; 
+              pageDiv.style.boxSizing = 'border-box'; // Padding-ul să fie inclus în dimensiuni
+              pageDiv.style.width = '210mm'; 
+              pageDiv.style.height = '297mm'; // Dimensiuni A4, ajută html2canvas
+              pageDiv.style.backgroundColor = 'white'; // Fundal alb explicit
+                           
+              // Titlul paginii
+              const pageTitle = document.createElement('p');
+              pageTitle.style.textAlign = 'center';
+              pageTitle.style.fontSize = '12pt';
+              pageTitle.style.fontWeight = 'bold';
+              pageTitle.style.marginBottom = '5mm';
+              pageTitle.textContent = `Izomeri pentru ${formula} - Pagina ${pageIndex + 1} / ${pagesNeeded}`;
+              if (pageIndex === 0) { // Pe prima pagină, putem pune și numărul total de izomeri din PDF
+                  pageTitle.textContent = `Izomeri pentru ${formula} (Total în acest PDF: ${allSmiles.length}) - Pagina ${pageIndex + 1} / ${pagesNeeded}`;
+              }
+              pageDiv.appendChild(pageTitle);
+
+              // Container pentru cardurile de pe pagina curentă (grid 2x3)
+              const cardsOnPageContainer = document.createElement('div');
+              cardsOnPageContainer.style.display = "grid";
+              cardsOnPageContainer.style.gridTemplateColumns = "1fr 1fr"; // Două coloane
+              cardsOnPageContainer.style.gap = "5mm"; // Spațiu între carduri
+              cardsOnPageContainer.style.width = "190mm"; // (210mm lățime A4 - 2*10mm margine)
+              
+              const startIndex = pageIndex * isomersPerPage;
+              const endIndex = Math.min(startIndex + isomersPerPage, allSmiles.length);
+              
+              // Pentru fiecare izomer de pe pagina curentă, creăm un card
+              for (let i = startIndex; i < endIndex; i++) {
+                const cardDiv = document.createElement('div');
+                cardDiv.style.border = "1px solid #eee"; // O bordură fină
+                cardDiv.style.padding = "2mm";
+                cardDiv.style.backgroundColor = "white";
+                cardDiv.style.boxSizing = "border-box";
+                cardDiv.style.display = "flex";
+                cardDiv.style.flexDirection = "column"; // Imaginea sus, textul jos
+                cardDiv.style.alignItems = "center"; // Centram pe orizontală
+                cardDiv.style.justifyContent = "space-between"; // Puțin spațiu
+                // Calcule aproximative pentru dimensiunea cardului:
+                // (297mm înălțime A4 - 20mm margini pagină - 5mm titlu - 2*5mm gap între rânduri) / 3 rânduri ~= 80-85mm per card
+
+                // Container pentru imaginea 2D a izomerului
+                const imgContainer = document.createElement('div');
+                imgContainer.className = "isomer-2d-pdf"; 
+                imgContainer.style.width = "85mm"; // Aproape jumătate din lățimea paginii de conținut, minus gap-ul
+                imgContainer.style.height = "60mm"; // O înălțime fixă pentru imagini, ca să arate uniform
+                imgContainer.style.display = "flex";
+                imgContainer.style.alignItems = "center"; // Centrare verticală a imaginii
+                imgContainer.style.justifyContent = "center"; // Centrare orizontală
+                imgContainer.style.marginBottom = "2mm";
+
+                const img = document.createElement('img');
+                img.setAttribute('data-smiles', allSmiles[i]); // Atributul cheie pentru SmilesDrawer
+                // Lăsăm SmilesDrawer să determine dimensiunea optimă, dar o constrângem cu containerul.
+                img.style.maxWidth = "100%"; 
+                img.style.maxHeight = "100%";
+                
+                imgContainer.appendChild(img);
+                cardDiv.appendChild(imgContainer);
+                
+                // Paragraful cu stringul SMILES
+                const smilesP = document.createElement('p');
+                smilesP.style.fontSize = "7pt"; // Font mic pentru SMILES, poate fi lung
+                smilesP.style.margin = "0";
+                smilesP.style.wordBreak = "break-all"; // Forțăm "ruperea" cuvintelor lungi (SMILES)
+                smilesP.style.textAlign = "center";
+                smilesP.textContent = `SMILES: ${allSmiles[i]}`;
+                cardDiv.appendChild(smilesP);
+                cardsOnPageContainer.appendChild(cardDiv);
+              }
+              pageDiv.appendChild(cardsOnPageContainer); // Adăugăm grid-ul de carduri la pagina temporară
+              tempRenderContainer.innerHTML = ''; // Curățăm conținutul anterior al containerului temporar (de la pagina precedentă)
+              tempRenderContainer.appendChild(pageDiv); // Adăugăm pagina curentă în containerul temporar
+              
+              // Acum, desenăm structurile SMILES pe imaginile din containerul temporar pentru PAGINA CURENTĂ
+              // Trebuie să facem asta DUPĂ ce elementele sunt în DOM (chiar și ascuns)
+              if (typeof SmiDrawer !== 'undefined') {
+                try {
+                  // SmilesDrawer caută automat imaginile cu data-smiles și le desenează
+                  SmiDrawer.apply();
+                  console.log("SmilesDrawer aplicat cu succes pentru pagina PDF", pageIndex + 1);
+                } catch (e) {
+                  console.error("Eroare la aplicarea SmilesDrawer pentru PDF:", e);
+                }
+              }
+              
+              // Așteptăm un pic ca SmilesDrawer să termine de desenat imaginile.
+              // SmilesDrawer poate fi asincron sau durează puțin, mai ales dacă sunt multe structuri.
+              // E o metodă "empirică", poate trebuie ajustat timpul.
+              await new Promise(resolve => setTimeout(resolve, 1000 + (isomersPerPage * 75) )); 
+
+              // Acum convertim div-ul paginii (pageDiv) într-un canvas, apoi într-o imagine JPEG
+              const canvas = await html2canvas(pageDiv, { 
+                scale: 2, // Mărim rezoluția canvas-ului pentru o imagine mai clară în PDF
+                useCORS: true, // Necesar dacă am avea imagini externe (nu e cazul aici)
+                backgroundColor: '#ffffff', // Fundal alb explicit pentru canvas
+                logging: false, // Dezactivăm log-urile de la html2canvas în consolă
+                removeContainer: false // Să nu șteargă containerul după (deși îl ștergem noi manual la final)
+              });
+              
+              const imgData = canvas.toDataURL('image/jpeg', 0.9); // Convertim în JPEG de calitate 0.9 (din 1)
+              
+              // Calculăm dimensiunile și poziția imaginii în pagina PDF pentru a o centra și a încăpea
+              const pdfPageWidth = pdf.internal.pageSize.getWidth();
+              const pdfPageHeight = pdf.internal.pageSize.getHeight();
+              const margin = 10; // Marginea pe care o vrem în PDF (mm)
+              const availableWidth = pdfPageWidth - 2 * margin;
+              const availableHeight = pdfPageHeight - 2 * margin;
+
+              let imgEffectiveWidth = availableWidth; // Încercăm să folosim toată lățimea disponibilă
+              let imgEffectiveHeight = (canvas.height * imgEffectiveWidth) / canvas.width; // Calculăm înălțimea proporțional
+
+              // Dacă imaginea e prea înaltă, o scalăm după înălțime
+              if (imgEffectiveHeight > availableHeight) {
+                imgEffectiveHeight = availableHeight;
+                imgEffectiveWidth = (canvas.width * imgEffectiveHeight) / canvas.height; // Recalculăm lățimea
+              }
+              
+              const xOffset = (pdfPageWidth - imgEffectiveWidth) / 2; // Centrare orizontală
+              const yOffset = margin; // O punem la marginea de sus (sau (pdfPageHeight - imgEffectiveHeight) / 2 pentru centrare verticală)
+
+              pdf.addImage(imgData, 'JPEG', xOffset, yOffset, imgEffectiveWidth, imgEffectiveHeight);
+            } // Sfârșitul loop-ului pentru pagini
+            
+            // Salvăm PDF-ul
+            pdf.save(`izomeri_${formula.replace(/[^a-z0-9]/gi, '_')}.pdf`); // Curățăm numele fișierului
+            
+          } catch (pdfError) {
+            console.error("Ghinion! Eroare la crearea PDF-ului:", pdfError);
+            alert("A apărut o eroare la generarea PDF-ului: " + pdfError.message + ". Încearcă din nou sau verifică consola.");
+          } finally {
+            // Indiferent dacă a mers sau nu, facem curățenie
+            // Refacem conținutul original al secțiunii de rezultate (pentru orice eventualitate)
+            resultsSection.innerHTML = originalScreenContentHTML;
+            // Ștergem containerul temporar din DOM, nu mai avem nevoie de el
+            if (tempRenderContainer && document.body.contains(tempRenderContainer)) {
+                 document.body.removeChild(tempRenderContainer);
+            }
+            hideLoading(); // Ascundem animația de încărcare
+          }
+        }); // Sfârșitul callback-ului pentru loadPdfLibraries
+      }); // Sfârșitul callback-ului pentru loadSmilesDrawerIfNeeded
+    }
+
+
+    // Check for regenerate formula from history page
+    function checkForRegenerateFormula() {
+      const regenerateFormula = localStorage.getItem('regenerateFormula');
+      if (regenerateFormula) {
+        // Clear the stored formula
+        localStorage.removeItem('regenerateFormula');
+        
+        // Fill the formula input
+        const formulaInput = document.getElementById('formulaInput');
+        if (formulaInput) {
+          formulaInput.value = regenerateFormula;
+          console.log('Formula filled from history:', regenerateFormula);
+          
+          // Focus on the input to show it's been filled
+          formulaInput.focus();
+          
+          // Optional: Add a visual indicator that the formula was loaded
+          const generateBtn = document.getElementById('generateBtn');
+          if (generateBtn) {
+            generateBtn.style.animation = 'pulse 2s ease-in-out';
+            setTimeout(() => {
+              generateBtn.style.animation = '';
+            }, 2000);
+          }
+        }
+      }
+    }
+
+    // ================== Badge Notification System ==================
+    
+    // Start polling for notifications
+    function startNotificationPolling() {
+        if (notificationCheckInterval) {
+          clearInterval(notificationCheckInterval);
+        }
+        
+        // Check for notifications every 5 seconds
+        notificationCheckInterval = setInterval(checkForNotifications, 5000);
+        
+        // Also check immediately
+        checkForNotifications();
+      }
+      
+      // Stop polling for notifications
+      function stopNotificationPolling() {
+        if (notificationCheckInterval) {
+          clearInterval(notificationCheckInterval);
+          notificationCheckInterval = null;
+        }
+      }
+      
+      // Check for new notifications
+      async function checkForNotifications() {
+        if (!currentUser) return;
+        
+        try {
+          const response = await fetch('/api/notifications');
+          if (response.ok) {
+            const data = await response.json();
+            if (data.notifications && data.notifications.length > 0) {
+              data.notifications.forEach(notification => {
+                if (notification.type === 'badge_earned') {
+                  showBadgeNotification(notification.badge);
+                }
+              });
+              
+              // Clear notifications after showing them
+              await fetch('/api/notifications/clear', { method: 'POST' });
+            }
+          }
+        } catch (error) {
+          console.error('Error checking notifications:', error);
+        }
+      }
+      
+      // Show badge notification
+      function showBadgeNotification(badge) {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = 'badge-notification';
+        notification.innerHTML = `
+          <div class="badge-notification-content">
+            <div class="badge-notification-icon">${badge.icon}</div>
+            <div class="badge-notification-text">
+              <div class="badge-notification-title">🏆 Insignă Nouă Câștigată!</div>
+              <div class="badge-notification-name">${badge.name}</div>
+              <div class="badge-notification-description">${badge.description}</div>
+              <div class="badge-notification-points">+${badge.points} puncte</div>
+            </div>
+            <div class="badge-notification-rarity rarity-${badge.rarity}">${badge.rarity}</div>
+          </div>
+        `;
+        
+        // Add to page
+        document.body.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+          notification.classList.add('show');
+        }, 100);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+          notification.classList.remove('show');
+          setTimeout(() => {
+            if (notification.parentNode) {
+              notification.parentNode.removeChild(notification);
+            }
+          }, 500);
+        }, 5000);
+        
+        // Click to dismiss
+        notification.addEventListener('click', () => {
+          notification.classList.remove('show');
+          setTimeout(() => {
+            if (notification.parentNode) {
+              notification.parentNode.removeChild(notification);
+            }
+          }, 500);
+        });
+      }
+
+    // Save isomer generation to history
+    async function saveIsomerToHistory(formula, isomerCount) {
+      try {
+        const response = await fetch('/save-isomer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ formula, isomerCount }),
+        });
+
+        if (response.ok) {
+          console.log('Isomer saved to history');
+        } else {
+          console.error('Failed to save isomer to history');
+        }
+      } catch (error) {
+        console.error('Error saving isomer to history:', error);
+      }
+    }
+
+    // Afișează erori inteligente cu sugestii educaționale
+    function displaySmartError(data, container) {
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'smart-error';
+      
+      const errorTitle = document.createElement('h3');
+      errorTitle.textContent = '🧪 Informație educațională';
+      errorTitle.style.color = '#e74c3c';
+      errorDiv.appendChild(errorTitle);
+      
+      const errorMessage = document.createElement('p');
+      errorMessage.textContent = data.error;
+      errorMessage.style.marginBottom = '15px';
+      errorDiv.appendChild(errorMessage);
+      
+      // Afișează sugestii dacă le avem
+      if (data.suggestions && data.suggestions.length > 0) {
+        const suggestionsTitle = document.createElement('h4');
+        suggestionsTitle.textContent = '💡 Încearcă în schimb:';
+        suggestionsTitle.style.color = '#3498db';
+        errorDiv.appendChild(suggestionsTitle);
+        
+        const suggestionsList = document.createElement('div');
+        suggestionsList.className = 'suggestions-container';
+        
+        data.suggestions.forEach(suggestion => {
+          const suggestionItem = document.createElement('div');
+          suggestionItem.className = 'suggestion-item';
+          
+          const formulaBtn = document.createElement('button');
+          formulaBtn.textContent = suggestion.formula;
+          formulaBtn.className = 'suggestion-formula-btn';
+          formulaBtn.onclick = (e) => {
+            e.preventDefault();
+            console.log('Clicked on formula:', suggestion.formula);
+            const formulaInput = document.getElementById('formulaInput');
+            if (formulaInput) {
+              formulaInput.value = suggestion.formula;
+              console.log('Set formula input to:', suggestion.formula);
+            } else {
+              console.error('Could not find formula input element');
+            }
+            container.innerHTML = '';
+            // Focus on the generate button to encourage user to click it
+            const generateBtn = document.querySelector('.btn-generate');
+            if (generateBtn) {
+              generateBtn.focus();
+              console.log('Focused on generate button');
+            } else {
+              console.log('Could not find generate button');
+            }
+          };
+          
+          const description = document.createElement('span');
+          description.textContent = ` - ${suggestion.descriere}`;
+          description.className = 'suggestion-description';
+          
+          suggestionItem.appendChild(formulaBtn);
+          suggestionItem.appendChild(description);
+          suggestionsList.appendChild(suggestionItem);
+        });
+        
+        errorDiv.appendChild(suggestionsList);
+      }
+      
+      // Afișează informație despre numărul estimat de izomeri pentru formule prea complexe
+      if (data.estimatedIsomers) {
+        const estimateP = document.createElement('p');
+        estimateP.className = 'complexity-estimate';
+        estimateP.innerHTML = `<strong>Număr estimat de izomeri:</strong> ${data.estimatedIsomers.toLocaleString()}`;
+        estimateP.style.color = '#e67e22';
+        estimateP.style.fontWeight = 'bold';
+        estimateP.style.marginTop = '10px';
+        errorDiv.appendChild(estimateP);
+      }
+      
+      container.appendChild(errorDiv);
+    }
+
+    // Afișează avertisment pentru formule complexe dar valide
+    function displayComplexityWarning(data, formula, container) {
+      const warningDiv = document.createElement('div');
+      warningDiv.className = 'complexity-warning';
+      
+      const warningTitle = document.createElement('h3');
+      warningTitle.textContent = '⚠️ Formulă complexă detectată';
+      warningTitle.style.color = '#f39c12';
+      warningDiv.appendChild(warningTitle);
+      
+      const warningMessage = document.createElement('p');
+      warningMessage.textContent = data.message;
+      warningMessage.style.marginBottom = '15px';
+      warningDiv.appendChild(warningMessage);
+      
+      // Afișează informațiile despre complexitate
+      if (data.complexity) {
+        const complexityInfo = document.createElement('div');
+        complexityInfo.className = 'complexity-info';
+        complexityInfo.innerHTML = `
+          <p><strong>Analiză complexitate:</strong></p>
+          <ul>
+            <li>Atomi de carbon: ${data.complexity.carbons}</li>
+            <li>Atomi de hidrogen: ${data.complexity.hydrogens}</li>
+            <li>Alți atomi: ${data.complexity.heteroatoms}</li>
+            <li>Nivel de complexitate: ${getComplexityLevelRomanian(data.complexity.level)}</li>
+          </ul>
+        `;
+        warningDiv.appendChild(complexityInfo);
+      }
+      
+      // Butoane pentru decizie
+      const buttonsDiv = document.createElement('div');
+      buttonsDiv.className = 'complexity-buttons';
+      
+      const continueBtn = document.createElement('button');
+      continueBtn.textContent = 'Continuă oricum (poate dura 1-2 minute)';
+      continueBtn.className = 'btn btn-warning-continue';
+      continueBtn.onclick = () => {
+        container.innerHTML = '';
+        showLoading(`Se procesează formula complexă ${formula}... Poate dura 1-2 minute!`);
+        fetchConfirmedComplexFormula(formula);
+      };
+      
+      const cancelBtn = document.createElement('button');
+      cancelBtn.textContent = 'Alege o formulă mai simplă';
+      cancelBtn.className = 'btn btn-warning-cancel';
+      cancelBtn.onclick = () => {
+        container.innerHTML = '';
+        displayEducationalSuggestions(container);
+      };
+      
+      buttonsDiv.appendChild(continueBtn);
+      buttonsDiv.appendChild(cancelBtn);
+      warningDiv.appendChild(buttonsDiv);
+      
+      // Afișează sugestii alternative dacă le avem
+      if (data.suggestions && data.suggestions.length > 0) {
+        const suggestionsTitle = document.createElement('h4');
+        suggestionsTitle.textContent = '💡 Sugestii pentru învățare:';
+        suggestionsTitle.style.color = '#3498db';
+        suggestionsTitle.style.marginTop = '20px';
+        warningDiv.appendChild(suggestionsTitle);
+        
+        const suggestionsList = document.createElement('div');
+        suggestionsList.className = 'suggestions-container';
+        
+        data.suggestions.forEach(suggestion => {
+          const suggestionItem = document.createElement('div');
+          suggestionItem.className = 'suggestion-item';
+          
+          const formulaBtn = document.createElement('button');
+          formulaBtn.textContent = suggestion.formula;
+          formulaBtn.className = 'suggestion-formula-btn';
+          formulaBtn.onclick = (e) => {
+            e.preventDefault();
+            console.log('Clicked on formula:', suggestion.formula);
+            const formulaInput = document.getElementById('formulaInput');
+            if (formulaInput) {
+              formulaInput.value = suggestion.formula;
+              console.log('Set formula input to:', suggestion.formula);
+            } else {
+              console.error('Could not find formula input element');
+            }
+            container.innerHTML = '';
+            // Focus on the generate button to encourage user to click it
+            const generateBtn = document.querySelector('.btn-generate');
+            if (generateBtn) {
+              generateBtn.focus();
+              console.log('Focused on generate button');
+            } else {
+              console.log('Could not find generate button');
+            }
+          };
+          
+          const description = document.createElement('span');
+          description.textContent = ` - ${suggestion.descriere}`;
+          description.className = 'suggestion-description';
+          
+          suggestionItem.appendChild(formulaBtn);
+          suggestionItem.appendChild(description);
+          suggestionsList.appendChild(suggestionItem);
+        });
+        
+        warningDiv.appendChild(suggestionsList);
+      }
+      
+      container.appendChild(warningDiv);
+    }
+
+    // Funcție pentru a obtine nivelul de complexitate în română
+    function getComplexityLevelRomanian(level) {
+      const levels = {
+        'simplu': 'Simplu (ideal pentru început)',
+        'mediu': 'Mediu (bun pentru învățare)',
+        'complex': 'Complex (pentru utilizatori avansați)',
+        'foarte_complex': 'Foarte complex (poate dura mult)'
+      };
+      return levels[level] || level;
+    }
+
+    // Funcție pentru a afișa sugestii educaționale organizate
+    function displayEducationalSuggestions(container) {
+      const suggestionsDiv = document.createElement('div');
+      suggestionsDiv.className = 'educational-suggestions';
+      
+      const title = document.createElement('h3');
+      title.textContent = '📚 Formule recomandate pentru învățare';
+      title.style.color = '#27ae60';
+      suggestionsDiv.appendChild(title);
+      
+      const description = document.createElement('p');
+      description.textContent = 'Alege o formulă potrivită pentru nivelul tău de experiență:';
+      suggestionsDiv.appendChild(description);
+      
+      // Începători
+      addSuggestionLevel(suggestionsDiv, 'Începători', [
+        { formula: 'C4H10', descriere: 'Butanul - 2 izomeri (bun pentru început)' },
+        { formula: 'C5H12', descriere: 'Pentanul - 3 izomeri (ușor de înțeles)' },
+        { formula: 'C4H8', descriere: 'Butena - 3 izomeri (include izomerie de poziție)' }
+      ], '#3498db');
+      
+      // Intermediari
+      addSuggestionLevel(suggestionsDiv, 'Intermediari', [
+        { formula: 'C6H14', descriere: 'Hexanul - 5 izomeri (izomerie de catenă)' },
+        { formula: 'C6H12', descriere: 'Hexena - mulți izomeri (poziție și geometrie)' },
+        { formula: 'C4H10O', descriere: 'Butanolul - 4 izomeri (alcool)' }
+      ], '#f39c12');
+      
+      // Avansați
+      addSuggestionLevel(suggestionsDiv, 'Avansați', [
+        { formula: 'C7H16', descriere: 'Heptanul - 9 izomeri (complexitate medie)' },
+        { formula: 'C8H18', descriere: 'Octanul - 18 izomeri (mai complex)' },
+        { formula: 'C4H8O2', descriere: 'Acid butiric/ester - izomerie funcțională' }
+      ], '#e74c3c');
+      
+      container.appendChild(suggestionsDiv);
+    }
+
+    // Funcție helper pentru a adăuga un nivel de sugestii
+    function addSuggestionLevel(container, levelName, suggestions, color) {
+      const levelDiv = document.createElement('div');
+      levelDiv.className = 'suggestion-level';
+      
+      const levelTitle = document.createElement('h4');
+      levelTitle.textContent = levelName;
+      levelTitle.style.color = color;
+      levelTitle.style.borderLeft = `4px solid ${color}`;
+      levelTitle.style.paddingLeft = '10px';
+      levelDiv.appendChild(levelTitle);
+      
+      const suggestionsList = document.createElement('div');
+      suggestionsList.className = 'suggestions-container';
+      
+      suggestions.forEach(suggestion => {
+        const suggestionItem = document.createElement('div');
+        suggestionItem.className = 'suggestion-item';
+        
+        const formulaBtn = document.createElement('button');
+        formulaBtn.textContent = suggestion.formula;
+        formulaBtn.className = 'suggestion-formula-btn';
+        formulaBtn.onclick = (e) => {
+          e.preventDefault();
+          console.log('Clicked on formula:', suggestion.formula);
+          const formulaInput = document.getElementById('formulaInput');
+          if (formulaInput) {
+            formulaInput.value = suggestion.formula;
+            console.log('Set formula input to:', suggestion.formula);
+          } else {
+            console.error('Could not find formula input element');
+          }
+          container.innerHTML = '';
+          // Focus on the generate button to encourage user to click it
+          const generateBtn = document.querySelector('.btn-generate');
+          if (generateBtn) {
+            generateBtn.focus();
+            console.log('Focused on generate button');
+          } else {
+            console.log('Could not find generate button');
+          }
+        };
+        
+        const description = document.createElement('span');
+        description.textContent = ` - ${suggestion.descriere}`;
+        description.className = 'suggestion-description';
+        
+        suggestionItem.appendChild(formulaBtn);
+        suggestionItem.appendChild(description);
+        suggestionsList.appendChild(suggestionItem);
+      });
+      
+      levelDiv.appendChild(suggestionsList);
+      container.appendChild(levelDiv);
+    }
+
+    // Funcție pentru a genera formule complexe confirmate
+    async function fetchConfirmedComplexFormula(formula) {
+      const resultsContainer = document.getElementById("results");
+      
+      try {
+        const response = await fetch(`/api/isomers?formula=${encodeURIComponent(formula)}&confirm=1`);
+        const responseText = await response.text();
+        let data;
+        
+        try {
+          data = JSON.parse(responseText);
+        } catch (e) {
+          console.error("Problemă la parsarea JSON-ului de la server:", responseText);
+          throw new Error(`Serverul a returnat un răspuns ciudat (nu e JSON valid). Status: ${response.status}`);
+        }
+        
+        console.log("Date primite pentru formula complexă confirmată:", data);
+        
+        if (data.error) {
+          displaySmartError(data, resultsContainer);
+        } else if (data.smilesList && data.smilesList.length > 0) {
+          if (data.message) {
+            const messageP = document.createElement('p');
+            messageP.className = 'note';
+            messageP.textContent = data.message;
+            resultsContainer.appendChild(messageP);
+          }
+          
+          // Save to history if user is logged in (history is already saved by server automatically)
+          // Removed duplicate save here since server saves automatically
+          
+          displayIsomersUI(data.smilesList, formula, data.actualTotalIsomers);
+        } else {
+          resultsContainer.innerHTML = `<p class="note">Nu s-au putut genera izomerii pentru formula ${formula}.</p>`;
+        }
+        
+        hideLoading();
+      } catch (error) {
+        console.error("Eroare la generarea formulei complexe:", error);
+        resultsContainer.innerHTML = `<p class="note" style="color: red;">Eroare: ${error.message}</p>`;
+        hideLoading();
+      }
+    }
+
+    // Când tot HTML-ul paginii s-a încărcat (structura DOM e gata), pornim funcțiile inițiale
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log("Pagina s-a încărcat! Acum setăm funcționalitățile (event handlerele).");
+      
+      // Initialize authentication
+      checkAuthentication();
+      
+      // Check for regenerate formula from history
+      checkForRegenerateFormula();
+      
+      // Setup user dropdown
+      setupUserDropdown();
+      
+      // Setup isomer dropdown
+      setupIsomerDropdown();
+      
+      // Setup calcule dropdown
+      setupCalculeDropdown();
+      
+      // Check for authentication success/failure from URL
+      checkAuthenticationStatus();
+      
+      // Setup authentication event listeners
+      document.getElementById('loginBtn').addEventListener('click', () => showAuthModal('login'));
+      document.getElementById('registerBtn').addEventListener('click', () => showAuthModal('register'));
+      document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+      
+      // Google OAuth event listeners
+      document.getElementById('googleLoginBtn').addEventListener('click', handleGoogleAuth);
+      document.getElementById('googleRegisterBtn').addEventListener('click', handleGoogleAuth);
+      
+      // Auth modal event listeners
+      document.querySelector('.auth-close').addEventListener('click', hideAuthModal);
+      document.getElementById('showRegister').addEventListener('click', (e) => {
+        e.preventDefault();
+        showAuthModal('register');
+      });
+      document.getElementById('showLogin').addEventListener('click', (e) => {
+        e.preventDefault();
+        showAuthModal('login');
+      });
+      
+      // Form submissions
+      document.getElementById('loginFormElement').addEventListener('submit', handleLogin);
+      document.getElementById('registerFormElement').addEventListener('submit', handleRegister);
+      
+      // Real-time password validation
+      document.getElementById('registerPassword').addEventListener('input', function(e) {
+        updatePasswordRequirements(e.target.value);
+      });
+      
+      // Close modal when clicking outside
+      window.addEventListener('click', (event) => {
+        const modal = document.getElementById('authModal');
+        if (event.target === modal) {
+          hideAuthModal();
+        }
+      });
+      
+      setupMobileMenu(); // Inițializăm meniul mobil
+      // setupThemeToggle(); // Deja apelat inline în <head> pentru rapiditate
+      
+      const formulaForm = document.getElementById("formulaForm");
+      if (formulaForm) {
+        formulaForm.addEventListener("submit", handleGenerate); // Atașăm funcția de generare la submit-ul formularului
+      } else {
+        console.error("EROARE CRITICĂ: Formularul pentru formulă (ID: formulaForm) nu a fost găsit în pagină! Verifică ID-ul.");
+      }
+
+      const downloadBtn = document.getElementById("downloadPdfBtn");
+      if(downloadBtn) {
+        downloadBtn.addEventListener("click", downloadPdf); // Atașăm funcția de descărcare PDF la buton
+      } else {
+        console.warn("Atenție: Butonul de descărcare PDF (ID: downloadPdfBtn) nu a fost găsit.");
+      }
+    });
+  </script>
+</body>
+</html>

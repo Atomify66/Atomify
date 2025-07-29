@@ -1,0 +1,4368 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <title>Atomify – Administrare Cont</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css" />
+  
+  <!-- Logo Theme Switcher -->
+  <script src="logo-theme-switcher.js"></script>
+  
+  <!-- Google Translate Component -->
+  <script src="google-translate.js"></script>
+
+  <script>
+    // Theme toggle functionality
+    function setupThemeToggle() {
+      const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+      const currentTheme = localStorage.getItem('theme');
+
+      if (currentTheme) {
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        
+        if (currentTheme === 'dark') {
+          toggleSwitch.checked = true;
+        }
+      }
+
+      function switchTheme(e) {
+        if (e.target.checked) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          localStorage.setItem('theme', 'dark');
+          
+          // Update logos for dark theme
+          const logoImages = document.querySelectorAll('.logo-image, .footer-logo');
+          logoImages.forEach(img => {
+            img.onerror = function() {
+              console.warn('Failed to load logo_dark.png, falling back to logo.png');
+              this.src = 'logo.png';
+              this.onerror = null;
+            };
+            img.src = 'logo_dark.png';
+          });
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+          localStorage.setItem('theme', 'light');
+          
+          // Update logos for light theme
+          const logoImages = document.querySelectorAll('.logo-image, .footer-logo');
+          logoImages.forEach(img => {
+            img.onerror = function() {
+              console.warn('Failed to load logo_light.png, falling back to logo.png');
+              this.src = 'logo.png';
+              this.onerror = null;
+            };
+            img.src = 'logo_light.png';
+          });
+        }    
+      }
+
+      toggleSwitch.addEventListener('change', switchTheme, false);
+    }
+
+    document.addEventListener('DOMContentLoaded', setupThemeToggle);
+  </script>
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'ro',
+          includedLanguages: 'en,fr,de,es,it,pt,ru,zh-CN,ja,ko,ar,hi',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false,
+          gaTrack: false
+        }, 'google_translate_element');
+      }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
+    <!-- PWA Registration -->
+    <script src="pwa.js"></script>
+    
+    <!-- Tutorial System -->
+    <script src="tutorial.js"></script>
+</head>
+<body>
+  <!-- Modern Redesigned Navigation -->
+  <header class="site-header">
+    <nav class="navbar">
+      <!-- Logo Section -->
+      <div class="logo-section">
+        <a href="isomers.html" class="logo-link">
+          <img src="logo_light.png" alt="Atomify Logo" class="logo-image">
+          <span class="logo-text">Atomify</span>
+        </a>
+      </div>
+      
+      <!-- Mobile Menu Toggle -->
+      <button id="mobileMenuBtn" class="mobile-menu-toggle" aria-label="Toggle mobile menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+      
+      <!-- Navigation Container -->
+      <div class="nav-container">
+        <!-- Mobile Close Button -->
+        <button id="menuCloseBtn" class="mobile-close-btn" aria-label="Close mobile menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"></path>
+          </svg>
+        </button>
+        
+        <!-- Navigation Links -->
+        <ul class="nav-links">
+          <li class="nav-item">
+            <button class="nav-link isomer-dropdown-trigger" id="isomerDropdownTrigger">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <circle cx="7" cy="7" r="2"/>
+                <circle cx="17" cy="7" r="2"/>
+                <circle cx="12" cy="15" r="2"/>
+                <circle cx="7" cy="19" r="2"/>
+                <circle cx="17" cy="19" r="2"/>
+                <path d="M9 7h6m-8 8l2-4m6 4l-2-4m-3 6h6"/>
+              </svg>
+              <span>Izomeri</span>
+              <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+            
+            <div class="isomer-dropdown-menu" id="isomerDropdownMenu">
+              <a href="isomers.html" class="dropdown-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="7" cy="7" r="2"/>
+                  <circle cx="17" cy="7" r="2"/>
+                  <circle cx="12" cy="15" r="2"/>
+                  <circle cx="7" cy="19" r="2"/>
+                  <circle cx="17" cy="19" r="2"/>
+                  <path d="M9 7h6m-8 8l2-4m6 4l-2-4m-3 6h6"/>
+                </svg>
+                <span>Izomeri</span>
+              </a>
+              <a href="structure.html" class="dropdown-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 3h18v18H3z"/>
+                  <path d="M9 9h6v6H9z"/>
+                  <path d="M12 3v18"/>
+                  <path d="M3 12h18"/>
+                </svg>
+                <span>Structură</span>
+              </a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a href="chestionare.html" class="nav-link">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M9 11h6m-6 4h3m5-7v8a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h7l5 5z"/>
+                <path d="M14 3v4a2 2 0 002 2h4"/>
+                <circle cx="8" cy="11" r="1" fill="currentColor"/>
+                <circle cx="8" cy="15" r="1" fill="currentColor"/>
+              </svg>
+              <span>Chestionar</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="leaderboard.html" class="nav-link">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 16v-3a2 2 0 00-4 0v3m-4 0v-6a2 2 0 014 0v6m8-2V7a2 2 0 00-4 0v9M5 16V4a2 2 0 014 0v12"/>
+              </svg>
+              <span>Clasament</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="equations.html" class="nav-link">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M3 12h18M8 8l4-4 4 4M8 16l4 4 4-4"/>
+                <text x="6" y="6" fill="currentColor" font-size="6" font-weight="bold">H</text>
+                <text x="15" y="6" fill="currentColor" font-size="6" font-weight="bold">O</text>
+                <text x="18" y="6" fill="currentColor" font-size="5">2</text>
+              </svg>
+              <span>Ecuații</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="masa.html" class="nav-link">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M7 18h10l-2-6H9l-2 6z"/>
+                <path d="M5 18h14"/>
+                <path d="M12 6v6"/>
+                <circle cx="12" cy="4" r="2"/>
+                <path d="M8 10l8 8M16 10l-8 8"/>
+              </svg>
+              <span>Masa Atomică</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link calcule-dropdown-trigger" id="calculeDropdownTrigger">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="4" y="2" width="16" height="20" rx="2"/>
+                <path d="M8 6h8M8 10h3m5 0h-2M8 14h8"/>
+                <text x="7" y="9" fill="currentColor" font-size="4">Δ</text>
+                <text x="12.5" y="9" fill="currentColor" font-size="4">+</text>
+                <text x="10.5" y="13" fill="currentColor" font-size="4">∑</text>
+              </svg>
+              <span>Calcule</span>
+              <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+            
+            <div class="calcule-dropdown-menu" id="calculeDropdownMenu">
+              <a href="calcule.html" class="dropdown-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="4" y="2" width="16" height="20" rx="2"/>
+                  <path d="M8 6h8M8 10h3m5 0h-2M8 14h8"/>
+                  <text x="7" y="9" fill="currentColor" font-size="4">Δ</text>
+                  <text x="12.5" y="9" fill="currentColor" font-size="4">+</text>
+                  <text x="10.5" y="13" fill="currentColor" font-size="4">∑</text>
+                </svg>
+                <span>Cristalizare</span>
+              </a>
+              <a href="bio.html" class="dropdown-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  <path d="M8 12l2 2 4-4"/>
+                </svg>
+                <span>Genetică</span>
+              </a>
+            </div>
+          </li>
+        </ul>
+        
+        <!-- Right Side Controls -->
+        <div class="nav-controls">
+          <!-- Google Translate -->
+          <div class="translate-container">
+            <div id="google_translate_element"></div>
+          </div>
+          
+          <!-- Theme Toggle -->
+          <div class="theme-toggle">
+            <label class="theme-switch" for="themeCheckbox" aria-label="Toggle dark mode">
+              <input type="checkbox" id="themeCheckbox" />
+              <div class="theme-slider">
+                <div class="theme-icon-container sun-icon-container">
+                  <svg class="theme-icon sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                  </svg>
+                </div>
+                <div class="theme-icon-container moon-icon-container">
+                  <svg class="theme-icon moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                  </svg>
+                </div>
+              </div>
+            </label>
+          </div>
+          
+          <!-- Authentication Section -->
+          <div class="auth-section">
+            <!-- Login/Register Buttons -->
+            <div id="authButtons" class="auth-buttons">
+              <button id="loginBtn" class="auth-btn login-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+                </svg>
+                <span>Intră în cont</span>
+              </button>
+              <button id="registerBtn" class="auth-btn register-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12.5 7a4 4 0 11-8 0 4 4 0 018 0zM20 8v6M23 11h-6"/>
+                </svg>
+                <span>Creează cont</span>
+              </button>
+            </div>
+            
+            <!-- User Info Dropdown -->
+            <div id="userInfo" class="user-dropdown" style="display: none;">
+              <button class="user-dropdown-trigger" id="userDropdownTrigger">
+                <div class="user-avatar">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </div>
+                <span class="user-name" id="username"></span>
+                <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </button>
+              
+              <div class="user-dropdown-menu" id="userDropdownMenu">
+                <div class="dropdown-header">
+                  <div class="user-info-display">
+                    <div class="user-avatar-large">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                      </svg>
+                    </div>
+                    <div class="user-details">
+                      <span class="user-greeting">Bună,</span>
+                      <span class="user-name-display" id="usernameDisplay"></span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="dropdown-divider"></div>
+                
+                <div class="dropdown-links">
+                  <a href="istoric.html" class="dropdown-link">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>Istoric</span>
+                  </a>
+                  <a href="profile.html" class="dropdown-link">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                      <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    <span>Profilul Meu</span>
+                  </a>
+                  <a href="admin.html" class="dropdown-link active">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                      <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span>Administrare</span>
+                  </a>
+                </div>
+                
+                <div class="dropdown-divider"></div>
+                
+                <button id="logoutBtn" class="dropdown-link logout-btn">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+                  </svg>
+                  <span>Ieși din cont</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="site-main">
+    <div id="authRequired" class="auth-required-message" style="display: none;">
+      <div class="auth-required-container">
+        <div class="auth-required-icon">🔒</div>
+        <h1>Acces Restricționat</h1>
+        <p>Trebuie să fii autentificat pentru a accesa panoul de administrare.</p>
+        <button id="loginPromptBtn" class="admin-login-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+          </svg>
+          <span>Intră în cont</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="adminContent" class="admin-content" style="display: none;">
+      <!-- Modern Admin Header -->
+      <div class="admin-header">
+        <div class="admin-header-content">
+          <h1>👨‍🏫 Panou de Administrare</h1>
+          <p class="admin-header-description">
+            Bine ai venit, <span id="adminUsername" class="admin-username-highlight"></span>! 
+            Gestionează clasele, chestionarele și elevii tăi dintr-un singur loc.
+          </p>
+        </div>
+      </div>
+
+      <!-- Admin Dashboard Container -->
+      <div class="admin-dashboard">
+        <!-- Quick Stats Section -->
+        <div class="admin-stats-section" id="adminStatsSection">
+          <h2 class="section-title">📊 Statistici Rapide</h2>
+          <div class="stats-grid">
+            <!-- Teacher Only Stats -->
+            <div class="stat-card animated-card teacher-only-stat" data-animation="fadeInUp" style="display: none;">
+              <div class="stat-icon">🏫</div>
+              <div class="stat-content">
+                <div class="stat-number" id="totalClasses">-</div>
+                <div class="stat-label">Clase Create</div>
+              </div>
+            </div>
+            <div class="stat-card animated-card teacher-only-stat" data-animation="fadeInUp" data-delay="100" style="display: none;">
+              <div class="stat-icon">👥</div>
+              <div class="stat-content">
+                <div class="stat-number" id="totalStudents">-</div>
+                <div class="stat-label">Studenți Activi</div>
+              </div>
+            </div>
+            
+            <!-- Both Teacher and Student Stats -->
+            <div class="stat-card animated-card" data-animation="fadeInUp" data-delay="200">
+              <div class="stat-icon">🏫</div>
+              <div class="stat-content">
+                <div class="stat-number" id="joinedClasses">-</div>
+                <div class="stat-label role-stat-label">Clase</div>
+              </div>
+            </div>
+            <div class="stat-card animated-card" data-animation="fadeInUp" data-delay="300">
+              <div class="stat-icon">📝</div>
+              <div class="stat-content">
+                <div class="stat-number" id="totalQuizzes">-</div>
+                <div class="stat-label">Chestionare</div>
+              </div>
+            </div>
+            <div class="stat-card animated-card" data-animation="fadeInUp" data-delay="400">
+              <div class="stat-icon">📚</div>
+              <div class="stat-content">
+                <div class="stat-number" id="totalHomework">-</div>
+                <div class="stat-label role-homework-label">Teme</div>
+              </div>
+            </div>
+            
+            <!-- Student Only Stats -->
+            <div class="stat-card animated-card student-only-stat" data-animation="fadeInUp" data-delay="500" style="display: none;">
+              <div class="stat-icon">🎯</div>
+              <div class="stat-content">
+                <div class="stat-number" id="completedHomework">-</div>
+                <div class="stat-label">Teme Completate</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Role Selection Panel (for users without role) -->
+        <section id="roleSelectionPanel" class="admin-section role-selection-section" style="display: none;">
+          <div class="section-header">
+            <h2 class="section-title">🎯 Completează Profilul</h2>
+            <p class="section-description">Pentru a continua, te rugăm să alegi tipul contului tău:</p>
+          </div>
+          
+          <div class="role-selection-container">
+            <div class="role-option animated-card" data-role="student" data-animation="slideInLeft">
+              <div class="role-icon-wrapper">
+                <div class="role-icon">🎓</div>
+              </div>
+              <div class="role-content">
+                <h3>Student</h3>
+                <p>Voi participa la teste și voi primi invitații de la profesori pentru a mă alătura claselor.</p>
+                <div class="role-features">
+                  <span class="feature">✓ Participare la teste</span>
+                  <span class="feature">✓ Primire invitații</span>
+                  <span class="feature">✓ Clasamente</span>
+                </div>
+              </div>
+              <div class="role-action">
+                <button class="role-select-btn">Alege Student</button>
+              </div>
+            </div>
+            
+            <div class="role-option animated-card" data-role="professor" data-animation="slideInRight">
+              <div class="role-icon-wrapper">
+                <div class="role-icon">👨‍🏫</div>
+              </div>
+              <div class="role-content">
+                <h3>Profesor</h3>
+                <p>Voi crea clase, voi invita studenți și voi putea să gestionez teste pentru clasele mele.</p>
+                <div class="role-features">
+                  <span class="feature">✓ Creare clase</span>
+                  <span class="feature">✓ Gestionare studenți</span>
+                  <span class="feature">✓ Chestionare personalizate</span>
+                </div>
+              </div>
+              <div class="role-action">
+                <button class="role-select-btn">Alege Profesor</button>
+              </div>
+            </div>
+          </div>
+          
+          <div id="roleSelectionMessage" class="admin-message" style="display: none;"></div>
+        </section>
+
+        <!-- Admin Action Cards -->
+        <div class="admin-actions-section" id="adminActionsSection">
+          <h2 class="section-title">🚀 Acțiuni Rapide</h2>
+          <div class="admin-cards-grid">
+            <!-- Teacher Only Cards -->
+            <div class="teacher-only-card admin-action-card animated-card" data-animation="zoomIn" data-delay="100" style="display: none;">
+              <div class="action-card-header">
+                <div class="action-icon">🏫</div>
+                <h3>Creare Clasă</h3>
+              </div>
+              <div class="action-card-content">
+                <p>Creează o clasă nouă și începe să inviti studenți</p>
+              </div>
+              <div class="action-card-footer">
+                <button class="action-btn primary" onclick="showCreateClassModal()">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14"/>
+                  </svg>
+                  <span>Creează Clasă</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="teacher-only-card admin-action-card animated-card" data-animation="zoomIn" data-delay="200" style="display: none;">
+              <div class="action-card-header">
+                <div class="action-icon">📝</div>
+                <h3>Creare Chestionar</h3>
+              </div>
+              <div class="action-card-content">
+                <p>Creează un chestionar personalizat pentru clasele tale</p>
+              </div>
+              <div class="action-card-footer">
+                <button class="action-btn primary" onclick="showCreateQuizModal()">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14"/>
+                  </svg>
+                  <span>Creează Chestionar</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="teacher-only-card admin-action-card animated-card" data-animation="zoomIn" data-delay="300" style="display: none;">
+              <div class="action-card-header">
+                <div class="action-icon">📚</div>
+                <h3>Creare Teme</h3>
+              </div>
+              <div class="action-card-content">
+                <p>Atribuie teme și gestionează devolvele elevilor</p>
+              </div>
+              <div class="action-card-footer">
+                <button class="action-btn primary" onclick="showMyClassesSection()">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14"/>
+                  </svg>
+                  <span>Gestionează Teme</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Both Teacher and Student Cards -->
+            <div class="admin-action-card animated-card" data-animation="zoomIn" data-delay="400">
+              <div class="action-card-header">
+                <div class="action-icon">👥</div>
+                <h3 class="role-specific-title">Clasele Mele</h3>
+              </div>
+              <div class="action-card-content">
+                <p class="role-specific-description">Vezi și gestionează clasele</p>
+              </div>
+              <div class="action-card-footer">
+                <button class="action-btn secondary" onclick="showClassesSection()">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <span>Vezi Clasele</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="admin-action-card animated-card" data-animation="zoomIn" data-delay="500">
+              <div class="action-card-header">
+                <div class="action-icon">🏆</div>
+                <h3>Clasamente</h3>
+              </div>
+              <div class="action-card-content">
+                <p>Vezi clasamentele și rezultatele</p>
+              </div>
+              <div class="action-card-footer">
+                <a href="leaderboard.html" class="action-btn secondary">
+                  <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M16 16v-3a2 2 0 00-4 0v3m-4 0v-6a2 2 0 014 0v6m8-2V7a2 2 0 00-4 0v9M5 16V4a2 2 0 014 0v12"/>
+                  </svg>
+                  <span>Vezi Clasamente</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Student Only Cards -->
+            <div class="student-only-card admin-action-card animated-card" data-animation="zoomIn" data-delay="300" style="display: none;">
+              <div class="action-card-header">
+                <div class="action-icon">📝</div>
+                <h3>Temele Mele</h3>
+              </div>
+              <div class="action-card-content">
+                <p>Vezi și completează temele atribuite</p>
+              </div>
+              <div class="action-card-footer">
+                <button class="action-btn primary" onclick="showStudentHomeworkSection()">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <span>Vezi Temele</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Class Management Section (Professor Only) -->
+        <section id="classManagementSection" class="admin-section modern-section" style="display: none;">
+          <div class="section-header">
+            <h2 class="section-title">🏫 Managementul Claselor</h2>
+            <p class="section-description">Creează și gestionează clasele tale</p>
+          </div>
+          
+          <!-- Create Class -->
+          <div class="modern-card">
+            <div class="card-header">
+              <h3>➕ Creează o Clasă Nouă</h3>
+            </div>
+            <div class="card-content">
+              <form id="createClassForm" class="modern-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="className">Numele clasei:</label>
+                    <input type="text" id="className" placeholder="Ex: Clasa 12A - Chimie" required>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="classDescription">Descriere (opțional):</label>
+                    <textarea id="classDescription" rows="3" placeholder="Descrierea clasei..."></textarea>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button type="submit" class="modern-btn primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    <span>Creează Clasa</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        <!-- My Classes -->
+        <div class="class-subsection">
+          <h3>Clasele Mele</h3>
+          <div id="myClassesList" class="classes-list">
+            <p>Se încarcă...</p>
+          </div>
+        </div>
+
+
+      </section>
+
+      <!-- Quiz Management Section (Professor Only) -->
+      <section id="quizManagementSection" class="admin-section" style="display: none;">
+        <h2>Managementul Chestionarelor</h2>
+        
+        <!-- Create Quiz -->
+        <div class="class-subsection">
+          <h3>Creează un Chestionar Nou</h3>
+          <form id="createQuizForm" class="admin-form">
+            <div class="form-group">
+              <label for="quizClass">Clasa:</label>
+              <select id="quizClass" required>
+                <option value="">Selectează clasa</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="quizTitle">Titlul chestionarului:</label>
+              <input type="text" id="quizTitle" required>
+            </div>
+            <div class="form-group">
+              <label for="quizDescription">Descriere (opțional):</label>
+              <textarea id="quizDescription" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="quizTimeLimit">Timp limită (minute):</label>
+              <input type="number" id="quizTimeLimit" min="1" max="120" value="10">
+            </div>
+            
+            <!-- Questions Section -->
+            <div class="form-group">
+              <label>Întrebări:</label>
+              <div id="questionsContainer">
+                <!-- Questions will be added dynamically -->
+              </div>
+              <button type="button" id="addQuestionBtn" class="btn-admin secondary">Adaugă Întrebare</button>
+            </div>
+            
+            <button type="submit" class="btn-admin">
+              <span class="btn-text">Creează Chestionarul</span>
+              <span class="btn-loading" style="display: none;">Se creează...</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- My Quizzes -->
+        <div class="class-subsection">
+          <h3>Chestionarele Mele</h3>
+          <div id="myQuizzesList" class="quizzes-list">
+            <p>Se încarcă...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Student Section -->
+      <section id="studentSection" class="admin-section" style="display: none;">
+        <h2>Panou Student</h2>
+        
+        <!-- Student Homework -->
+        <div class="class-subsection">
+          <h3>Temele Mele</h3>
+          <div id="studentHomeworkList" class="homework-list">
+            <p>Se încarcă...</p>
+          </div>
+        </div>
+        
+        <!-- Pending Invitations -->
+        <div class="class-subsection">
+          <h3>Invitații Pendente</h3>
+          <div id="pendingInvitationsList" class="invitations-list">
+            <p>Se încarcă...</p>
+          </div>
+        </div>
+
+        <!-- Joined Classes -->
+        <div class="class-subsection">
+          <h3>Clasele la Care Particip</h3>
+          <div id="joinedClassesList" class="classes-list">
+            <p>Se încarcă...</p>
+          </div>
+        </div>
+
+        <!-- Student Leaderboard Access -->
+        <div class="class-subsection">
+          <h3>Clasamente</h3>
+          <div class="quick-actions">
+            <a href="leaderboard.html" class="btn-admin secondary">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 16v-3a2 2 0 00-4 0v3m-4 0v-6a2 2 0 014 0v6m8-2V7a2 2 0 00-4 0v9M5 16V4a2 2 0 014 0v12"/>
+              </svg>
+              Vezi Clasamentul Global
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Country Selection Section -->
+      <section class="admin-section modern-section">
+        <div class="modern-card animated-card" data-animation="fadeInUp" data-delay="100">
+          <div class="card-header">
+            <h2>🌍 Țara de Origine</h2>
+          </div>
+          <div class="card-content">
+            <form id="countryForm" class="modern-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="countrySelect">Selectează țara ta:</label>
+                  <select id="countrySelect" required>
+              <option value="">Selectează țara</option>
+              <option value="România">România</option>
+              <option value="Moldova">Moldova</option>
+              <option value="Albania">Albania</option>
+              <option value="Andorra">Andorra</option>
+              <option value="Armenia">Armenia</option>
+              <option value="Austria">Austria</option>
+              <option value="Azerbaijan">Azerbaijan</option>
+              <option value="Belarus">Belarus</option>
+              <option value="Belgium">Belgium</option>
+              <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+              <option value="Bulgaria">Bulgaria</option>
+              <option value="Croatia">Croatia</option>
+              <option value="Cyprus">Cyprus</option>
+              <option value="Czech Republic">Czech Republic</option>
+              <option value="Denmark">Denmark</option>
+              <option value="Estonia">Estonia</option>
+              <option value="Finland">Finland</option>
+              <option value="France">France</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Germany">Germany</option>
+              <option value="Greece">Greece</option>
+              <option value="Hungary">Hungary</option>
+              <option value="Iceland">Iceland</option>
+              <option value="Ireland">Ireland</option>
+              <option value="Italy">Italy</option>
+              <option value="Kazakhstan">Kazakhstan</option>
+              <option value="Kosovo">Kosovo</option>
+              <option value="Latvia">Latvia</option>
+              <option value="Liechtenstein">Liechtenstein</option>
+              <option value="Lithuania">Lithuania</option>
+              <option value="Luxembourg">Luxembourg</option>
+              <option value="Malta">Malta</option>
+              <option value="Monaco">Monaco</option>
+              <option value="Montenegro">Montenegro</option>
+              <option value="Netherlands">Netherlands</option>
+              <option value="North Macedonia">North Macedonia</option>
+              <option value="Norway">Norway</option>
+              <option value="Poland">Poland</option>
+              <option value="Portugal">Portugal</option>
+              <option value="Russia">Russia</option>
+              <option value="San Marino">San Marino</option>
+              <option value="Serbia">Serbia</option>
+              <option value="Slovakia">Slovakia</option>
+              <option value="Slovenia">Slovenia</option>
+              <option value="Spain">Spain</option>
+              <option value="Sweden">Sweden</option>
+              <option value="Switzerland">Switzerland</option>
+              <option value="Turkey">Turkey</option>
+              <option value="Ukraine">Ukraine</option>
+              <option value="United Kingdom">United Kingdom</option>
+                      <option value="Vatican City">Vatican City</option>
+                      <option value="Other">Altă țară</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button type="submit" class="modern-btn primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+                      <path d="M17 21v-8H7v8"/>
+                      <path d="M7 3v5h8"/>
+                    </svg>
+                    <span>Salvează Țara</span>
+                  </button>
+                </div>
+              </form>
+              <div id="currentCountry" class="current-info" style="display: none;">
+                <p><strong>Țara curentă:</strong> <span id="countryDisplay"></span></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      <!-- Newsletter Preferences Section -->
+      <section class="admin-section modern-section">
+        <div class="modern-card animated-card" data-animation="fadeInUp" data-delay="200">
+          <div class="card-header">
+            <h2>📧 Preferințe Newsletter</h2>
+            <p>Gestionează abonamentul la newsletter pentru a primi cele mai recente actualizări și resurse de chimie.</p>
+          </div>
+          <div class="card-content">
+            <div class="newsletter-status-container">
+              <div id="newsletterCurrentStatus" class="current-info">
+                <p><strong>Status:</strong> <span id="newsletterStatusText">Se încarcă...</span></p>
+                <p><strong>Email:</strong> <span id="newsletterEmailDisplay">Se încarcă...</span></p>
+              </div>
+            </div>
+            
+            <form id="newsletterPreferencesForm" class="modern-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="newsletterEmailInput">Email pentru newsletter:</label>
+                  <input type="email" id="newsletterEmailInput" placeholder="email@example.com" required>
+                  <small class="form-help">Poți folosi o adresă de email diferită de cea de autentificare</small>
+                </div>
+              </div>
+              
+              <div class="form-actions">
+                <button type="button" id="subscribeNewsletterBtn" class="modern-btn primary" style="display: none;">
+                  <span class="btn-text">Abonează-te la Newsletter</span>
+                  <span class="btn-loading" style="display: none;">Se procesează...</span>
+                </button>
+                
+                <button type="button" id="unsubscribeNewsletterBtn" class="modern-btn secondary" style="display: none;">
+                  <span class="btn-text">Dezabonează-te de la Newsletter</span>
+                  <span class="btn-loading" style="display: none;">Se procesează...</span>
+                </button>
+              </div>
+            </form>
+            
+            <div id="newsletterAdminMessage" class="admin-message" style="display: none;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Change Password Section -->
+      <section class="admin-section modern-section" id="changePasswordSection">
+        <div class="modern-card animated-card" data-animation="fadeInUp" data-delay="300">
+          <div class="card-header">
+            <h2>🔒 Schimbă Parola</h2>
+          </div>
+          <div class="card-content">
+            <form id="changePasswordForm" class="modern-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="currentPassword">Parola curentă:</label>
+                  <input type="password" id="currentPassword" required>
+                </div>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="newPassword">Parola nouă:</label>
+                  <input type="password" id="newPassword" required>
+                  <div class="password-requirements">
+                    <div class="requirement" id="req-length-admin">
+                      <span class="req-icon">✗</span> Cel puțin 8 caractere
+                    </div>
+                    <div class="requirement" id="req-uppercase-admin">
+                      <span class="req-icon">✗</span> Cel puțin o literă mare (A-Z)
+                    </div>
+                    <div class="requirement" id="req-digit-admin">
+                      <span class="req-icon">✗</span> Cel puțin o cifră (0-9)
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="confirmNewPassword">Confirmă parola nouă:</label>
+                  <input type="password" id="confirmNewPassword" required>
+                </div>
+              </div>
+              
+              <div class="form-actions">
+                <button type="submit" class="modern-btn primary">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <circle cx="12" cy="16" r="1"/>
+                    <path d="M7 11V7a5 5 0 0110 0v4"/>
+                  </svg>
+                  <span>Schimbă Parola</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- Delete Account Section -->
+      <section class="admin-section modern-section danger-section">
+        <div class="modern-card animated-card danger-card" data-animation="fadeInUp" data-delay="400">
+          <div class="card-header danger-header">
+            <h2>⚠️ Șterge Contul</h2>
+          </div>
+          <div class="card-content">
+            <div class="warning-message">
+              <strong>Atenție!</strong> Această acțiune este permanentă și nu poate fi anulată. 
+              Toate datele asociate contului tău vor fi șterse definitiv.
+            </div>
+            
+            <form id="deleteAccountForm" class="modern-form">
+              <!-- Password field - only shown for password users -->
+              <div class="form-row" id="passwordDeleteGroup">
+                <div class="form-group">
+                  <label for="deletePassword">Confirmă parola pentru a șterge contul:</label>
+                  <input type="password" id="deletePassword" required>
+                </div>
+              </div>
+              
+              <!-- Google user message - only shown for Google users -->
+              <div class="form-row" id="googleDeleteMessage" style="display: none;">
+                <div class="info-message">
+                  <strong>Cont Google:</strong> Deoarece te-ai autentificat cu Google, 
+                  nu este necesară confirmarea parolei pentru ștergerea contului.
+                </div>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="checkbox-container">
+                    <input type="checkbox" id="confirmDeletion" required>
+                    <span class="checkmark"></span>
+                    Înțeleg că această acțiune este permanentă și îmi voi pierde toate datele
+                  </label>
+                </div>
+              </div>
+              
+              <div class="form-actions">
+                <button type="submit" class="modern-btn danger">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                    <path d="M10 11v6M14 11v6"/>
+                  </svg>
+                  <span>Șterge Contul Definitiv</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+
+
+        <div id="adminMessage" class="admin-message"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Authentication Modal (reused from main page) -->
+  <div id="authModal" class="auth-modal">
+    <div class="auth-modal-content">
+      <span class="auth-close">&times;</span>
+      
+      <!-- Login Form -->
+      <div id="loginForm" class="auth-form">
+        <h2>Intră în cont</h2>
+        <form id="loginFormElement">
+          <div class="form-group">
+            <label for="loginUsername">Nume utilizator:</label>
+            <input type="text" id="loginUsername" required maxlength="50">
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Parolă:</label>
+            <input type="password" id="loginPassword" required>
+          </div>
+          <button type="submit" class="auth-submit-btn">Intră în cont</button>
+        </form>
+        
+        <div class="auth-divider">
+          <span>sau</span>
+        </div>
+        
+        <button type="button" id="googleLoginBtn" class="google-auth-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          <span>Intră cu Google</span>
+        </button>
+        
+        <p class="auth-switch">
+          Nu ai cont? <a href="#" id="showRegister">Creează unul aici</a>
+        </p>
+      </div>
+      
+      <!-- Register Form -->
+      <div id="registerForm" class="auth-form" style="display: none;">
+        <h2>Creează cont</h2>
+        <form id="registerFormElement">
+          <div class="form-group">
+            <label for="registerUsername">Nume utilizator:</label>
+            <input type="text" id="registerUsername" required maxlength="50">
+          </div>
+          <div class="form-group">
+            <label for="registerPassword">Parolă:</label>
+            <input type="password" id="registerPassword" required>
+            <div class="password-requirements">
+              <div class="requirement" id="req-length">
+                <span class="req-icon">✗</span> Cel puțin 8 caractere
+              </div>
+              <div class="requirement" id="req-uppercase">
+                <span class="req-icon">✗</span> Cel puțin o literă mare (A-Z)
+              </div>
+              <div class="requirement" id="req-digit">
+                <span class="req-icon">✗</span> Cel puțin o cifră (0-9)
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="registerPasswordConfirm">Confirmă parola:</label>
+            <input type="password" id="registerPasswordConfirm" required>
+          </div>
+          <button type="submit" class="auth-submit-btn">Creează cont</button>
+        </form>
+        
+        <div class="auth-divider">
+          <span>sau</span>
+        </div>
+        
+        <button type="button" id="googleRegisterBtn" class="google-auth-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          <span>Înregistrează-te cu Google</span>
+        </button>
+        
+        <p class="auth-switch">
+          Ai deja cont? <a href="#" id="showLogin">Intră în cont aici</a>
+        </p>
+      </div>
+      
+      <div id="authMessage" class="auth-message"></div>
+    </div>
+  </div>
+
+  <!-- Class Details Modal -->
+  <div id="classDetailsModal" class="auth-modal">
+    <div class="auth-modal-content">
+      <span class="auth-close" id="classDetailsClose">&times;</span>
+      
+      <div id="classDetailsContent">
+        <h2 id="classDetailsTitle">Detalii Clasă</h2>
+        
+        <!-- Invite Student Section -->
+        <div class="class-subsection">
+          <h3>Invită Student</h3>
+          <form id="inviteStudentForm" class="admin-form">
+            <div class="form-group">
+              <label for="studentUsername">Nume utilizator student:</label>
+              <div class="autocomplete-container">
+                <input type="text" id="studentUsername" placeholder="Introdu numele studentului" required autocomplete="off">
+                <div id="autocompleteDropdown" class="autocomplete-dropdown"></div>
+              </div>
+              <div id="usernameValidation" class="validation-message"></div>
+            </div>
+            <button type="submit" class="btn-admin">Trimite Invitație</button>
+          </form>
+        </div>
+
+        <!-- Homework Management -->
+        <div class="class-subsection">
+          <h3>Administrare Teme</h3>
+          <button id="showCreateHomeworkBtn" class="btn-admin" onclick="showCreateHomeworkForm()">Creează Temă Nouă</button>
+          
+          <!-- Create Homework Form -->
+          <div id="createHomeworkForm" class="homework-form" style="display: none;">
+            <h4>Creează Temă Nouă</h4>
+            <form id="homeworkCreationForm" class="admin-form">
+              <div class="form-group">
+                <label for="homeworkTitle">Titlu temă:</label>
+                <input type="text" id="homeworkTitle" required placeholder="Ex: Tema 1 - Chimia Organică">
+              </div>
+              <div class="form-group">
+                <label for="homeworkDescription">Descriere (opțional):</label>
+                <textarea id="homeworkDescription" placeholder="Instrucțiuni suplimentare pentru studenți..."></textarea>
+              </div>
+              <div class="form-group">
+                <label for="homeworkQuiz">Chestionar:</label>
+                <select id="homeworkQuiz" required>
+                  <option value="">Selectează chestionarul</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="homeworkDueDate">Termen limită:</label>
+                  <input type="datetime-local" id="homeworkDueDate" required>
+                </div>
+                <div class="form-group">
+                  <label for="homeworkMaxAttempts">Încercări maxime:</label>
+                  <select id="homeworkMaxAttempts">
+                    <option value="1">1 încercare</option>
+                    <option value="2">2 încercări</option>
+                    <option value="3">3 încercări</option>
+                    <option value="5">5 încercări</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn-admin">Creează Tema</button>
+                <button type="button" class="btn-admin secondary" onclick="hideCreateHomeworkForm()">Anulează</button>
+              </div>
+            </form>
+          </div>
+          
+          <!-- Homework List -->
+          <div id="classHomeworkList" class="homework-list">
+            <p>Se încarcă temele...</p>
+          </div>
+        </div>
+
+        <!-- Class Members -->
+        <div class="class-subsection">
+          <h3>Membrii Clasei</h3>
+          <div id="classMembersList" class="members-list">
+            <p>Se încarcă...</p>
+          </div>
+        </div>
+
+        <!-- Pending Invitations -->
+        <div class="class-subsection">
+          <h3>Invitații Pendente</h3>
+          <div id="classPendingInvitationsList" class="invitations-list">
+            <p>Se încarcă...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <!-- Main Footer Section -->
+      <div class="footer-main">
+        <div class="footer-section">
+          <div class="footer-brand">
+            <img src="logo_light.png" alt="Atomify Logo" class="footer-logo">
+            <h3>Atomify</h3>
+            <p>Platformă educațională pentru învățarea chimiei organice și generarea de izomeri</p>
+          </div>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Funcționalități</h4>
+          <ul class="footer-links">
+            <li><a href="isomers.html">Generare Izomeri</a></li>
+            <li><a href="equations.html">Echilibrare Ecuații</a></li>
+            <li><a href="masa.html">Calcul Masă Molară</a></li>
+            <li><a href="chestionare.html">Chestionare</a></li>
+            <li><a href="calcule.html">Calcule Chimice</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Resurse</h4>
+          <ul class="footer-links">
+            <li><a href="leaderboard.html">Clasament</a></li>
+            <li><a href="istoric.html">Istoric Personal</a></li>
+            <li><a href="admin.html">Administrare</a></li>
+            <li><a href="privacy.html">Politica de Confidențialitate</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Contact & Suport</h4>
+          <div class="footer-contact">
+            <div class="contact-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+              <span>atomify66@gmail.com</span>
+            </div>
+            <div class="contact-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span>Constanța, România</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <div class="footer-bottom-content">
+          <div class="footer-copyright">
+            <p>&copy; 2025 Atomify. Toate drepturile rezervate.</p>
+            <p class="team-credits">Proiect realizat de <strong>Siret Luca-Alexandru</strong> și <strong>Zevri Matei-Tudor</strong></p>
+          </div>
+          
+          <div class="footer-legal">
+            <a href="privacy.html" class="legal-link">Politica de Confidențialitate</a>
+          </div>
+          
+          <div class="footer-social">
+            <a href="https://github.com/Atomify66/Atomify" class="social-link" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    let currentUser = null;
+
+    // Check if user is authenticated
+    async function checkAuthentication() {
+      try {
+        const response = await fetch('/user');
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Received user data:', data);
+          currentUser = data.user;
+          console.log('Set currentUser to:', currentUser);
+          updateAuthUI();
+          showAdminContent();
+        } else {
+          currentUser = null;
+          updateAuthUI();
+          showAuthRequired();
+        }
+      } catch (error) {
+        console.error('Error checking authentication:', error);
+        currentUser = null;
+        updateAuthUI();
+        showAuthRequired();
+      }
+    }
+
+    // Update the authentication UI based on user state
+    function updateAuthUI() {
+      const authButtons = document.getElementById('authButtons');
+      const userInfo = document.getElementById('userInfo');
+      const username = document.getElementById('username');
+      const usernameDisplay = document.getElementById('usernameDisplay');
+      const adminUsername = document.getElementById('adminUsername');
+
+      if (currentUser) {
+        authButtons.style.display = 'none';
+        userInfo.style.display = 'block';
+        username.textContent = currentUser.username;
+        if (usernameDisplay) usernameDisplay.textContent = currentUser.username;
+        if (adminUsername) adminUsername.textContent = currentUser.username;
+        
+        // Update delete account UI based on user type
+        updateDeleteAccountUI();
+        
+        // Ensure mobile menu button is visible after login
+        setTimeout(() => {
+          const isMobile = window.innerWidth <= 900;
+          const menuBtn = document.getElementById('mobileMenuBtn');
+          const navContainer = document.querySelector('.nav-container');
+          if (menuBtn && isMobile && navContainer && !navContainer.classList.contains('open')) {
+            menuBtn.style.display = 'flex';
+          }
+        }, 50);
+      } else {
+        authButtons.style.display = 'flex';
+        userInfo.style.display = 'none';
+        
+        // Ensure mobile menu button is visible when logged out
+        setTimeout(() => {
+          const isMobile = window.innerWidth <= 900;
+          const menuBtn = document.getElementById('mobileMenuBtn');
+          const navContainer = document.querySelector('.nav-container');
+          if (menuBtn && isMobile && navContainer && !navContainer.classList.contains('open')) {
+            menuBtn.style.display = 'flex';
+          }
+        }, 50);
+      }
+    }
+
+    // Setup user dropdown functionality
+    function setupUserDropdown() {
+      const dropdownTrigger = document.getElementById('userDropdownTrigger');
+      const dropdownMenu = document.getElementById('userDropdownMenu');
+      
+      if (!dropdownTrigger || !dropdownMenu) return;
+      
+      // Toggle dropdown on click
+      dropdownTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle('show');
+        dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+      });
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+      
+      // Close dropdown when pressing Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+          dropdownTrigger.focus();
+        }
+      });
+    }
+
+    function showAdminContent() {
+      document.getElementById('authRequired').style.display = 'none';
+      document.getElementById('adminContent').style.display = 'block';
+      
+      // Show current country if available
+      updateCountryDisplay();
+      
+      // Show appropriate sections based on user role
+      if (currentUser && !currentUser.role) {
+        // User has no role - show role selection panel
+        document.getElementById('roleSelectionPanel').style.display = 'block';
+        document.getElementById('classManagementSection').style.display = 'none';
+        document.getElementById('quizManagementSection').style.display = 'none';
+        document.getElementById('studentSection').style.display = 'none';
+        hideRoleSpecificCards();
+      } else if (currentUser && currentUser.role === 'professor') {
+        document.getElementById('roleSelectionPanel').style.display = 'none';
+        document.getElementById('classManagementSection').style.display = 'block';
+        document.getElementById('quizManagementSection').style.display = 'block';
+        document.getElementById('studentSection').style.display = 'none';
+        showTeacherCards();
+        loadMyClasses();
+        loadMyQuizzes();
+      } else if (currentUser && currentUser.role === 'student') {
+        document.getElementById('roleSelectionPanel').style.display = 'none';
+        document.getElementById('classManagementSection').style.display = 'none';
+        document.getElementById('quizManagementSection').style.display = 'none';
+        document.getElementById('studentSection').style.display = 'block';
+        showStudentCards();
+        loadStudentHomework();
+        loadPendingInvitations();
+        loadJoinedClasses();
+      }
+    }
+
+    // Show/hide role-specific action cards and stats
+    function showTeacherCards() {
+      // Show teacher-only cards and stats
+      document.querySelectorAll('.teacher-only-card, .teacher-only-stat').forEach(card => {
+        card.style.display = 'block';
+      });
+      // Hide student-only cards and stats
+      document.querySelectorAll('.student-only-card, .student-only-stat').forEach(card => {
+        card.style.display = 'none';
+      });
+      // Update role-specific text
+      updateRoleSpecificText('teacher');
+    }
+
+    function showStudentCards() {
+      // Hide teacher-only cards and stats
+      document.querySelectorAll('.teacher-only-card, .teacher-only-stat').forEach(card => {
+        card.style.display = 'none';
+      });
+      // Show student-only cards and stats
+      document.querySelectorAll('.student-only-card, .student-only-stat').forEach(card => {
+        card.style.display = 'block';
+      });
+      // Update role-specific text
+      updateRoleSpecificText('student');
+    }
+
+    function hideRoleSpecificCards() {
+      // Hide both teacher and student cards and stats
+      document.querySelectorAll('.teacher-only-card, .student-only-card, .teacher-only-stat, .student-only-stat').forEach(card => {
+        card.style.display = 'none';
+      });
+    }
+
+    function updateRoleSpecificText(role) {
+      const titleElement = document.querySelector('.role-specific-title');
+      const descElement = document.querySelector('.role-specific-description');
+      const statLabelElement = document.querySelector('.role-stat-label');
+      const homeworkLabelElement = document.querySelector('.role-homework-label');
+      
+      if (role === 'teacher') {
+        if (titleElement) titleElement.textContent = 'Clasele Mele';
+        if (descElement) descElement.textContent = 'Gestionează clasele existente și studenții';
+        if (statLabelElement) statLabelElement.textContent = 'Clase Create';
+        if (homeworkLabelElement) homeworkLabelElement.textContent = 'Teme Active';
+      } else if (role === 'student') {
+        if (titleElement) titleElement.textContent = 'Clasele Mele';
+        if (descElement) descElement.textContent = 'Vezi clasele la care participi';
+        if (statLabelElement) statLabelElement.textContent = 'Clase Alăturate';
+        if (homeworkLabelElement) homeworkLabelElement.textContent = 'Teme Primite';
+      }
+    }
+
+    function showAuthRequired() {
+      document.getElementById('authRequired').style.display = 'block';
+      document.getElementById('adminContent').style.display = 'none';
+    }
+
+    // Modal functions
+    function showAuthModal(mode = 'login') {
+      const modal = document.getElementById('authModal');
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      const authMessage = document.getElementById('authMessage');
+
+      authMessage.style.display = 'none';
+      authMessage.className = 'auth-message';
+
+      if (mode === 'login') {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+      } else {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        updatePasswordRequirements('');
+      }
+
+      modal.style.display = 'block';
+    }
+
+    function hideAuthModal() {
+      const modal = document.getElementById('authModal');
+      modal.style.display = 'none';
+      
+      document.getElementById('loginFormElement').reset();
+      document.getElementById('registerFormElement').reset();
+      updatePasswordRequirements('');
+    }
+
+    function showAuthMessage(message, type = 'error') {
+      const authMessage = document.getElementById('authMessage');
+      authMessage.textContent = message;
+      authMessage.className = `auth-message ${type}`;
+      authMessage.style.display = 'block';
+    }
+
+    function showAdminMessage(message, type = 'error') {
+      const adminMessage = document.getElementById('adminMessage');
+      adminMessage.textContent = message;
+      adminMessage.className = `admin-message ${type}`;
+      adminMessage.style.display = 'block';
+      
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        adminMessage.style.display = 'none';
+      }, 5000);
+    }
+
+    // Update delete account UI based on user type
+    function updateDeleteAccountUI() {
+      const passwordDeleteGroup = document.getElementById('passwordDeleteGroup');
+      const googleDeleteMessage = document.getElementById('googleDeleteMessage');
+      const deletePasswordField = document.getElementById('deletePassword');
+      const changePasswordSection = document.getElementById('changePasswordSection');
+      
+      // Debug logging
+      console.log('updateDeleteAccountUI called');
+      console.log('currentUser:', currentUser);
+      console.log('currentUser.isGoogleUser:', currentUser ? currentUser.isGoogleUser : 'no user');
+      
+      if (currentUser && currentUser.isGoogleUser) {
+        // Google user - hide password-related sections
+        console.log('User is Google user - hiding password sections');
+        passwordDeleteGroup.style.display = 'none';
+        googleDeleteMessage.style.display = 'block';
+        deletePasswordField.removeAttribute('required');
+        changePasswordSection.style.display = 'none';
+      } else {
+        // Regular user - show password-related sections
+        console.log('User is regular user - showing password sections');
+        passwordDeleteGroup.style.display = 'block';
+        googleDeleteMessage.style.display = 'none';
+        deletePasswordField.setAttribute('required', 'required');
+        changePasswordSection.style.display = 'block';
+      }
+    }
+
+    // Password validation functions
+    function validatePassword(password) {
+      const requirements = {
+        length: password.length >= 8,
+        uppercase: /[A-Z]/.test(password),
+        digit: /[0-9]/.test(password)
+      };
+      return requirements;
+    }
+
+    function updatePasswordRequirements(password, prefix = '') {
+      const requirements = validatePassword(password);
+      
+      const lengthReq = document.getElementById(`req-length${prefix}`);
+      const uppercaseReq = document.getElementById(`req-uppercase${prefix}`);
+      const digitReq = document.getElementById(`req-digit${prefix}`);
+
+      if (lengthReq) {
+        lengthReq.className = requirements.length ? 'requirement met' : 'requirement not-met';
+      }
+      if (uppercaseReq) {
+        uppercaseReq.className = requirements.uppercase ? 'requirement met' : 'requirement not-met';
+      }
+      if (digitReq) {
+        digitReq.className = requirements.digit ? 'requirement met' : 'requirement not-met';
+      }
+      
+      return requirements.length && requirements.uppercase && requirements.digit;
+    }
+
+    function isPasswordValid(password) {
+      const requirements = validatePassword(password);
+      return requirements.length && requirements.uppercase && requirements.digit;
+    }
+
+    // Authentication handlers
+    async function handleLogin(event) {
+      event.preventDefault();
+      
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+
+      // Username validation
+      if (username.length > 50) {
+        showAuthMessage('Numele de utilizator nu poate avea mai mult de 50 de caractere');
+        return;
+      }
+      if (username.trim().length === 0) {
+        showAuthMessage('Numele de utilizator nu poate fi gol');
+        return;
+      }
+
+      try {
+        const response = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showAuthMessage('Autentificare reușită!', 'success');
+          setTimeout(() => {
+            hideAuthModal();
+            checkAuthentication();
+          }, 1000);
+        } else {
+          showAuthMessage(data.error || 'Eroare la autentificare');
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        showAuthMessage('Eroare de conexiune. Încearcă din nou.');
+      }
+    }
+
+    async function handleRegister(event) {
+      event.preventDefault();
+      
+      const username = document.getElementById('registerUsername').value;
+      const password = document.getElementById('registerPassword').value;
+      const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
+
+      // Username validation
+      if (username.length > 50) {
+        showAuthMessage('Numele de utilizator nu poate avea mai mult de 50 de caractere');
+        return;
+      }
+      if (username.trim().length === 0) {
+        showAuthMessage('Numele de utilizator nu poate fi gol');
+        return;
+      }
+
+      if (!isPasswordValid(password)) {
+        showAuthMessage('Parola nu îndeplinește toate cerințele');
+        return;
+      }
+
+      if (password !== passwordConfirm) {
+        showAuthMessage('Parolele nu coincid');
+        return;
+      }
+
+      try {
+        const response = await fetch('/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showAuthMessage('Cont creat cu succes! Te poți autentifica acum.', 'success');
+          setTimeout(() => {
+            showAuthModal('login');
+          }, 1500);
+        } else {
+          showAuthMessage(data.error || 'Eroare la crearea contului');
+        }
+      } catch (error) {
+        console.error('Registration error:', error);
+        showAuthMessage('Eroare de conexiune. Încearcă din nou.');
+      }
+    }
+
+    async function handleLogout() {
+      try {
+        const response = await fetch('/logout', { method: 'POST' });
+        if (response.ok) {
+          currentUser = null;
+          updateAuthUI();
+          showAuthRequired();
+        }
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+    }
+
+    // Handle Google OAuth authentication
+    function handleGoogleAuth() {
+      window.location.href = '/auth/google';
+    }
+
+    // Check authentication status from URL parameters
+    function checkAuthenticationStatus() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const authStatus = urlParams.get('auth');
+      
+      if (authStatus === 'success') {
+        // Show success message
+        showAuthMessage('Autentificare cu Google reușită!', 'success');
+        // Clean up URL
+        const url = new URL(window.location);
+        url.searchParams.delete('auth');
+        window.history.replaceState({}, document.title, url);
+        // Check authentication status
+        setTimeout(() => {
+          checkAuthentication();
+        }, 1000);
+      } else if (authStatus === 'failed') {
+        // Show error message
+        showAuthMessage('Autentificarea cu Google a eșuat. Încearcă din nou.', 'error');
+        // Clean up URL
+        const url = new URL(window.location);
+        url.searchParams.delete('auth');
+        window.history.replaceState({}, document.title, url);
+      }
+    }
+
+    // Admin functions
+    async function handleChangePassword(event) {
+      event.preventDefault();
+      
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+
+      if (!isPasswordValid(newPassword)) {
+        showAdminMessage('Parola nouă nu îndeplinește toate cerințele');
+        return;
+      }
+
+      if (newPassword !== confirmNewPassword) {
+        showAdminMessage('Parolele noi nu coincid');
+        return;
+      }
+
+      try {
+        const response = await fetch('/change-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ currentPassword, newPassword }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showAdminMessage(data.message, 'success');
+          document.getElementById('changePasswordForm').reset();
+          updatePasswordRequirements('', '-admin');
+        } else {
+          showAdminMessage(data.error || 'Eroare la schimbarea parolei');
+        }
+      } catch (error) {
+        console.error('Change password error:', error);
+        showAdminMessage('Eroare de conexiune. Încearcă din nou.');
+      }
+    }
+
+    async function handleDeleteAccount(event) {
+      event.preventDefault();
+      
+      const confirmed = document.getElementById('confirmDeletion').checked;
+
+      if (!confirmed) {
+        showAdminMessage('Trebuie să confirmi că înțelegi consecințele ștergerii contului');
+        return;
+      }
+
+      // Different confirmation message for Google vs password users
+      const isGoogleUser = currentUser && currentUser.isGoogleUser;
+      const confirmMessage = isGoogleUser ? 
+        'Ești absolut sigur că vrei să îți ștergi contul Google? Această acțiune NU poate fi anulată!' :
+        'Ești absolut sigur că vrei să îți ștergi contul? Această acțiune NU poate fi anulată!';
+        
+      if (!confirm(confirmMessage)) {
+        return;
+      }
+
+      // Prepare request body - only include password for non-Google users
+      const requestBody = {};
+      if (!isGoogleUser) {
+        const password = document.getElementById('deletePassword').value;
+        if (!password) {
+          showAdminMessage('Parola este obligatorie pentru ștergerea contului');
+          return;
+        }
+        requestBody.password = password;
+      }
+
+      try {
+        const response = await fetch('/delete-account', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert('Contul a fost șters cu succes. Vei fi redirecționat către pagina principală.');
+          window.location.href = 'index.html';
+        } else {
+          showAdminMessage(data.error || 'Eroare la ștergerea contului');
+        }
+      } catch (error) {
+        console.error('Delete account error:', error);
+        showAdminMessage('Eroare de conexiune. Încearcă din nou.');
+      }
+    }
+
+    // Class Management Functions
+    let currentClassId = null;
+
+    async function handleCreateClass(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById('className').value;
+      const description = document.getElementById('classDescription').value;
+
+      try {
+        const response = await fetch('/create-class', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, description }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showAdminMessage('Clasa a fost creată cu succes!', 'success');
+          document.getElementById('createClassForm').reset();
+          loadMyClasses();
+        } else {
+          showAdminMessage(data.error || 'Eroare la crearea clasei');
+        }
+      } catch (error) {
+        console.error('Create class error:', error);
+        showAdminMessage('Eroare de conexiune. Încearcă din nou.');
+      }
+    }
+
+    async function loadMyClasses() {
+      try {
+        const response = await fetch('/my-classes');
+        const data = await response.json();
+
+        if (response.ok) {
+          displayMyClasses(data.classes);
+        } else {
+          console.error('Error loading classes:', data.error);
+        }
+      } catch (error) {
+        console.error('Error loading classes:', error);
+      }
+    }
+
+    function displayMyClasses(classes) {
+      const container = document.getElementById('myClassesList');
+      
+      if (classes.length === 0) {
+        container.innerHTML = '<p>Nu ai creat încă nicio clasă.</p>';
+        return;
+      }
+
+      container.innerHTML = classes.map(cls => `
+        <div class="class-card">
+          <h4>${cls.name}</h4>
+          <p>${cls.description || 'Fără descriere'}</p>
+          <p><strong>Studenți:</strong> ${cls.student_count}</p>
+          <p><strong>Creat:</strong> ${new Date(cls.created_at).toLocaleDateString('ro-RO')}</p>
+          <button class="btn-admin btn-small class-details-btn" data-class-id="${cls.id}" data-class-name="${cls.name}">Vezi Detalii</button>
+        </div>
+      `).join('');
+      
+      // Add event listeners for class details buttons
+      container.querySelectorAll('.class-details-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const classId = this.getAttribute('data-class-id');
+          const className = this.getAttribute('data-class-name');
+          showClassDetails(parseInt(classId), className);
+        });
+      });
+      
+      // Populate professor leaderboard selects
+      populateProfessorSelects(classes);
+    }
+
+    // Populate professor leaderboard selects
+    function populateProfessorSelects(classes) {
+      const classSelect = document.getElementById('professorClassSelect');
+      const quizSelect = document.getElementById('professorQuizSelect');
+      
+      if (classSelect) {
+        classSelect.innerHTML = '<option value="">Selectează clasa</option>';
+        
+        classes.forEach(cls => {
+          const option = document.createElement('option');
+          option.value = cls.id;
+          option.textContent = cls.name;
+          classSelect.appendChild(option);
+        });
+      }
+      
+      // Load available quizzes for the quiz select
+      if (quizSelect) {
+        loadAvailableQuizzes();
+      }
+    }
+
+    // Load available quizzes
+    async function loadAvailableQuizzes() {
+      try {
+        const response = await fetch('/api/quizzes');
+        if (response.ok) {
+          const quizzes = await response.json();
+          const quizSelect = document.getElementById('professorQuizSelect');
+          
+                     quizSelect.innerHTML = '<option value="">Selectează chestionarul</option>';
+          quizzes.forEach(quiz => {
+            const option = document.createElement('option');
+            option.value = quiz.id;
+            option.textContent = quiz.title;
+            quizSelect.appendChild(option);
+          });
+        }
+      } catch (error) {
+        console.error('Error loading quizzes:', error);
+      }
+    }
+
+
+
+    // Make functions available globally
+    window.removeStudent = removeStudent;
+    window.exitClassroom = exitClassroom;
+    window.showCreateHomeworkForm = showCreateHomeworkForm;
+    window.hideCreateHomeworkForm = hideCreateHomeworkForm;
+    window.viewHomeworkDetails = viewHomeworkDetails;
+
+    async function showClassDetails(classId, className) {
+      console.log('showClassDetails called with:', { classId, className });
+      currentClassId = classId;
+      console.log('currentClassId set to:', currentClassId);
+      document.getElementById('classDetailsTitle').textContent = `Detalii - ${className}`;
+      document.getElementById('classDetailsModal').style.display = 'block';
+      
+      // Clear previous form
+      document.getElementById('inviteStudentForm').reset();
+      
+      // Load class members and homework in parallel
+      await Promise.all([
+        loadClassMembers(classId),
+        loadClassHomework(classId)
+      ]);
+    }
+
+    async function loadClassMembers(classId) {
+      try {
+        const response = await fetch(`/class-members/${classId}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          displayClassMembers(data.members);
+          displayClassPendingInvitations(data.pendingInvitations);
+        } else {
+          console.error('Error loading class members:', data.error);
+        }
+      } catch (error) {
+        console.error('Error loading class members:', error);
+      }
+    }
+
+    function displayClassMembers(members) {
+      const container = document.getElementById('classMembersList');
+      
+      if (members.length === 0) {
+        container.innerHTML = '<p>Nu există încă membri în această clasă.</p>';
+        return;
+      }
+
+      container.innerHTML = members.map(member => `
+        <div class="member-card">
+          <div class="member-info">
+            <h5>${member.username}</h5>
+            <p>${member.email || 'Email nedisponibil'}</p>
+            <p><strong>Adăugat:</strong> ${new Date(member.joined_at).toLocaleDateString('ro-RO')}</p>
+          </div>
+          <div class="member-actions">
+            <button class="btn-admin btn-small btn-danger" onclick="removeStudent(${member.id}, '${member.username}')">
+              Elimină
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function displayClassPendingInvitations(invitations) {
+      const container = document.getElementById('classPendingInvitationsList');
+      
+      if (invitations.length === 0) {
+        container.innerHTML = '<p>Nu există invitații pendente.</p>';
+        return;
+      }
+
+      container.innerHTML = invitations.map(invitation => `
+        <div class="invitation-card">
+          <h5>${invitation.username}</h5>
+          <p>${invitation.email || 'Email nedisponibil'}</p>
+          <p><strong>Invitat:</strong> ${new Date(invitation.created_at).toLocaleDateString('ro-RO')}</p>
+        </div>
+      `).join('');
+    }
+
+    async function handleInviteStudent(event) {
+      event.preventDefault();
+      
+      const studentUsername = document.getElementById('studentUsername').value.trim();
+      const validation = document.getElementById('usernameValidation');
+
+      if (!currentClassId || !studentUsername) {
+        validation.className = 'validation-message error';
+        validation.textContent = 'Te rugăm să introduci numele studentului';
+        validation.style.display = 'block';
+        return;
+      }
+      
+      // First validate the username exists and is a student
+      try {
+        const checkResponse = await fetch(`/check-user/${encodeURIComponent(studentUsername)}`);
+        const checkData = await checkResponse.json();
+        
+        if (checkResponse.ok) {
+          if (!checkData.exists) {
+            validation.className = 'validation-message error';
+            validation.textContent = checkData.message;
+            validation.style.display = 'block';
+            return;
+          } else if (!checkData.valid) {
+            validation.className = 'validation-message warning';
+            validation.textContent = checkData.message;
+            validation.style.display = 'block';
+            return;
+          }
+          // If valid, we can proceed (whether they're a student or need role selection)
+        } else {
+          validation.className = 'validation-message error';
+          validation.textContent = 'Eroare la verificarea utilizatorului';
+          validation.style.display = 'block';
+          return;
+        }
+      } catch (error) {
+        console.error('Error checking user:', error);
+        validation.className = 'validation-message error';
+        validation.textContent = 'Eroare de conexiune la verificarea utilizatorului';
+        validation.style.display = 'block';
+        return;
+      }
+
+      try {
+        const response = await fetch('/invite-student', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ classId: currentClassId, studentUsername }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          validation.className = 'validation-message success';
+          validation.textContent = '✓ Invitația a fost trimisă cu succes!';
+          validation.style.display = 'block';
+          document.getElementById('inviteStudentForm').reset();
+          hideDropdown();
+          loadClassMembers(currentClassId);
+          
+          // Hide success message after 3 seconds
+          setTimeout(() => {
+            validation.className = 'validation-message';
+            validation.style.display = 'none';
+          }, 3000);
+        } else {
+          validation.className = 'validation-message error';
+          validation.textContent = data.error || 'Eroare la trimiterea invitației';
+          validation.style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Invite student error:', error);
+        validation.className = 'validation-message error';
+        validation.textContent = 'Eroare de conexiune la trimiterea invitației';
+        validation.style.display = 'block';
+      }
+    }
+
+    async function loadPendingInvitations() {
+      try {
+        const response = await fetch('/pending-invitations');
+        const data = await response.json();
+
+        if (response.ok) {
+          displayPendingInvitations(data.invitations);
+        } else {
+          console.error('Error loading pending invitations:', data.error);
+        }
+      } catch (error) {
+        console.error('Error loading pending invitations:', error);
+      }
+    }
+
+    function displayPendingInvitations(invitations) {
+      const container = document.getElementById('pendingInvitationsList');
+      
+      if (invitations.length === 0) {
+        container.innerHTML = '<p>Nu ai invitații pendente.</p>';
+        return;
+      }
+
+      container.innerHTML = invitations.map(invitation => `
+        <div class="invitation-card">
+          <h4>${invitation.class_name}</h4>
+          <p>${invitation.class_description || 'Fără descriere'}</p>
+          <p><strong>Profesor:</strong> ${invitation.professor_name}</p>
+          <p><strong>Invitat:</strong> ${new Date(invitation.created_at).toLocaleDateString('ro-RO')}</p>
+          <div class="invitation-actions">
+            <button onclick="respondToInvitation(${invitation.id}, true)" class="btn-admin btn-small">Acceptă</button>
+            <button onclick="respondToInvitation(${invitation.id}, false)" class="btn-admin btn-small btn-danger">Respinge</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function respondToInvitation(invitationId, accept) {
+      try {
+        const response = await fetch('/respond-invitation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ invitationId, accept }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showAdminMessage(data.message, 'success');
+          loadPendingInvitations();
+          if (accept) {
+            loadJoinedClasses();
+          }
+        } else {
+          showAdminMessage(data.error || 'Eroare la răspunsul la invitație');
+        }
+      } catch (error) {
+        console.error('Respond to invitation error:', error);
+        showAdminMessage('Eroare de conexiune. Încearcă din nou.');
+      }
+    }
+
+    async function loadJoinedClasses() {
+      try {
+        const response = await fetch('/my-classes');
+        const data = await response.json();
+
+        if (response.ok) {
+          displayJoinedClasses(data.classes);
+        } else {
+          console.error('Error loading joined classes:', data.error);
+        }
+      } catch (error) {
+        console.error('Error loading joined classes:', error);
+      }
+    }
+
+    function displayJoinedClasses(classes) {
+      const container = document.getElementById('joinedClassesList');
+      
+      if (classes.length === 0) {
+        container.innerHTML = '<p>Nu ești membru al niciunei clase.</p>';
+        return;
+      }
+
+      container.innerHTML = classes.map(cls => `
+        <div class="class-card">
+          <div class="class-info">
+            <h4>${cls.name}</h4>
+            <p>${cls.description || 'Fără descriere'}</p>
+            <p><strong>Profesor:</strong> ${cls.professor_name}</p>
+            <p><strong>Adăugat:</strong> ${new Date(cls.joined_at).toLocaleDateString('ro-RO')}</p>
+          </div>
+          <div class="class-actions">
+            <button class="btn-admin btn-small btn-danger" onclick="exitClassroom(${cls.id}, '${cls.name}')">
+              Ieși din clasă
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function hideClassDetailsModal() {
+      document.getElementById('classDetailsModal').style.display = 'none';
+      currentClassId = null;
+    }
+
+    // Remove student from class (professors only)
+    async function removeStudent(studentId, studentUsername) {
+      if (!currentClassId) {
+        showAdminMessage('Eroare: Nu s-a putut identifica clasa');
+        return;
+      }
+
+      // Double confirmation
+      if (!confirm(`Ești sigur că vrei să elimini studentul "${studentUsername}" din această clasă?`)) {
+        return;
+      }
+
+      try {
+        const response = await fetch('/remove-student', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ classId: currentClassId, studentId }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showAdminMessage('Studentul a fost eliminat cu succes din clasă!', 'success');
+          // Reload class members to update the display
+          loadClassMembers(currentClassId);
+        } else {
+          showAdminMessage(data.error || 'Eroare la eliminarea studentului');
+        }
+      } catch (error) {
+        console.error('Remove student error:', error);
+        showAdminMessage('Eroare de conexiune. Încearcă din nou.');
+      }
+    }
+
+    // Role Selection Functions
+    async function selectRole(role) {
+      try {
+        const response = await fetch('/set-role', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ role }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Update current user
+          currentUser.role = role;
+          
+          // Show success message
+          const messageDiv = document.getElementById('roleSelectionMessage');
+          messageDiv.textContent = `Profil completat cu succes! Ești acum ${role === 'student' ? 'student' : 'profesor'}.`;
+          messageDiv.className = 'admin-message success';
+          messageDiv.style.display = 'block';
+          
+          // Hide role selection and show appropriate content
+          setTimeout(() => {
+            showAdminContent();
+          }, 1500);
+        } else {
+          const messageDiv = document.getElementById('roleSelectionMessage');
+          messageDiv.textContent = data.error || 'Eroare la setarea rolului';
+          messageDiv.className = 'admin-message error';
+          messageDiv.style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Set role error:', error);
+        const messageDiv = document.getElementById('roleSelectionMessage');
+        messageDiv.textContent = 'Eroare de conexiune. Încearcă din nou.';
+        messageDiv.className = 'admin-message error';
+        messageDiv.style.display = 'block';
+      }
+    }
+
+    // Exit classroom (students only)
+    async function exitClassroom(classId, className) {
+      // Double confirmation
+      if (!confirm(`Ești sigur că vrei să ieși din clasa "${className}"?`)) {
+        return;
+      }
+
+      try {
+        const response = await fetch('/exit-classroom', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ classId }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showAdminMessage('Ai ieșit cu succes din clasă!', 'success');
+          // Reload joined classes to update the display
+          loadJoinedClasses();
+        } else {
+          showAdminMessage(data.error || 'Eroare la ieșirea din clasă');
+        }
+      } catch (error) {
+        console.error('Exit classroom error:', error);
+        showAdminMessage('Eroare de conexiune. Încearcă din nou.');
+      }
+    }
+
+    // Country Selection Functions
+    function updateCountryDisplay() {
+      const currentCountryDiv = document.getElementById('currentCountry');
+      const countryDisplay = document.getElementById('countryDisplay');
+      const countrySelect = document.getElementById('countrySelect');
+      
+      if (currentUser && currentUser.country) {
+        currentCountryDiv.style.display = 'block';
+        countryDisplay.textContent = currentUser.country;
+        countrySelect.value = currentUser.country;
+      } else {
+        currentCountryDiv.style.display = 'none';
+        countrySelect.value = '';
+      }
+    }
+
+    async function handleCountrySelection(event) {
+      event.preventDefault();
+      
+      const country = document.getElementById('countrySelect').value;
+      if (!country) {
+        showAdminMessage('Te rugăm să selectezi o țară');
+        return;
+      }
+
+      try {
+        const response = await fetch('/set-country', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ country }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Update current user
+          currentUser.country = data.country;
+          
+          // Update display
+          updateCountryDisplay();
+          
+          showAdminMessage('Țara a fost salvată cu succes!', 'success');
+        } else {
+          showAdminMessage(data.error || 'Eroare la salvarea țării');
+        }
+      } catch (error) {
+        console.error('Set country error:', error);
+        showAdminMessage('Eroare de conexiune. Încearcă din nou.');
+      }
+    }
+
+    // Mobile menu setup
+    function setupMobileMenu() {
+      const menuBtn = document.getElementById('mobileMenuBtn');
+      const closeBtn = document.getElementById('menuCloseBtn');
+      const navContainer = document.querySelector('.nav-container');
+      const backdrop = document.createElement('div');
+      backdrop.className = 'menu-backdrop';
+      document.body.appendChild(backdrop);
+
+      function updateMenuButtonVisibility() {
+        const isMobile = window.innerWidth <= 900;
+        if (navContainer.classList.contains('open')) {
+          menuBtn.style.display = 'none';
+        } else {
+          menuBtn.style.display = isMobile ? 'flex' : 'none';
+        }
+      }
+
+      function openMenu() {
+        if (window.innerWidth > 900) return;
+        navContainer.classList.add('open');
+        backdrop.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        updateMenuButtonVisibility();
+      }
+      
+      function closeMenu() {
+        navContainer.classList.remove('open');
+        backdrop.classList.remove('show');
+        document.body.style.overflow = '';
+        updateMenuButtonVisibility();
+      }
+
+      function handleResize() {
+        if (window.innerWidth > 900 && navContainer.classList.contains('open')) {
+          closeMenu();
+        }
+        updateMenuButtonVisibility();
+      }
+      
+      if (menuBtn) menuBtn.addEventListener('click', openMenu);
+      if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+      backdrop.addEventListener('click', closeMenu);
+      window.addEventListener('resize', handleResize);
+      
+      const navLinks = document.querySelectorAll('.nav-link, .nav-links a');
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          // Don't close menu if it's a dropdown trigger
+          if (link.classList.contains('isomer-dropdown-trigger') || link.classList.contains('user-dropdown-trigger')) {
+            return; // Let the dropdown handle its own behavior
+          }
+          if (window.innerWidth <= 900) {
+            closeMenu();
+          }
+        });
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && navContainer.classList.contains('open')) {
+          closeMenu();
+        }
+      });
+
+      updateMenuButtonVisibility();
+    }
+
+    // Setup isomer dropdown functionality
+    function setupIsomerDropdown() {
+      const dropdownTrigger = document.getElementById('isomerDropdownTrigger');
+      const dropdownMenu = document.getElementById('isomerDropdownMenu');
+      
+      if (!dropdownTrigger || !dropdownMenu) return;
+      
+      // Toggle dropdown on click
+      dropdownTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        console.log('Isomer dropdown clicked, screen width:', window.innerWidth);
+        
+        // On mobile, we want the dropdown to stay open within the mobile menu
+        if (window.innerWidth <= 900) {
+          dropdownMenu.classList.toggle('show');
+          dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+          console.log('Mobile dropdown toggled, show class:', dropdownMenu.classList.contains('show'));
+        } else {
+          // Desktop behavior
+          dropdownMenu.classList.toggle('show');
+          dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+        }
+      });
+      
+      // Only close on outside click for desktop
+      document.addEventListener('click', (e) => {
+        if (window.innerWidth > 900 && !dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+      
+      // Close dropdown when pressing Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+          dropdownTrigger.focus();
+        }
+      });
+    }
+
+    // Setup calcule dropdown functionality
+    function setupCalculeDropdown() {
+      const dropdownTrigger = document.getElementById('calculeDropdownTrigger');
+      const dropdownMenu = document.getElementById('calculeDropdownMenu');
+      
+      if (!dropdownTrigger || !dropdownMenu) return;
+      
+      // Toggle dropdown on click
+      dropdownTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        console.log('Calcule dropdown clicked, screen width:', window.innerWidth);
+        
+        // On mobile, we want the dropdown to stay open within the mobile menu
+        if (window.innerWidth <= 900) {
+          dropdownMenu.classList.toggle('show');
+          dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+          console.log('Mobile dropdown toggled, show class:', dropdownMenu.classList.contains('show'));
+        } else {
+          // Desktop behavior
+          dropdownMenu.classList.toggle('show');
+          dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+        }
+      });
+      
+      // Only close on outside click for desktop
+      document.addEventListener('click', (e) => {
+        if (window.innerWidth > 900 && !dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+      
+      // Close dropdown when pressing Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+          dropdownTrigger.focus();
+        }
+      });
+    }
+
+    // Setup user dropdown functionality
+    function setupUserDropdown() {
+      const dropdownTrigger = document.getElementById('userDropdownTrigger');
+      const dropdownMenu = document.getElementById('userDropdownMenu');
+      
+      if (!dropdownTrigger || !dropdownMenu) return;
+      
+      // Ensure dropdown is initially closed in mobile
+      dropdownMenu.classList.remove('show');
+      dropdownTrigger.setAttribute('aria-expanded', 'false');
+      
+      // Toggle dropdown on click
+      dropdownTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle('show');
+        dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+      });
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+      
+      // Close dropdown when pressing Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+          dropdownTrigger.focus();
+        }
+      });
+      
+      // Ensure mobile dropdown behavior is consistent
+      window.addEventListener('resize', () => {
+        if (window.innerWidth <= 900) {
+          // In mobile view, ensure dropdown starts closed
+          if (!dropdownMenu.closest('.nav-container.open')) {
+            dropdownMenu.classList.remove('show');
+            dropdownTrigger.setAttribute('aria-expanded', 'false');
+          }
+        }
+      });
+    }
+
+    // ================== Animation and Interactive Functions ==================
+    
+    // Initialize animations
+    function initializeAnimations() {
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const element = entry.target;
+            const delay = element.dataset.delay || 0;
+            
+            setTimeout(() => {
+              element.classList.add('animate');
+              
+              // Don't animate stat counters here - they're handled by loadAdminStats
+              // if (element.classList.contains('stat-card')) {
+              //   animateCounter(element.querySelector('.stat-number'));
+              // }
+            }, delay);
+          }
+        });
+      }, observerOptions);
+
+      // Observe all animated elements
+      document.querySelectorAll('.animated-card').forEach(el => {
+        observer.observe(el);
+      });
+    }
+
+    // Track which stat elements have been animated
+    const animatedStats = new Set();
+
+    // Animate numbers with counting effect
+    function animateCounter(element) {
+      if (!element || element.textContent === '-' || element.textContent === '...') return;
+      
+      // Check if this element has already been animated
+      if (animatedStats.has(element)) return;
+      
+      const target = parseInt(element.textContent) || 0;
+      if (target === 0) return; // Don't animate zero values
+      
+      const increment = target / 20;
+      let current = 0;
+      
+      // Mark this element as animated
+      animatedStats.add(element);
+      
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          element.textContent = target;
+          clearInterval(timer);
+        } else {
+          element.textContent = Math.floor(current);
+        }
+      }, 50);
+    }
+
+         // Load and display admin statistics
+     async function loadAdminStats() {
+       try {
+         // Determine which stats to load based on user role
+         const isTeacher = currentUser && currentUser.role === 'professor';
+         const isStudent = currentUser && currentUser.role === 'student';
+         
+         // Show loading state first
+         const commonElements = ['joinedClasses', 'totalQuizzes', 'totalHomework'];
+         const teacherElements = ['totalClasses', 'totalStudents'];
+         const studentElements = ['completedHomework'];
+         
+         const statElements = [...commonElements];
+         if (isTeacher) statElements.push(...teacherElements);
+         if (isStudent) statElements.push(...studentElements);
+         
+         statElements.forEach(id => {
+           const element = document.getElementById(id);
+           if (element) element.textContent = '...';
+         });
+
+         const response = await fetch('/admin-stats');
+         if (response.ok) {
+           const stats = await response.json();
+           
+           // Update stats with animation
+           setTimeout(() => {
+             // Common stats for both roles
+             if (document.getElementById('joinedClasses')) {
+               const element = document.getElementById('joinedClasses');
+               element.textContent = isTeacher ? (stats.classes || 0) : (stats.joinedClasses || 0);
+               animateCounter(element);
+             }
+             if (document.getElementById('totalQuizzes')) {
+               const element = document.getElementById('totalQuizzes');
+               element.textContent = stats.quizzes || 0;
+               animateCounter(element);
+             }
+             if (document.getElementById('totalHomework')) {
+               const element = document.getElementById('totalHomework');
+               element.textContent = stats.homework || 0;
+               animateCounter(element);
+             }
+             
+             // Teacher-only stats
+             if (isTeacher) {
+               if (document.getElementById('totalClasses')) {
+                 const element = document.getElementById('totalClasses');
+                 element.textContent = stats.classes || 0;
+                 animateCounter(element);
+               }
+               if (document.getElementById('totalStudents')) {
+                 const element = document.getElementById('totalStudents');
+                 element.textContent = stats.students || 0;
+                 animateCounter(element);
+               }
+             }
+             
+             // Student-only stats
+             if (isStudent) {
+               if (document.getElementById('completedHomework')) {
+                 const element = document.getElementById('completedHomework');
+                 element.textContent = stats.completedHomework || 0;
+                 animateCounter(element);
+               }
+             }
+           }, 500);
+         } else {
+           // Fallback if stats endpoint doesn't exist
+           statElements.forEach(id => {
+             const element = document.getElementById(id);
+             if (element) element.textContent = '-';
+           });
+         }
+       } catch (error) {
+         console.error('Error loading admin stats:', error);
+         // Set fallback values
+         const commonElements = ['joinedClasses', 'totalQuizzes', 'totalHomework'];
+         const teacherElements = ['totalClasses', 'totalStudents'];
+         const studentElements = ['completedHomework'];
+         
+         const statElements = [...commonElements, ...teacherElements, ...studentElements];
+         statElements.forEach(id => {
+           const element = document.getElementById(id);
+           if (element) element.textContent = '-';
+         });
+       }
+     }
+
+    // Show different admin sections with smooth transitions
+    function showCreateClassModal() {
+      const section = document.getElementById('classManagementSection');
+      if (section) {
+        section.style.display = 'block';
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Animate the create class form
+        setTimeout(() => {
+          const form = section.querySelector('.modern-card');
+          if (form) {
+            form.style.transform = 'scale(0.95)';
+            form.style.opacity = '0';
+            form.style.transition = 'all 0.3s ease';
+            
+            setTimeout(() => {
+              form.style.transform = 'scale(1)';
+              form.style.opacity = '1';
+            }, 100);
+          }
+        }, 200);
+      }
+    }
+
+    function showCreateQuizModal() {
+      const section = document.getElementById('quizManagementSection');
+      if (section) {
+        section.style.display = 'block';
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function showMyClassesSection() {
+      const section = document.getElementById('classManagementSection');
+      if (section) {
+        section.style.display = 'block';
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Scroll to the "My Classes" subsection
+        setTimeout(() => {
+          const myClassesList = document.getElementById('myClassesList');
+          if (myClassesList) {
+            myClassesList.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 300);
+      }
+    }
+
+
+
+    // Enhanced role selection with animations
+    function setupRoleSelection() {
+      const roleOptions = document.querySelectorAll('.role-option');
+      roleOptions.forEach(option => {
+        const btn = option.querySelector('.role-select-btn');
+        if (btn) {
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const role = option.getAttribute('data-role');
+            
+            // Add click animation
+            option.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+              option.style.transform = '';
+              selectRole(role);
+            }, 150);
+          });
+        }
+      });
+    }
+
+    // Navigation functions for role-agnostic actions
+    function showClassesSection() {
+      if (currentUser && currentUser.role === 'professor') {
+        showMyClassesSection();
+      } else if (currentUser && currentUser.role === 'student') {
+        // For students, scroll directly to their joined classes section
+        const section = document.getElementById('studentSection');
+        if (section) {
+          // Ensure student section is visible
+          section.style.display = 'block';
+          
+          // Scroll to joined classes subsection
+          const joinedClassesSection = section.querySelector('.class-subsection');
+          if (joinedClassesSection) {
+            joinedClassesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } else {
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      }
+    }
+
+    function showStudentHomeworkSection() {
+      const section = document.getElementById('studentSection');
+      if (section) {
+        section.style.display = 'block';
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Scroll to homework section
+        setTimeout(() => {
+          const homework = document.getElementById('studentHomeworkList');
+          if (homework) {
+            homework.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 300);
+      }
+    }
+
+    // Make functions available globally
+    window.showCreateClassModal = showCreateClassModal;
+    window.showCreateQuizModal = showCreateQuizModal;
+    window.showMyClassesSection = showMyClassesSection;
+
+    window.showClassesSection = showClassesSection;
+    window.showStudentHomeworkSection = showStudentHomeworkSection;
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize authentication
+      checkAuthentication();
+      
+      // Check for authentication success/failure from URL
+      checkAuthenticationStatus();
+      
+      // Setup mobile menu
+      setupMobileMenu();
+      
+      // Setup isomer dropdown
+      setupIsomerDropdown();
+      setupCalculeDropdown();
+      
+      // Setup user dropdown
+      setupUserDropdown();
+            
+      // Force mobile menu button visibility check after authentication loads
+      setTimeout(() => {
+        const isMobile = window.innerWidth <= 900;
+        const menuBtn = document.getElementById('mobileMenuBtn');
+        const navContainer = document.querySelector('.nav-container');
+        if (menuBtn && isMobile) {
+          if (navContainer && !navContainer.classList.contains('open')) {
+            menuBtn.style.display = 'flex';
+          }
+        }
+      }, 100);
+      
+      // Additional mobile compatibility check
+      setTimeout(() => {
+        const isMobile = window.innerWidth <= 900;
+        if (isMobile) {
+          // Force mobile layout
+          const navbar = document.querySelector('.navbar');
+          const menuBtn = document.getElementById('mobileMenuBtn');
+          const navContainer = document.querySelector('.nav-container');
+          const userDropdownMenu = document.getElementById('userDropdownMenu');
+          
+          if (navbar) navbar.classList.add('mobile-layout');
+          if (menuBtn && !navContainer?.classList.contains('open')) {
+            menuBtn.style.display = 'flex';
+            menuBtn.style.visibility = 'visible';
+          }
+          if (userDropdownMenu) {
+            userDropdownMenu.classList.remove('show');
+          }
+          
+          console.log('Mobile navbar forced initialization completed (admin)');
+        }
+      }, 200);
+      
+      // Setup authentication event listeners
+      document.getElementById('loginBtn').addEventListener('click', () => showAuthModal('login'));
+      document.getElementById('registerBtn').addEventListener('click', () => showAuthModal('register'));
+      document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+      document.getElementById('loginPromptBtn').addEventListener('click', () => showAuthModal('login'));
+      
+      // Google OAuth event listeners
+      document.getElementById('googleLoginBtn').addEventListener('click', handleGoogleAuth);
+      document.getElementById('googleRegisterBtn').addEventListener('click', handleGoogleAuth);
+      
+      // Auth modal event listeners
+      document.querySelector('.auth-close').addEventListener('click', hideAuthModal);
+      document.getElementById('showRegister').addEventListener('click', (e) => {
+        e.preventDefault();
+        showAuthModal('register');
+      });
+      document.getElementById('showLogin').addEventListener('click', (e) => {
+        e.preventDefault();
+        showAuthModal('login');
+      });
+      
+      // Form submissions
+      document.getElementById('loginFormElement').addEventListener('submit', handleLogin);
+      document.getElementById('registerFormElement').addEventListener('submit', handleRegister);
+      document.getElementById('changePasswordForm').addEventListener('submit', handleChangePassword);
+      document.getElementById('deleteAccountForm').addEventListener('submit', handleDeleteAccount);
+      document.getElementById('createClassForm').addEventListener('submit', handleCreateClass);
+      document.getElementById('inviteStudentForm').addEventListener('submit', handleInviteStudent);
+      document.getElementById('countryForm').addEventListener('submit', handleCountrySelection);
+      document.getElementById('homeworkCreationForm').addEventListener('submit', handleCreateHomework);
+      
+      // Real-time password validation
+      document.getElementById('registerPassword').addEventListener('input', function(e) {
+        updatePasswordRequirements(e.target.value);
+      });
+      
+      document.getElementById('newPassword').addEventListener('input', function(e) {
+        updatePasswordRequirements(e.target.value, '-admin');
+      });
+      
+      // Close modal when clicking outside
+      window.addEventListener('click', (event) => {
+        const modal = document.getElementById('authModal');
+        if (event.target === modal) {
+          hideAuthModal();
+        }
+        
+        const classModal = document.getElementById('classDetailsModal');
+        if (event.target === classModal) {
+          hideClassDetailsModal();
+        }
+      });
+      
+      // Class details modal close button
+      document.getElementById('classDetailsClose').addEventListener('click', hideClassDetailsModal);
+      
+      // Role selection event listeners
+      setupRoleSelection();
+      
+      // Setup autocomplete for username search
+      setupAutocomplete();
+      
+      // Initialize newsletter admin functionality
+      setupNewsletterAdmin();
+      
+      // Initialize animations and interactions
+      setTimeout(() => {
+        initializeAnimations();
+        loadAdminStats();
+      }, 100);
+    });
+    
+    // ================== Newsletter Admin Functionality ==================
+    
+    function setupNewsletterAdmin() {
+      // Load current newsletter status
+      loadNewsletterStatus();
+      
+      // Setup event listeners
+      document.getElementById('subscribeNewsletterBtn').addEventListener('click', handleNewsletterSubscribe);
+      document.getElementById('unsubscribeNewsletterBtn').addEventListener('click', handleNewsletterUnsubscribe);
+      document.getElementById('newsletterEmailInput').addEventListener('input', updateNewsletterButtons);
+    }
+    
+    async function loadNewsletterStatus() {
+      try {
+        const response = await fetch('/newsletter-status');
+        const data = await response.json();
+        
+        if (data.email) {
+          document.getElementById('newsletterEmailInput').value = data.email;
+          document.getElementById('newsletterEmailDisplay').textContent = data.email;
+        } else {
+          document.getElementById('newsletterEmailDisplay').textContent = 'Fără email';
+        }
+        
+        if (data.subscribed) {
+          document.getElementById('newsletterStatusText').textContent = 'Abonat';
+          document.getElementById('newsletterStatusText').style.color = '#4CAF50';
+          document.getElementById('subscribeNewsletterBtn').style.display = 'none';
+          document.getElementById('unsubscribeNewsletterBtn').style.display = 'inline-block';
+        } else {
+          document.getElementById('newsletterStatusText').textContent = 'Neabonat';
+          document.getElementById('newsletterStatusText').style.color = '#666';
+          document.getElementById('subscribeNewsletterBtn').style.display = 'inline-block';
+          document.getElementById('unsubscribeNewsletterBtn').style.display = 'none';
+        }
+        
+        updateNewsletterButtons();
+      } catch (error) {
+        console.error('Error loading newsletter status:', error);
+        document.getElementById('newsletterStatusText').textContent = 'Eroare la încărcare';
+        document.getElementById('newsletterEmailDisplay').textContent = 'Eroare la încărcare';
+      }
+    }
+    
+    function updateNewsletterButtons() {
+      const emailInput = document.getElementById('newsletterEmailInput');
+      const subscribeBtn = document.getElementById('subscribeNewsletterBtn');
+      const unsubscribeBtn = document.getElementById('unsubscribeNewsletterBtn');
+      
+      const isValidEmail = emailInput.value && emailInput.value.includes('@');
+      
+      if (subscribeBtn.style.display !== 'none') {
+        subscribeBtn.disabled = !isValidEmail;
+      }
+      
+      if (unsubscribeBtn.style.display !== 'none') {
+        unsubscribeBtn.disabled = !isValidEmail;
+      }
+    }
+    
+    async function handleNewsletterSubscribe() {
+      const email = document.getElementById('newsletterEmailInput').value;
+      const subscribeBtn = document.getElementById('subscribeNewsletterBtn');
+      const btnText = subscribeBtn.querySelector('.btn-text');
+      const btnLoading = subscribeBtn.querySelector('.btn-loading');
+      
+      // Show loading state
+      btnText.style.display = 'none';
+      btnLoading.style.display = 'inline';
+      subscribeBtn.disabled = true;
+      
+      try {
+        const response = await fetch('/newsletter-subscribe', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email }),
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showNewsletterAdminMessage(data.message, 'success');
+          // Reload status to update UI
+          await loadNewsletterStatus();
+        } else {
+          showNewsletterAdminMessage(data.error || 'Eroare la abonare', 'error');
+        }
+      } catch (error) {
+        console.error('Newsletter subscription error:', error);
+        showNewsletterAdminMessage('Eroare de conexiune. Încearcă din nou.', 'error');
+      } finally {
+        // Reset button state
+        btnText.style.display = 'inline';
+        btnLoading.style.display = 'none';
+        subscribeBtn.disabled = false;
+      }
+    }
+    
+    async function handleNewsletterUnsubscribe() {
+      const email = document.getElementById('newsletterEmailInput').value;
+      const unsubscribeBtn = document.getElementById('unsubscribeNewsletterBtn');
+      const btnText = unsubscribeBtn.querySelector('.btn-text');
+      const btnLoading = unsubscribeBtn.querySelector('.btn-loading');
+      
+      // Show loading state
+      btnText.style.display = 'none';
+      btnLoading.style.display = 'inline';
+      unsubscribeBtn.disabled = true;
+      
+      try {
+        const response = await fetch('/newsletter-unsubscribe', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email }),
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showNewsletterAdminMessage(data.message, 'success');
+          // Reload status to update UI
+          await loadNewsletterStatus();
+        } else {
+          showNewsletterAdminMessage(data.error || 'Eroare la dezabonare', 'error');
+        }
+      } catch (error) {
+        console.error('Newsletter unsubscribe error:', error);
+        showNewsletterAdminMessage('Eroare de conexiune. Încearcă din nou.', 'error');
+      } finally {
+        // Reset button state
+        btnText.style.display = 'inline';
+        btnLoading.style.display = 'none';
+        unsubscribeBtn.disabled = false;
+      }
+    }
+    
+    function showNewsletterAdminMessage(message, type = 'error') {
+      const messageDiv = document.getElementById('newsletterAdminMessage');
+      messageDiv.textContent = message;
+      messageDiv.className = `admin-message ${type}`;
+      messageDiv.style.display = 'block';
+      
+      // Auto-hide success messages after 5 seconds
+      if (type === 'success') {
+        setTimeout(() => {
+          hideNewsletterAdminMessage();
+        }, 5000);
+      }
+    }
+    
+    function hideNewsletterAdminMessage() {
+      const messageDiv = document.getElementById('newsletterAdminMessage');
+      messageDiv.style.display = 'none';
+      messageDiv.className = 'admin-message';
+    }
+
+    // Autocomplete functionality
+    let searchTimeout = null;
+    let currentHighlight = -1;
+    let searchResults = [];
+
+    function setupAutocomplete() {
+      const input = document.getElementById('studentUsername');
+      const dropdown = document.getElementById('autocompleteDropdown');
+      const validation = document.getElementById('usernameValidation');
+
+      if (!input || !dropdown || !validation) return;
+
+      input.addEventListener('input', handleUsernameInput);
+      input.addEventListener('keydown', handleKeyNavigation);
+      input.addEventListener('blur', (e) => {
+        // Don't hide dropdown immediately - allow clicks
+        setTimeout(() => {
+          hideDropdown();
+          // Validate on blur to catch manually typed usernames
+          const username = e.target.value.trim();
+          if (username) {
+            validateUsername(username);
+          }
+        }, 200);
+      });
+      input.addEventListener('focus', () => {
+        if (input.value.trim()) {
+          searchUsers(input.value.trim());
+        }
+      });
+
+      // Hide dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+          hideDropdown();
+        }
+      });
+    }
+
+    function handleUsernameInput(e) {
+      const query = e.target.value.trim();
+      const validation = document.getElementById('usernameValidation');
+      
+      // Clear previous validation
+      validation.className = 'validation-message';
+      validation.style.display = 'none';
+      
+      if (query.length === 0) {
+        hideDropdown();
+        return;
+      }
+      
+      // Debounce search
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+      
+      searchTimeout = setTimeout(() => {
+        searchUsers(query);
+      }, 300);
+    }
+
+    function handleKeyNavigation(e) {
+      const dropdown = document.getElementById('autocompleteDropdown');
+      
+      if (!dropdown.classList.contains('show')) return;
+      
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          currentHighlight = Math.min(currentHighlight + 1, searchResults.length - 1);
+          updateHighlight();
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          currentHighlight = Math.max(currentHighlight - 1, -1);
+          updateHighlight();
+          break;
+        case 'Enter':
+          e.preventDefault();
+          if (currentHighlight >= 0) {
+            selectUser(searchResults[currentHighlight]);
+          }
+          break;
+        case 'Escape':
+          e.preventDefault();
+          hideDropdown();
+          break;
+      }
+    }
+
+    async function searchUsers(query) {
+      try {
+        const response = await fetch(`/search-users?query=${encodeURIComponent(query)}&limit=8`);
+        const data = await response.json();
+        
+        if (response.ok) {
+          searchResults = data.users;
+          displaySearchResults(searchResults);
+        } else {
+          console.error('Error searching users:', data.error);
+          hideDropdown();
+        }
+      } catch (error) {
+        console.error('Error searching users:', error);
+        hideDropdown();
+      }
+    }
+
+    function displaySearchResults(users) {
+      const dropdown = document.getElementById('autocompleteDropdown');
+      currentHighlight = -1;
+      
+      if (users.length === 0) {
+        dropdown.innerHTML = '<div class="autocomplete-no-results">Nu s-au găsit utilizatori</div>';
+        dropdown.classList.add('show');
+        return;
+      }
+      
+      dropdown.innerHTML = '';
+      users.forEach((user, index) => {
+        const item = document.createElement('div');
+        item.className = 'autocomplete-item';
+        item.dataset.index = index;
+        item.innerHTML = `<div class="username">${user.username}</div>`;
+        item.addEventListener('click', () => selectUser(user));
+        dropdown.appendChild(item);
+      });
+      
+      dropdown.classList.add('show');
+    }
+
+    function updateHighlight() {
+      const items = document.querySelectorAll('.autocomplete-item');
+      items.forEach((item, index) => {
+        item.classList.toggle('highlighted', index === currentHighlight);
+      });
+    }
+
+    function selectUser(user) {
+      const input = document.getElementById('studentUsername');
+      input.value = user.username;
+      hideDropdown();
+      validateUsername(user.username);
+    }
+
+    function hideDropdown() {
+      const dropdown = document.getElementById('autocompleteDropdown');
+      dropdown.classList.remove('show');
+      currentHighlight = -1;
+    }
+
+    function hideDropdownDelayed() {
+      // Small delay to allow click events on dropdown items
+      setTimeout(hideDropdown, 150);
+    }
+
+    async function validateUsername(username) {
+      if (!username || username.trim().length === 0) return;
+      
+      const validation = document.getElementById('usernameValidation');
+      
+      try {
+        const response = await fetch(`/check-user/${encodeURIComponent(username.trim())}`);
+        const data = await response.json();
+        
+        if (response.ok) {
+          if (!data.exists) {
+            validation.className = 'validation-message error';
+            validation.textContent = data.message;
+            validation.style.display = 'block';
+          } else if (!data.valid) {
+            validation.className = 'validation-message warning';
+            validation.textContent = data.message;
+            validation.style.display = 'block';
+          } else {
+            if (data.needsRoleSelection) {
+              validation.className = 'validation-message success';
+              validation.textContent = `✓ ${data.message}`;
+              validation.style.display = 'block';
+            } else {
+              validation.className = 'validation-message success';
+              validation.textContent = `✓ Student găsit: ${data.user.username}`;
+              validation.style.display = 'block';
+            }
+          }
+        } else {
+          validation.className = 'validation-message error';
+          validation.textContent = 'Eroare la verificarea utilizatorului';
+          validation.style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error validating username:', error);
+        validation.className = 'validation-message error';
+        validation.textContent = 'Eroare de conexiune';
+        validation.style.display = 'block';
+      }
+    }
+
+    // ── Homework Management Functions ─────────────────────────────────
+    function showCreateHomeworkForm() {
+      const form = document.getElementById('createHomeworkForm');
+      const btn = document.getElementById('showCreateHomeworkBtn');
+      
+      form.style.display = 'block';
+      btn.style.display = 'none';
+      
+      // Load available quizzes
+      loadAvailableQuizzesForHomework();
+      
+      // Set minimum date to current time
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      document.getElementById('homeworkDueDate').min = now.toISOString().slice(0, 16);
+    }
+
+    function hideCreateHomeworkForm() {
+      const form = document.getElementById('createHomeworkForm');
+      const btn = document.getElementById('showCreateHomeworkBtn');
+      
+      form.style.display = 'none';
+      btn.style.display = 'block';
+      
+      // Reset form
+      document.getElementById('homeworkCreationForm').reset();
+    }
+
+    async function loadAvailableQuizzesForHomework() {
+      try {
+        const response = await fetch('/api/quizzes');
+        if (response.ok) {
+          const quizzes = await response.json();
+          const select = document.getElementById('homeworkQuiz');
+          
+          select.innerHTML = '<option value="">Selectează chestionarul</option>';
+          quizzes.forEach(quiz => {
+            const option = document.createElement('option');
+            option.value = quiz.id;
+            option.textContent = quiz.title;
+            option.dataset.quizName = quiz.title;
+            select.appendChild(option);
+          });
+        }
+      } catch (error) {
+        console.error('Error loading quizzes for homework:', error);
+      }
+    }
+
+    async function handleCreateHomework(event) {
+      event.preventDefault();
+      
+      const title = document.getElementById('homeworkTitle').value.trim();
+      const description = document.getElementById('homeworkDescription').value.trim();
+      const quizSelect = document.getElementById('homeworkQuiz');
+      const quizId = quizSelect.value;
+      const quizName = quizSelect.selectedOptions[0]?.dataset.quizName || '';
+      const dueDate = document.getElementById('homeworkDueDate').value;
+      const maxAttempts = document.getElementById('homeworkMaxAttempts').value;
+      
+      if (!currentClassId || !title || !quizId || !dueDate) {
+        alert('Te rugăm să completezi toate câmpurile obligatorii');
+        return;
+      }
+
+      try {
+        const response = await fetch('/create-homework', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            classId: currentClassId,
+            title,
+            description,
+            quizId,
+            quizName,
+            dueDate,
+            maxAttempts: parseInt(maxAttempts)
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showAdminMessage('Tema a fost creată cu succes!', 'success');
+          hideCreateHomeworkForm();
+          // Refresh the homework list
+          if (currentClassId) {
+            loadClassHomework(currentClassId);
+          }
+        } else {
+          showAdminMessage(data.error || 'Eroare la crearea temei', 'error');
+        }
+      } catch (error) {
+        console.error('Error creating homework:', error);
+        alert('Eroare de conexiune');
+      }
+    }
+
+    async function loadClassHomework(classId) {
+      try {
+        const response = await fetch(`/class/${classId}/homework`);
+        if (response.ok) {
+          const data = await response.json();
+          displayClassHomework(data.assignments);
+        } else {
+          console.error('Error loading class homework');
+        }
+      } catch (error) {
+        console.error('Error loading class homework:', error);
+      }
+    }
+
+    function displayClassHomework(assignments) {
+      const container = document.getElementById('classHomeworkList');
+      
+      if (!assignments || assignments.length === 0) {
+        container.innerHTML = '<p>Nu există teme create pentru această clasă.</p>';
+        return;
+      }
+
+      const html = assignments.map(assignment => {
+        const dueDate = new Date(assignment.due_date);
+        const now = new Date();
+        const isOverdue = assignment.is_overdue;
+        const daysDiff = Math.ceil((dueDate - now) / (1000 * 60 * 60 * 24));
+        
+        let statusBadge = '';
+        if (isOverdue) {
+          statusBadge = '<span class="status-badge overdue">Expirat</span>';
+        } else if (daysDiff <= 2) {
+          statusBadge = '<span class="status-badge due-soon">Expiră în curând</span>';
+        } else {
+          statusBadge = '<span class="status-badge active">Activ</span>';
+        }
+
+        const completionRate = assignment.total_students > 0 
+          ? Math.round((assignment.submitted_count / assignment.total_students) * 100)
+          : 0;
+
+        return `
+          <div class="homework-card">
+            <div class="homework-header">
+              <div>
+                <h4 class="homework-title">${assignment.title}</h4>
+                <p class="homework-quiz">Chestionar: ${assignment.quiz_name}</p>
+                ${assignment.description ? `<p class="homework-description">${assignment.description}</p>` : ''}
+              </div>
+              <div class="homework-status">
+                ${statusBadge}
+              </div>
+            </div>
+            
+            <div class="homework-meta">
+              <div class="homework-due-date">
+                Termen limită: ${formatDateTime(assignment.due_date)}
+              </div>
+              <div class="homework-stats">
+                <span>Completat: ${assignment.submitted_count}/${assignment.total_students} (${completionRate}%)</span>
+                <span>Max încercări: ${assignment.max_attempts}</span>
+              </div>
+            </div>
+            
+            <div class="homework-actions">
+              <button class="btn-homework primary" onclick="viewHomeworkDetails(${assignment.id})">
+                Vezi Detalii & Clasament
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      container.innerHTML = html;
+    }
+
+    async function viewHomeworkDetails(homeworkId) {
+      try {
+        const response = await fetch(`/homework/${homeworkId}/details`);
+        if (response.ok) {
+          const data = await response.json();
+          showHomeworkDetailsModal(data);
+        } else {
+          showAdminMessage('Eroare la încărcarea detaliilor temei', 'error');
+        }
+      } catch (error) {
+        console.error('Error loading homework details:', error);
+        showAdminMessage('Eroare de conexiune', 'error');
+      }
+    }
+
+    function showHomeworkDetailsModal(data) {
+      const { homework, submissions } = data;
+      
+      // Create modal content
+      const modalContent = `
+        <div class="homework-details-modal">
+          <h3>${homework.title}</h3>
+          <div class="homework-info">
+            <p><strong>Clasă:</strong> ${homework.class_name}</p>
+            <p><strong>Chestionar:</strong> ${homework.quiz_name}</p>
+            <p><strong>Termen limită:</strong> ${formatDateTime(homework.due_date)}</p>
+            <p><strong>Încercări maxime:</strong> ${homework.max_attempts}</p>
+            ${homework.description ? `<p><strong>Descriere:</strong> ${homework.description}</p>` : ''}
+          </div>
+          
+          <div class="homework-submissions">
+            <h4>Clasament Studenți</h4>
+            <table class="submission-table">
+              <thead>
+                <tr>
+                  <th>Rang</th>
+                  <th>Student</th>
+                  <th>Scor</th>
+                  <th>Procent</th>
+                  <th>Timp</th>
+                  <th>Data trimiterii</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${submissions.map(submission => {
+                  if (!submission.score && submission.score !== 0) {
+                    return `
+                      <tr>
+                        <td>-</td>
+                        <td>${submission.username}</td>
+                        <td colspan="4" class="submission-not-submitted">Nu a trimis tema</td>
+                      </tr>
+                    `;
+                  }
+                  
+                  const rankClass = submission.rank <= 3 ? ` rank-${submission.rank}` : '';
+                  const percentageClass = submission.percentage >= 80 ? 'excellent' : 
+                                        submission.percentage >= 60 ? 'good' : 'needs-improvement';
+                  
+                  return `
+                    <tr>
+                      <td class="submission-rank${rankClass}">${submission.rank}</td>
+                      <td>${submission.username}</td>
+                      <td>${submission.score}/${submission.total_questions}</td>
+                      <td class="submission-percentage ${percentageClass}">${submission.percentage}%</td>
+                      <td class="submission-time">${formatTime(submission.time_taken)}</td>
+                      <td>${formatDateTime(submission.submitted_at)}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+      
+      // Show in existing modal or create new one
+      const modal = document.getElementById('classDetailsModal');
+      const content = document.getElementById('classDetailsContent');
+      content.innerHTML = modalContent;
+      modal.style.display = 'block';
+    }
+
+    function formatDateTime(dateString) {
+      if (!dateString) return 'N/A';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('ro-RO', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    function formatTime(seconds) {
+      if (!seconds) return 'N/A';
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
+
+    // Function to handle both class details and homework loading
+
+    // ── Student Homework Functions ────────────────────────────────────
+    async function loadStudentHomework() {
+      try {
+        const response = await fetch('/my-homework');
+        if (response.ok) {
+          const data = await response.json();
+          displayStudentHomework(data.assignments);
+        } else {
+          console.error('Error loading student homework');
+          document.getElementById('studentHomeworkList').innerHTML = '<p>Eroare la încărcarea temelor.</p>';
+        }
+      } catch (error) {
+        console.error('Error loading student homework:', error);
+        document.getElementById('studentHomeworkList').innerHTML = '<p>Eroare de conexiune.</p>';
+      }
+    }
+
+    function displayStudentHomework(assignments) {
+      const container = document.getElementById('studentHomeworkList');
+      
+      if (!assignments || assignments.length === 0) {
+        container.innerHTML = '<p>Nu aveți teme atribuite momentan.</p>';
+        return;
+      }
+
+      const html = assignments.map(assignment => {
+        const dueDate = new Date(assignment.due_date);
+        const now = new Date();
+        const isOverdue = assignment.is_overdue;
+        const isSubmitted = assignment.is_submitted;
+        const daysDiff = Math.ceil((dueDate - now) / (1000 * 60 * 60 * 24));
+        
+        let statusBadge = '';
+        if (isSubmitted) {
+          statusBadge = '<span class="status-badge active">Trimisă</span>';
+        } else if (isOverdue) {
+          statusBadge = '<span class="status-badge overdue">Expirată</span>';
+        } else if (daysDiff <= 2) {
+          statusBadge = '<span class="status-badge due-soon">Expiră în curând</span>';
+        } else {
+          statusBadge = '<span class="status-badge active">Activă</span>';
+        }
+
+        let submissionInfo = '';
+        if (isSubmitted) {
+          submissionInfo = `
+            <div class="homework-submission-info">
+              <span>Scor: ${assignment.score}/${assignment.total_questions} (${assignment.percentage}%)</span>
+              <span>Timp: ${formatTime(assignment.time_taken)}</span>
+              <span>Trimisă: ${formatDateTime(assignment.submitted_at)}</span>
+            </div>
+          `;
+        }
+
+        const canSubmit = !isOverdue && (!isSubmitted || assignment.attempt_number < assignment.max_attempts);
+
+        return `
+          <div class="homework-card">
+            <div class="homework-header">
+              <div>
+                <h4 class="homework-title">${assignment.title}</h4>
+                <p class="homework-quiz">Clasă: ${assignment.class_name}</p>
+                <p class="homework-quiz">Chestionar: ${assignment.quiz_name}</p>
+                ${assignment.description ? `<p class="homework-description">${assignment.description}</p>` : ''}
+              </div>
+              <div class="homework-status">
+                ${statusBadge}
+              </div>
+            </div>
+            
+            ${submissionInfo}
+            
+            <div class="homework-meta">
+              <div class="homework-due-date">
+                Termen limită: ${formatDateTime(assignment.due_date)}
+              </div>
+              <div class="homework-stats">
+                <span>Încercări maxime: ${assignment.max_attempts}</span>
+                ${isSubmitted ? `<span>Încercare curentă: ${assignment.attempt_number}</span>` : ''}
+              </div>
+            </div>
+            
+            <div class="homework-actions">
+              ${canSubmit ? 
+                `<button class="btn-homework primary" onclick="startHomework(${assignment.id}, '${assignment.quiz_id}')">
+                  ${isSubmitted ? 'Încearcă din nou' : 'Începe Tema'}
+                </button>` :
+                `<button class="btn-homework secondary" disabled>
+                  ${isOverdue ? 'Expirată' : 'Completată'}
+                </button>`
+              }
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      container.innerHTML = html;
+    }
+
+    function startHomework(homeworkId, quizId) {
+      // Store homework context
+      sessionStorage.setItem('currentHomeworkId', homeworkId);
+      sessionStorage.setItem('isHomeworkMode', 'true');
+      
+      // Navigate to quiz page
+      window.location.href = `chestionare.html?quiz=${quizId}&homework=${homeworkId}`;
+    }
+
+    // ── Quiz Management Functions ─────────────────────────────────────────────
+
+    let currentQuestions = [];
+    let questionCounter = 0;
+
+    // Load professor's quizzes
+    async function loadMyQuizzes() {
+      try {
+        // Load classes for quiz dropdown
+        loadClassesForQuiz();
+        
+        const response = await fetch('/api/classroom-quizzes/professor');
+        const data = await response.json();
+
+        if (response.ok) {
+          displayMyQuizzes(data);
+        } else {
+          console.error('Error loading quizzes:', data.error);
+          document.getElementById('myQuizzesList').innerHTML = '<p>Eroare la încărcarea chestionarelor</p>';
+        }
+      } catch (error) {
+        console.error('Error loading my quizzes:', error);
+        document.getElementById('myQuizzesList').innerHTML = '<p>Eroare de conexiune</p>';
+      }
+    }
+
+    // Load classes for quiz creation dropdown
+    async function loadClassesForQuiz() {
+      try {
+        const response = await fetch('/my-classes');
+        const data = await response.json();
+
+        if (response.ok) {
+          const select = document.getElementById('quizClass');
+          select.innerHTML = '<option value="">Selectează clasa</option>';
+          
+          data.classes.forEach(cls => {
+            const option = document.createElement('option');
+            option.value = cls.id;
+            option.textContent = cls.name;
+            select.appendChild(option);
+          });
+        }
+      } catch (error) {
+        console.error('Error loading classes for quiz:', error);
+      }
+    }
+
+    // Display professor's quizzes
+    function displayMyQuizzes(quizzes) {
+      const container = document.getElementById('myQuizzesList');
+      
+      if (!quizzes || quizzes.length === 0) {
+        container.innerHTML = '<p>Nu aveți chestionare create încă.</p>';
+        return;
+      }
+
+      const html = quizzes.map(quiz => `
+        <div class="quiz-item">
+          <div class="quiz-header">
+            <div class="quiz-info">
+              <h4>${quiz.title}</h4>
+              <p>${quiz.description || 'Fără descriere'}</p>
+              <div class="quiz-meta">
+                <span>Clasă: ${quiz.class_name}</span> | 
+                <span>${quiz.questions.length} întrebări</span> | 
+                <span>${Math.floor(quiz.time_limit / 60)} minute</span> |
+                <span>Creat: ${formatDateTime(quiz.created_at)}</span>
+              </div>
+            </div>
+            <div class="quiz-actions">
+              <button class="btn-admin secondary" onclick="editQuiz(${quiz.id})">Editează</button>
+              <button class="btn-admin danger" onclick="deleteQuiz(${quiz.id}, '${quiz.title}')">Șterge</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      container.innerHTML = html;
+    }
+
+    // Add question to quiz builder
+    function addQuestion() {
+      questionCounter++;
+      const questionId = `question_${questionCounter}`;
+      
+      const questionHtml = `
+        <div class="question-item" data-question-id="${questionId}">
+          <div class="question-header">
+            <span class="question-number">Întrebarea ${questionCounter}</span>
+            <button type="button" class="remove-question-btn" onclick="removeQuestion('${questionId}')">
+              Șterge Întrebarea
+            </button>
+          </div>
+          
+          <div class="question-form">
+            <!-- Question Type -->
+            <div class="question-type-selector">
+              <div class="type-option">
+                <input type="radio" id="${questionId}_multiple" name="${questionId}_type" value="multiple-choice" checked onchange="updateQuestionType('${questionId}', 'multiple-choice')">
+                <label for="${questionId}_multiple">Alegere multiplă</label>
+              </div>
+              <div class="type-option">
+                <input type="radio" id="${questionId}_text" name="${questionId}_type" value="text" onchange="updateQuestionType('${questionId}', 'text')">
+                <label for="${questionId}_text">Răspuns text</label>
+              </div>
+            </div>
+            
+            <!-- Question Text -->
+            <div class="form-group">
+              <label for="${questionId}_question">Textul întrebării:</label>
+              <textarea class="question-text-input" id="${questionId}_question" placeholder="Introduceți întrebarea aici..." required></textarea>
+            </div>
+            
+                         <!-- Multiple Choice Options -->
+             <div id="${questionId}_options" class="options-container">
+               <div class="options-header">
+                 <span>📝 Opțiuni de răspuns</span>
+                 <span style="font-size: 0.85rem; font-weight: normal;">Selectează răspunsul corect și completează textul pentru fiecare opțiune</span>
+               </div>
+               <div class="option-item">
+                 <div class="correct-answer-section">
+                   <input type="radio" name="${questionId}_correct" value="0" class="correct-answer-radio" checked onchange="updateCorrectSelection('${questionId}')">
+                   <span class="correct-label">Corect</span>
+                 </div>
+                 <input type="text" class="option-input" placeholder="Introduceți textul pentru prima opțiune..." required>
+                 <button type="button" class="remove-option-btn" onclick="removeOption(this)" style="display: none;">Șterge</button>
+               </div>
+               <div class="option-item">
+                 <div class="correct-answer-section">
+                   <input type="radio" name="${questionId}_correct" value="1" class="correct-answer-radio" onchange="updateCorrectSelection('${questionId}')">
+                   <span class="correct-label">Corect</span>
+                 </div>
+                 <input type="text" class="option-input" placeholder="Introduceți textul pentru a doua opțiune..." required>
+                 <button type="button" class="remove-option-btn" onclick="removeOption(this)" style="display: none;">Șterge</button>
+               </div>
+               <button type="button" class="add-option-btn" onclick="addOption('${questionId}')">➕ Adaugă Opțiune</button>
+             </div>
+            
+            <!-- Text Answer Options -->
+            <div id="${questionId}_text_answers" class="text-answers-container" style="display: none;">
+              <label>Răspunsuri corecte (cel puțin unul):</label>
+              <div class="text-answer-item">
+                <input type="text" class="text-answer-input" placeholder="Răspuns corect 1">
+                <button type="button" class="remove-text-answer-btn" onclick="removeTextAnswer(this)" style="display: none;">Șterge</button>
+              </div>
+              <button type="button" class="add-text-answer-btn" onclick="addTextAnswer('${questionId}')">Adaugă Răspuns</button>
+            </div>
+            
+            <!-- Explanation -->
+            <div class="form-group">
+              <label for="${questionId}_explanation">Explicație (opțional):</label>
+              <textarea class="explanation-input" id="${questionId}_explanation" placeholder="Explicația răspunsului corect..."></textarea>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('questionsContainer').insertAdjacentHTML('beforeend', questionHtml);
+      updateRemoveButtons();
+    }
+
+    // Remove question
+    function removeQuestion(questionId) {
+      const questionElement = document.querySelector(`[data-question-id="${questionId}"]`);
+      if (questionElement) {
+        questionElement.remove();
+        updateQuestionNumbers();
+        updateRemoveButtons();
+      }
+    }
+
+    // Update question type (multiple choice vs text)
+    function updateQuestionType(questionId, type) {
+      const optionsContainer = document.getElementById(`${questionId}_options`);
+      const textAnswersContainer = document.getElementById(`${questionId}_text_answers`);
+      
+      if (type === 'multiple-choice') {
+        optionsContainer.style.display = 'block';
+        textAnswersContainer.style.display = 'none';
+        
+        // Make option inputs required and text answer inputs not required
+        optionsContainer.querySelectorAll('.option-input').forEach(input => {
+          input.setAttribute('required', '');
+        });
+        textAnswersContainer.querySelectorAll('.text-answer-input').forEach(input => {
+          input.removeAttribute('required');
+        });
+      } else {
+        optionsContainer.style.display = 'none';
+        textAnswersContainer.style.display = 'block';
+        
+        // Make text answer inputs required and option inputs not required
+        textAnswersContainer.querySelectorAll('.text-answer-input').forEach(input => {
+          input.setAttribute('required', '');
+        });
+        optionsContainer.querySelectorAll('.option-input').forEach(input => {
+          input.removeAttribute('required');
+        });
+      }
+    }
+
+         // Add option to multiple choice question
+     function addOption(questionId) {
+       const optionsContainer = document.getElementById(`${questionId}_options`);
+       const options = optionsContainer.querySelectorAll('.option-item');
+       const newIndex = options.length;
+       
+       // Check if this question type is currently active
+       const isVisible = optionsContainer.style.display !== 'none';
+       const requiredAttr = isVisible ? 'required' : '';
+       
+       const optionHtml = `
+         <div class="option-item">
+           <div class="correct-answer-section">
+             <input type="radio" name="${questionId}_correct" value="${newIndex}" class="correct-answer-radio" onchange="updateCorrectSelection('${questionId}')">
+             <span class="correct-label">Corect</span>
+           </div>
+           <input type="text" class="option-input" placeholder="Introduceți textul pentru opțiunea ${newIndex + 1}..." ${requiredAttr}>
+           <button type="button" class="remove-option-btn" onclick="removeOption(this)">Șterge</button>
+         </div>
+       `;
+       
+       // Insert before the add button
+       const addButton = optionsContainer.querySelector('.add-option-btn');
+       addButton.insertAdjacentHTML('beforebegin', optionHtml);
+       updateRemoveButtons();
+     }
+
+         // Remove option from multiple choice question
+     function removeOption(button) {
+       const optionItem = button.closest('.option-item');
+       const container = optionItem.closest('.options-container');
+       const questionId = container.id.replace('_options', '');
+       
+       optionItem.remove();
+       
+       // Update radio button values and placeholders
+       const options = container.querySelectorAll('.option-item');
+       options.forEach((option, index) => {
+         const radio = option.querySelector('.correct-answer-radio');
+         const input = option.querySelector('.option-input');
+         radio.value = index;
+         input.placeholder = `Introduceți textul pentru opțiunea ${index + 1}...`;
+       });
+       
+       updateRemoveButtons();
+       updateCorrectSelection(questionId);
+     }
+
+     // Update visual feedback for correct answer selection
+     function updateCorrectSelection(questionId) {
+       const container = document.getElementById(`${questionId}_options`);
+       const options = container.querySelectorAll('.option-item');
+       
+       options.forEach(option => {
+         const radio = option.querySelector('.correct-answer-radio');
+         if (radio.checked) {
+           option.classList.add('correct-selected');
+         } else {
+           option.classList.remove('correct-selected');
+         }
+       });
+     }
+
+    // Add text answer to text question
+    function addTextAnswer(questionId) {
+      const container = document.getElementById(`${questionId}_text_answers`);
+      const answers = container.querySelectorAll('.text-answer-item');
+      
+      // Check if this question type is currently active
+      const isVisible = container.style.display !== 'none';
+      const requiredAttr = isVisible ? 'required' : '';
+      
+      const answerHtml = `
+        <div class="text-answer-item">
+          <input type="text" class="text-answer-input" placeholder="Răspuns corect ${answers.length + 1}" ${requiredAttr}>
+          <button type="button" class="remove-text-answer-btn" onclick="removeTextAnswer(this)">Șterge</button>
+        </div>
+      `;
+      
+      const addButton = container.querySelector('.add-text-answer-btn');
+      addButton.insertAdjacentHTML('beforebegin', answerHtml);
+      updateRemoveButtons();
+    }
+
+    // Remove text answer
+    function removeTextAnswer(button) {
+      const answerItem = button.closest('.text-answer-item');
+      const container = answerItem.closest('.text-answers-container');
+      answerItem.remove();
+      
+      // Update placeholders
+      const answers = container.querySelectorAll('.text-answer-item');
+      answers.forEach((answer, index) => {
+        const input = answer.querySelector('.text-answer-input');
+        input.placeholder = `Răspuns corect ${index + 1}`;
+      });
+      
+      updateRemoveButtons();
+    }
+
+    // Update question numbers after removal
+    function updateQuestionNumbers() {
+      const questions = document.querySelectorAll('.question-item');
+      questions.forEach((question, index) => {
+        const numberSpan = question.querySelector('.question-number');
+        numberSpan.textContent = `Întrebarea ${index + 1}`;
+      });
+      questionCounter = questions.length;
+    }
+
+    // Update remove button visibility
+    function updateRemoveButtons() {
+      // Update option remove buttons
+      document.querySelectorAll('.options-container').forEach(container => {
+        const options = container.querySelectorAll('.option-item');
+        options.forEach((option, index) => {
+          const removeBtn = option.querySelector('.remove-option-btn');
+          if (removeBtn) {
+            removeBtn.style.display = options.length > 2 ? 'block' : 'none';
+          }
+        });
+      });
+      
+      // Update text answer remove buttons
+      document.querySelectorAll('.text-answers-container').forEach(container => {
+        const answers = container.querySelectorAll('.text-answer-item');
+        answers.forEach((answer, index) => {
+          const removeBtn = answer.querySelector('.remove-text-answer-btn');
+          if (removeBtn) {
+            removeBtn.style.display = answers.length > 1 ? 'block' : 'none';
+          }
+        });
+      });
+    }
+
+    // Collect quiz data from form
+    function collectQuizData() {
+      const classId = document.getElementById('quizClass').value;
+      const title = document.getElementById('quizTitle').value.trim();
+      const description = document.getElementById('quizDescription').value.trim();
+      const timeLimit = parseInt(document.getElementById('quizTimeLimit').value) * 60; // Convert to seconds
+      
+      const questions = [];
+      const questionItems = document.querySelectorAll('.question-item');
+      
+      questionItems.forEach((item, index) => {
+        const questionId = item.dataset.questionId;
+        const questionText = document.getElementById(`${questionId}_question`).value.trim();
+        const explanation = document.getElementById(`${questionId}_explanation`).value.trim();
+        const type = document.querySelector(`input[name="${questionId}_type"]:checked`).value;
+        
+        const question = {
+          id: questionId,
+          question: questionText,
+          type: type,
+          explanation: explanation || null
+        };
+        
+        if (type === 'multiple-choice') {
+          const options = [];
+          const correctAnswerRadio = document.querySelector(`input[name="${questionId}_correct"]:checked`);
+          
+          item.querySelectorAll('.option-input').forEach(input => {
+            if (input.value.trim()) {
+              options.push(input.value.trim());
+            }
+          });
+          
+          question.options = options;
+          question.correctAnswer = correctAnswerRadio ? parseInt(correctAnswerRadio.value) : 0;
+        } else {
+          const correctAnswers = [];
+          item.querySelectorAll('.text-answer-input').forEach(input => {
+            if (input.value.trim()) {
+              correctAnswers.push(input.value.trim());
+            }
+          });
+          question.correctAnswers = correctAnswers;
+        }
+        
+        questions.push(question);
+      });
+      
+      return { classId, title, description, timeLimit, questions };
+    }
+
+    // Create or update quiz
+    async function createQuiz(event) {
+      event.preventDefault();
+      
+      const submitBtn = event.target.querySelector('button[type="submit"]');
+      const btnText = submitBtn.querySelector('.btn-text');
+      const btnLoading = submitBtn.querySelector('.btn-loading');
+      
+      // Show loading state (only if elements exist)
+      if (btnText && btnLoading) {
+        btnText.style.display = 'none';
+        btnLoading.style.display = 'inline';
+      }
+      submitBtn.disabled = true;
+      
+      try {
+        const quizData = collectQuizData();
+        
+        // Validate
+        if (!quizData.classId || !quizData.title || quizData.questions.length === 0) {
+          alert('Vă rugăm să completați toate câmpurile obligatorii și să adăugați cel puțin o întrebare.');
+          return;
+        }
+        
+        // Validate each question
+        for (let i = 0; i < quizData.questions.length; i++) {
+          const q = quizData.questions[i];
+          if (!q.question) {
+            alert(`Întrebarea ${i + 1} nu are text.`);
+            return;
+          }
+          
+          if (q.type === 'multiple-choice') {
+            if (!q.options || q.options.length < 2) {
+              alert(`Întrebarea ${i + 1} trebuie să aibă cel puțin 2 opțiuni.`);
+              return;
+            }
+          } else if (q.type === 'text') {
+            if (!q.correctAnswers || q.correctAnswers.length === 0) {
+              alert(`Întrebarea ${i + 1} trebuie să aibă cel puțin un răspuns corect.`);
+              return;
+            }
+          }
+        }
+        
+        // Determine if this is create or update
+        const isUpdate = isEditMode && currentEditQuizId;
+        const url = isUpdate ? `/api/classroom-quiz/${currentEditQuizId}` : '/api/classroom-quiz';
+        const method = isUpdate ? 'PUT' : 'POST';
+        
+        const response = await fetch(url, {
+          method: method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(quizData)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          const successMessage = isUpdate ? 'Chestionarul a fost actualizat cu succes!' : 'Chestionarul a fost creat cu succes!';
+          alert(successMessage);
+          
+          // Reset form and edit mode
+          if (isUpdate) {
+            cancelEdit();
+          } else {
+            document.getElementById('createQuizForm').reset();
+            document.getElementById('questionsContainer').innerHTML = '';
+            questionCounter = 0;
+          }
+          
+          loadMyQuizzes();
+          
+          // Add default question if not in edit mode
+          if (!isUpdate) {
+            setTimeout(() => {
+              addQuestion();
+            }, 100);
+          }
+        } else {
+          alert('Eroare: ' + result.error);
+        }
+      } catch (error) {
+        console.error('Error saving quiz:', error);
+        alert('Eroare la salvarea chestionarului. Încercați din nou.');
+      } finally {
+        // Reset button state (only if elements exist)
+        if (btnText && btnLoading) {
+          btnText.style.display = 'inline';
+          btnLoading.style.display = 'none';
+        }
+        submitBtn.disabled = false;
+      }
+    }
+
+    // Delete quiz
+    async function deleteQuiz(quizId, title) {
+      if (!confirm(`Sigur doriți să ștergeți chestionarul "${title}"? Această acțiune nu poate fi anulată.`)) {
+        return;
+      }
+      
+      try {
+        const response = await fetch(`/api/classroom-quiz/${quizId}`, {
+          method: 'DELETE'
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          alert('Chestionarul a fost șters cu succes!');
+          loadMyQuizzes();
+        } else {
+          alert('Eroare: ' + result.error);
+        }
+      } catch (error) {
+        console.error('Error deleting quiz:', error);
+        alert('Eroare la ștergerea chestionarului. Încercați din nou.');
+      }
+    }
+
+    // Global variable to track edit mode
+    let isEditMode = false;
+    let currentEditQuizId = null;
+
+    // Edit quiz function
+    async function editQuiz(quizId) {
+      try {
+        // Load quiz data
+        const response = await fetch(`/api/classroom-quiz/${quizId}`);
+        const data = await response.json();
+        
+        if (!response.ok) {
+          alert('Eroare la încărcarea datelor chestionarului: ' + (data.error || 'Eroare necunoscută'));
+          return;
+        }
+        
+        // Switch to edit mode
+        isEditMode = true;
+        currentEditQuizId = quizId;
+        
+        // Update form title and button
+        document.querySelector('#quizManagementSection h3').textContent = 'Editează Chestionar';
+        const submitBtn = document.querySelector('#createQuizForm button[type="submit"]');
+        submitBtn.innerHTML = '<span class="btn-text">Actualizează Chestionarul</span><span class="btn-loading" style="display: none;">Se actualizează...</span>';
+        
+        // Add cancel button if not exists
+        let cancelBtn = document.getElementById('cancelEditBtn');
+        if (!cancelBtn) {
+          cancelBtn = document.createElement('button');
+          cancelBtn.type = 'button';
+          cancelBtn.id = 'cancelEditBtn';
+          cancelBtn.className = 'btn-admin secondary';
+          cancelBtn.textContent = 'Anulează Editarea';
+          cancelBtn.onclick = cancelEdit;
+          submitBtn.parentNode.insertBefore(cancelBtn, submitBtn);
+        } else {
+          cancelBtn.style.display = 'inline-block';
+        }
+        
+        // Populate form with quiz data
+        populateQuizForm(data);
+        
+        // Scroll to quiz builder
+        document.getElementById('quizManagementSection').scrollIntoView({ behavior: 'smooth' });
+        
+      } catch (error) {
+        console.error('Error loading quiz for edit:', error);
+        alert('Eroare la încărcarea chestionarului pentru editare.');
+      }
+    }
+    
+    // Populate form with quiz data
+    function populateQuizForm(quiz) {
+      // Set basic fields
+      document.getElementById('quizClass').value = quiz.classId || '';
+      document.getElementById('quizTitle').value = quiz.title || '';
+      document.getElementById('quizDescription').value = quiz.description || '';
+      document.getElementById('quizTimeLimit').value = quiz.timeLimit || 300;
+      
+      // Clear existing questions
+      document.getElementById('questionsContainer').innerHTML = '';
+      questionCounter = 0;
+      
+      // Add questions from quiz data
+      if (quiz.questions && quiz.questions.length > 0) {
+        quiz.questions.forEach((question, index) => {
+          addQuestion();
+          const questionElement = document.querySelector(`[data-question-id="question_${questionCounter}"]`);
+          
+          // Set question text
+          const questionInput = questionElement.querySelector('.question-text-input');
+          questionInput.value = question.question || '';
+          
+          // Set question type
+          const questionType = question.type || 'multiple-choice';
+          if (questionType === 'multiple-choice') {
+            const multipleRadio = questionElement.querySelector(`input[name="question_${questionCounter}_type"][value="multiple-choice"]`);
+            if (multipleRadio) multipleRadio.checked = true;
+          } else {
+            const textRadio = questionElement.querySelector(`input[name="question_${questionCounter}_type"][value="text"]`);
+            if (textRadio) textRadio.checked = true;
+          }
+          updateQuestionType(`question_${questionCounter}`, questionType);
+          
+          // Set explanation
+          const explanationInput = questionElement.querySelector('.explanation-input');
+          if (explanationInput) {
+            explanationInput.value = question.explanation || '';
+          }
+          
+          if (question.type === 'multiple-choice') {
+            // Handle multiple choice questions
+            const optionsContainer = questionElement.querySelector(`#question_${questionCounter}_options`);
+            
+            // Clear default options
+            const defaultOptions = optionsContainer.querySelectorAll('.option-item');
+            defaultOptions.forEach(option => option.remove());
+            
+            // Add question options
+            if (question.options && question.options.length > 0) {
+              question.options.forEach((option, optionIndex) => {
+                addOption(`question_${questionCounter}`);
+                const optionItems = optionsContainer.querySelectorAll('.option-item');
+                const currentOption = optionItems[optionItems.length - 1];
+                
+                // Set option text
+                const optionInput = currentOption.querySelector('.option-input');
+                optionInput.value = option;
+                
+                // Set correct answer
+                if (optionIndex === question.correctAnswer) {
+                  const radio = currentOption.querySelector('.correct-answer-radio');
+                  radio.checked = true;
+                  updateCorrectSelection(`question_${questionCounter}`);
+                }
+              });
+            }
+          } else if (question.type === 'text') {
+            // Handle text questions
+            const textContainer = questionElement.querySelector(`#question_${questionCounter}_text_answers`);
+            
+            // Clear default answer
+            const defaultAnswers = textContainer.querySelectorAll('.text-answer-item');
+            defaultAnswers.forEach(answer => answer.remove());
+            
+            // Add correct answers
+            if (question.correctAnswers && question.correctAnswers.length > 0) {
+              question.correctAnswers.forEach(answer => {
+                addTextAnswer(`question_${questionCounter}`);
+                const answerItems = textContainer.querySelectorAll('.text-answer-item');
+                const currentAnswer = answerItems[answerItems.length - 1];
+                
+                const answerInput = currentAnswer.querySelector('.text-answer-input');
+                answerInput.value = answer;
+              });
+            }
+          }
+        });
+      }
+      
+      // If no questions were added, add one default question
+      if (questionCounter === 0) {
+        addQuestion();
+      }
+    }
+    
+    // Cancel edit mode
+    function cancelEdit() {
+      isEditMode = false;
+      currentEditQuizId = null;
+      
+      // Reset form title and button
+      document.querySelector('#quizManagementSection h3').textContent = 'Creează un Chestionar Nou';
+      const submitBtn = document.querySelector('#createQuizForm button[type="submit"]');
+      submitBtn.innerHTML = '<span class="btn-text">Creează Chestionarul</span><span class="btn-loading" style="display: none;">Se creează...</span>';
+      
+      // Hide cancel button
+      const cancelBtn = document.getElementById('cancelEditBtn');
+      if (cancelBtn) {
+        cancelBtn.style.display = 'none';
+      }
+      
+      // Reset form
+      document.getElementById('createQuizForm').reset();
+      document.getElementById('questionsContainer').innerHTML = '';
+      questionCounter = 0;
+      
+      // Add one default question
+      setTimeout(() => {
+        addQuestion();
+      }, 100);
+    }
+
+    // Event listeners for quiz management
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add question button
+      document.getElementById('addQuestionBtn').addEventListener('click', addQuestion);
+      
+      // Create quiz form
+      document.getElementById('createQuizForm').addEventListener('submit', createQuiz);
+      
+      // Add first question by default
+      setTimeout(() => {
+        if (document.getElementById('questionsContainer').children.length === 0) {
+          addQuestion();
+        }
+      }, 100);
+    });
+  </script>
+</body>
+</html> 

@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Atomify – Clasament</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css" />
+  
+  <!-- Logo Theme Switcher -->
+  <script src="logo-theme-switcher.js"></script>
+  
+  <!-- Google Translate Component -->
+  <script src="google-translate.js"></script>
+  
+  <style>
+    /* Leaderboard specific styles */
+    .leaderboard-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .leaderboard-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .leaderboard-controls {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .control-group label {
+      font-weight: 500;
+      color: var(--text-color);
+    }
+    
+    .control-group select {
+      padding: 0.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      background: var(--card-background);
+      color: var(--text-color);
+      min-width: 200px;
+    }
+    
+    .leaderboard-tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .tab-button {
+      padding: 0.75rem 1.5rem;
+      background: var(--card-background);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+    
+    .tab-button.active {
+      background: var(--primary-color);
+      color: #fff;
+      border-color: var(--primary-color);
+    }
+    
+    .tab-button:hover:not(.active) {
+      background: var(--primary-light);
+      color: #fff;
+    }
+    
+    .leaderboard-table {
+      background: var(--card-background);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    
+    .table-header {
+      background: var(--primary-color);
+      color: #fff;
+      padding: 1.5rem 1rem;
+      display: grid;
+      grid-template-columns: 80px 1fr 120px 100px 100px 120px 150px;
+      gap: 1rem;
+      font-weight: 600;
+      align-items: center;
+      font-size: 1.1rem;
+    }
+    
+    .table-row {
+      padding: 1rem;
+      display: grid;
+      grid-template-columns: 80px 1fr 120px 100px 100px 120px 150px;
+      gap: 1rem;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      transition: background 0.2s ease;
+    }
+    
+    .table-row:hover {
+      background: var(--background-color);
+    }
+    
+    .table-row:last-child {
+      border-bottom: none;
+    }
+    
+    .rank {
+      font-weight: bold;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+    
+    .rank.top-3 {
+      color: var(--primary-color);
+    }
+    
+    .rank.rank-1 {
+      color: #ffd700;
+    }
+    
+    .rank.rank-2 {
+      color: #c0c0c0;
+    }
+    
+    .rank.rank-3 {
+      color: #cd7f32;
+    }
+    
+    .username {
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+    
+    .country {
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+    
+    .score {
+      font-weight: 600;
+    }
+    
+    .percentage {
+      font-weight: 600;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      text-align: center;
+    }
+    
+    .percentage.excellent {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .percentage.good {
+      background: #fff3cd;
+      color: #856404;
+    }
+    
+    .percentage.needs-improvement {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    
+    .time-taken {
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+    
+    .date {
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-light);
+    }
+    
+    .error-message {
+      color: #721c24;
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+      border: 1px solid #f5c6cb;
+      text-align: center;
+    }
+    
+    .empty-message {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-light);
+    }
+    
+    .leaderboard-country-header {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      color: white;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .leaderboard-country-header h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+    
+    .leaderboard-country-header p {
+      margin: 0;
+      opacity: 0.9;
+      font-size: 0.95rem;
+    }
+    
+    .personal-stats {
+      background: var(--card-background);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px var(--shadow-color);
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    
+    .stat-card {
+      background: var(--background-color);
+      padding: 1rem;
+      border-radius: 6px;
+      text-align: center;
+      border: 1px solid var(--border-color);
+    }
+    
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      margin-top: 0.5rem;
+    }
+    
+    @media (max-width: 900px) {
+      .leaderboard-container {
+        padding: 1rem;
+      }
+      
+      .table-header,
+      .table-row {
+        grid-template-columns: 40px 1fr 80px 60px 80px;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+      }
+      
+      .time-taken,
+      .date {
+        display: none;
+      }
+      
+      .leaderboard-controls {
+        flex-direction: column;
+      }
+      
+      .control-group select {
+        min-width: 100%;
+      }
+    }
+    
+    @media (min-width: 901px) and (max-width: 1200px) {
+      .table-header,
+      .table-row {
+        grid-template-columns: 80px 1fr 120px 100px 100px 120px 150px;
+        gap: 1rem;
+        font-size: 1rem;
+      }
+      
+      .table-row .username {
+        font-size: 1rem;
+        white-space: nowrap;
+        overflow: visible;
+        text-overflow: unset;
+      }
+      
+      .table-row .username span {
+        white-space: nowrap;
+        overflow: visible;
+        text-overflow: unset;
+        max-width: none !important;
+        display: inline !important;
+      }
+    }
+    
+    @media (min-width: 901px) and (max-width: 1000px) {
+      .table-row .username {
+        white-space: nowrap;
+        overflow: visible;
+        text-overflow: unset;
+        min-width: 0;
+        flex: 1;
+      }
+      
+      .table-row .username span {
+        white-space: nowrap;
+        overflow: visible;
+        text-overflow: unset;
+        max-width: none !important;
+        display: inline !important;
+      }
+    }
+  </style>
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'ro',
+          includedLanguages: 'en,fr,de,es,it,pt,ru,zh-CN,ja,ko,ar,hi',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false,
+          gaTrack: false
+        }, 'google_translate_element');
+      }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
+    <!-- PWA Registration -->
+    <script src="pwa.js"></script>
+    
+    <!-- Tutorial System -->
+    <script src="tutorial.js"></script>
+</head>
+
+<body>
+  <!-- Navigation -->
+  <header class="site-header">
+    <nav class="navbar">
+      <div class="logo-section">
+        <a href="isomers.html" class="logo-link">
+          <img src="logo_light.png" alt="Atomify Logo" class="logo-image">
+          <span class="logo-text">Atomify</span>
+        </a>
+      </div>
+      
+      <button id="mobileMenuBtn" class="mobile-menu-toggle" aria-label="Toggle mobile menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+      
+      <div class="nav-container">
+        <button id="menuCloseBtn" class="mobile-close-btn" aria-label="Close mobile menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"></path>
+          </svg>
+        </button>
+        
+        <ul class="nav-links">
+          <li class="nav-item">
+            <button class="nav-link isomer-dropdown-trigger" id="isomerDropdownTrigger">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <circle cx="7" cy="7" r="2"/>
+                <circle cx="17" cy="7" r="2"/>
+                <circle cx="12" cy="15" r="2"/>
+                <circle cx="7" cy="19" r="2"/>
+                <circle cx="17" cy="19" r="2"/>
+                <path d="M9 7h6m-8 8l2-4m6 4l-2-4m-3 6h6"/>
+              </svg>
+              <span>Izomeri</span>
+              <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+            
+            <div class="isomer-dropdown-menu" id="isomerDropdownMenu">
+              <a href="isomers.html" class="dropdown-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="7" cy="7" r="2"/>
+                  <circle cx="17" cy="7" r="2"/>
+                  <circle cx="12" cy="15" r="2"/>
+                  <circle cx="7" cy="19" r="2"/>
+                  <circle cx="17" cy="19" r="2"/>
+                  <path d="M9 7h6m-8 8l2-4m6 4l-2-4m-3 6h6"/>
+                </svg>
+                <span>Izomeri</span>
+              </a>
+              <a href="structure.html" class="dropdown-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 3h18v18H3z"/>
+                  <path d="M9 9h6v6H9z"/>
+                  <path d="M12 3v18"/>
+                  <path d="M3 12h18"/>
+                </svg>
+                <span>Structură</span>
+              </a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a href="chestionare.html" class="nav-link">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M9 11h6m-6 4h3m5-7v8a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h7l5 5z"/>
+                <path d="M14 3v4a2 2 0 002 2h4"/>
+                <circle cx="8" cy="11" r="1" fill="currentColor"/>
+                <circle cx="8" cy="15" r="1" fill="currentColor"/>
+              </svg>
+              <span>Chestionar</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="leaderboard.html" class="nav-link active">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 16v-3a2 2 0 00-4 0v3m-4 0v-6a2 2 0 014 0v6m8-2V7a2 2 0 00-4 0v9M5 16V4a2 2 0 014 0v12"/>
+              </svg>
+              <span>Clasament</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="equations.html" class="nav-link">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M3 12h18M8 8l4-4 4 4M8 16l4 4 4-4"/>
+                <text x="6" y="6" fill="currentColor" font-size="6" font-weight="bold">H</text>
+                <text x="15" y="6" fill="currentColor" font-size="6" font-weight="bold">O</text>
+                <text x="18" y="6" fill="currentColor" font-size="5">2</text>
+              </svg>
+              <span>Ecuații</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="masa.html" class="nav-link">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M7 18h10l-2-6H9l-2 6z"/>
+                <path d="M5 18h14"/>
+                <path d="M12 6v6"/>
+                <circle cx="12" cy="4" r="2"/>
+                <path d="M8 10l8 8M16 10l-8 8"/>
+              </svg>
+              <span>Masa Atomică</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link calcule-dropdown-trigger" id="calculeDropdownTrigger">
+              <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="4" y="2" width="16" height="20" rx="2"/>
+                <path d="M8 6h8M8 10h3m5 0h-2M8 14h8"/>
+                <text x="7" y="9" fill="currentColor" font-size="4">Δ</text>
+                <text x="12.5" y="9" fill="currentColor" font-size="4">+</text>
+                <text x="10.5" y="13" fill="currentColor" font-size="4">∑</text>
+              </svg>
+              <span>Calcule</span>
+              <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+            
+            <div class="calcule-dropdown-menu" id="calculeDropdownMenu">
+              <a href="calcule.html" class="dropdown-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="4" y="2" width="16" height="20" rx="2"/>
+                  <path d="M8 6h8M8 10h3m5 0h-2M8 14h8"/>
+                  <text x="7" y="9" fill="currentColor" font-size="4">Δ</text>
+                  <text x="12.5" y="9" fill="currentColor" font-size="4">+</text>
+                  <text x="10.5" y="13" fill="currentColor" font-size="4">∑</text>
+                </svg>
+                <span>Cristalizare</span>
+              </a>
+              <a href="bio.html" class="dropdown-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  <path d="M8 12l2 2 4-4"/>
+                </svg>
+                <span>Genetică</span>
+              </a>
+            </div>
+          </li>
+        </ul>
+        
+        <div class="nav-controls">
+          <!-- Google Translate -->
+          <div class="translate-container">
+            <div id="google_translate_element"></div>
+          </div>
+          
+          <div class="theme-toggle">
+            <label class="theme-switch" for="themeCheckbox" aria-label="Toggle dark mode">
+              <input type="checkbox" id="themeCheckbox" />
+              <div class="theme-slider">
+                <div class="theme-icon-container sun-icon-container">
+                  <svg class="theme-icon sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                  </svg>
+                </div>
+                <div class="theme-icon-container moon-icon-container">
+                  <svg class="theme-icon moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                  </svg>
+                </div>
+              </div>
+            </label>
+          </div>
+          
+          <div class="auth-section">
+            <div id="authButtons" class="auth-buttons">
+              <button id="loginBtn" class="auth-btn login-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+                </svg>
+                <span>Intră în cont</span>
+              </button>
+              <button id="registerBtn" class="auth-btn register-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12.5 7a4 4 0 11-8 0 4 4 0 018 0zM20 8v6M23 11h-6"/>
+                </svg>
+                <span>Creează cont</span>
+              </button>
+            </div>
+            
+            <div id="userInfo" class="user-dropdown" style="display: none;">
+              <button class="user-dropdown-trigger" id="userDropdownTrigger">
+                <div class="user-avatar">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </div>
+                <span class="user-name" id="username"></span>
+                <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </button>
+              
+              <div class="user-dropdown-menu" id="userDropdownMenu">
+                <div class="dropdown-header">
+                  <div class="user-info-display">
+                    <div class="user-avatar-large">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                      </svg>
+                    </div>
+                    <div class="user-details">
+                      <span class="user-greeting">Bună,</span>
+                      <span class="user-name-display" id="usernameDisplay"></span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="dropdown-divider"></div>
+                
+                <div class="dropdown-links">
+                  <a href="istoric.html" class="dropdown-link">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>Istoric</span>
+                  </a>
+                  <a href="profile.html" class="dropdown-link">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                      <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    <span>Profilul Meu</span>
+                  </a>
+                  <a href="admin.html" class="dropdown-link" id="adminLink">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                      <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span>Administrare</span>
+                  </a>
+                </div>
+                
+                <div class="dropdown-divider"></div>
+                
+                <button id="logoutBtn" class="dropdown-link logout-btn">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+                  </svg>
+                  <span>Ieși din cont</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="site-main">
+    <div class="leaderboard-container">
+      <div class="leaderboard-header">
+        <h1>Clasament Chestionare</h1>
+        <p>Compară-ți performanța cu alți studenți</p>
+      </div>
+
+      <!-- Auth Required Message -->
+      <div id="authRequired" class="error-message" style="display: none;">
+        <strong>Autentificare necesară:</strong> Pentru a accesa clasamentul, trebuie să vă autentificați.
+      </div>
+
+      <!-- Loading State -->
+      <div id="loading" class="loading">
+        <p>Se încarcă clasamentul...</p>
+      </div>
+
+      <!-- Main Content -->
+      <div id="mainContent" style="display: none;">
+        <!-- Personal Stats -->
+        <div id="personalStats" class="personal-stats">
+          <h2>📊 Statisticile Tale</h2>
+          <div class="stats-grid" id="statsGrid">
+            <!-- Enhanced stats cards will be populated here -->
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="leaderboard-controls">
+          <div class="control-group">
+            <label for="quizSelect">🎯 Chestionar:</label>
+            <select id="quizSelect">
+              <option value="">Selectează chestionarul</option>
+            </select>
+          </div>
+          
+          <div class="control-group" id="classSelectGroup" style="display: none;">
+            <label for="classSelect">🏫 Clasă:</label>
+            <select id="classSelect">
+              <option value="">Selectează clasa</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="leaderboard-tabs">
+          <button class="tab-button active" data-tab="global">🌍 Clasament Global</button>
+          <button class="tab-button" data-tab="national" id="nationalTab">Clasament Național</button>
+          <button class="tab-button" data-tab="class" id="classTab" style="display: none;">🏫 Clasament Clasă</button>
+        </div>
+
+        <!-- Leaderboard Table -->
+        <div class="leaderboard-table">
+          <div class="table-container">
+            <div class="table-content">
+              <div class="table-header">
+                <div class="header-item">🏆 Rang</div>
+                <div class="header-item">👤 Student</div>
+                <div class="header-item">🌍 Țară</div>
+                <div class="header-item">📊 Scor</div>
+                <div class="header-item">📈 Procent</div>
+                <div class="header-item">⏱️ Timp</div>
+                <div class="header-item">📅 Data</div>
+              </div>
+              <div id="leaderboardContent">
+                <!-- Modern leaderboard rows will be populated here -->
+              </div>
+            </div>
+            <div class="scroll-indicator">Scroll pentru toate detaliile</div>
+          </div>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-content">
+      <!-- Main Footer Section -->
+      <div class="footer-main">
+        <div class="footer-section">
+          <div class="footer-brand">
+            <img src="logo_light.png" alt="Atomify Logo" class="footer-logo">
+            <h3>Atomify</h3>
+            <p>Platformă educațională pentru învățarea chimiei organice și generarea de izomeri</p>
+          </div>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Funcționalități</h4>
+          <ul class="footer-links">
+            <li><a href="isomers.html">Generare Izomeri</a></li>
+            <li><a href="equations.html">Echilibrare Ecuații</a></li>
+            <li><a href="masa.html">Calcul Masă Molară</a></li>
+            <li><a href="chestionare.html">Chestionare</a></li>
+            <li><a href="calcule.html">Calcule Chimice</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Resurse</h4>
+          <ul class="footer-links">
+            <li><a href="leaderboard.html">Clasament</a></li>
+            <li><a href="istoric.html">Istoric Personal</a></li>
+            <li><a href="admin.html">Administrare</a></li>
+            <li><a href="privacy.html">Politica de Confidențialitate</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Contact & Suport</h4>
+          <div class="footer-contact">
+            <div class="contact-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+              <span>atomify66@gmail.com</span>
+            </div>
+            <div class="contact-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span>Constanța, România</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <div class="footer-bottom-content">
+          <div class="footer-copyright">
+            <p>&copy; 2025 Atomify. Toate drepturile rezervate.</p>
+            <p class="team-credits">Proiect realizat de <strong>Siret Luca-Alexandru</strong> și <strong>Zevri Matei-Tudor</strong></p>
+          </div>
+          
+          <div class="footer-legal">
+            <a href="privacy.html" class="legal-link">Politica de Confidențialitate</a>
+            <span class="separator">•</span>
+          </div>
+          
+          <div class="footer-social">
+            <a href="https://github.com/Atomify66/Atomify" class="social-link" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Authentication Modal -->
+  <div id="authModal" class="auth-modal">
+    <div class="auth-modal-content">
+      <span class="auth-close">&times;</span>
+      
+      <div id="loginForm" class="auth-form">
+        <h2>Intră în cont</h2>
+        <form id="loginFormElement">
+          <div class="form-group">
+            <label for="loginUsername">Nume utilizator:</label>
+            <input type="text" id="loginUsername" required maxlength="50">
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Parolă:</label>
+            <input type="password" id="loginPassword" required>
+          </div>
+          <button type="submit" class="auth-submit-btn">Intră în cont</button>
+        </form>
+        
+        <div class="auth-divider">
+          <span>sau</span>
+        </div>
+        
+        <button type="button" id="googleLoginBtn" class="google-auth-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          <span>Intră cu Google</span>
+        </button>
+        
+        <p class="auth-switch">
+          Nu ai cont? <a href="#" id="showRegister">Creează unul aici</a>
+        </p>
+      </div>
+      
+      <div id="registerForm" class="auth-form" style="display: none;">
+        <h2>Creează cont</h2>
+        <form id="registerFormElement">
+          <div class="form-group">
+            <label for="registerUsername">Nume utilizator:</label>
+            <input type="text" id="registerUsername" required maxlength="50">
+          </div>
+          <div class="form-group">
+            <label for="registerPassword">Parolă:</label>
+            <input type="password" id="registerPassword" required>
+            <div class="password-requirements">
+              <div class="requirement" id="req-length">
+                <span class="req-icon">✗</span> Cel puțin 8 caractere
+              </div>
+              <div class="requirement" id="req-uppercase">
+                <span class="req-icon">✗</span> Cel puțin o literă mare (A-Z)
+              </div>
+              <div class="requirement" id="req-digit">
+                <span class="req-icon">✗</span> Cel puțin o cifră (0-9)
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="registerPasswordConfirm">Confirmă parola:</label>
+            <input type="password" id="registerPasswordConfirm" required>
+          </div>
+          <button type="submit" class="auth-submit-btn">Creează cont</button>
+        </form>
+        
+        <div class="auth-divider">
+          <span>sau</span>
+        </div>
+        
+        <button type="button" id="googleRegisterBtn" class="google-auth-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          <span>Înregistrează-te cu Google</span>
+        </button>
+        
+        <p class="auth-switch">
+          Ai deja cont? <a href="#" id="showLogin">Intră în cont aici</a>
+        </p>
+      </div>
+      
+      <div id="authMessage" class="auth-message"></div>
+    </div>
+  </div>
+
+  <script>
+    // Global variables
+    let currentUser = null;
+    let availableQuizzes = [];
+    let userClasses = [];
+    let currentTab = 'global';
+    let selectedQuizId = null;
+    let selectedClassId = null;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      setupEventListeners();
+      setupThemeToggle();
+      setupMobileMenu();
+      setupIsomerDropdown();
+      setupCalculeDropdown();
+      setupUserDropdown();
+      checkAuthentication();
+      checkAuthenticationStatus();
+    });
+
+    // Authentication functions
+    async function checkAuthentication() {
+      try {
+        const response = await fetch('/user');
+        const data = await response.json();
+        
+        if (response.ok && data.user) {
+          currentUser = data.user;
+          updateAuthUI();
+          await loadInitialData();
+        } else {
+          currentUser = null;
+          updateAuthUI();
+          showAuthRequired();
+        }
+      } catch (error) {
+        console.error('Error checking authentication:', error);
+        currentUser = null;
+        updateAuthUI();
+        showAuthRequired();
+      }
+    }
+
+    function updateAuthUI() {
+      const authButtons = document.getElementById('authButtons');
+      const userInfo = document.getElementById('userInfo');
+      const username = document.getElementById('username');
+      const usernameDisplay = document.getElementById('usernameDisplay');
+      const adminLink = document.getElementById('adminLink');
+
+      if (currentUser) {
+        authButtons.style.display = 'none';
+        userInfo.style.display = 'block';
+        username.textContent = currentUser.username;
+        if (usernameDisplay) usernameDisplay.textContent = currentUser.username;
+        
+        if (adminLink) {
+          adminLink.style.display = 'block';
+        }
+      } else {
+        authButtons.style.display = 'flex';
+        userInfo.style.display = 'none';
+      }
+    }
+
+    function showAuthRequired() {
+      document.getElementById('authRequired').style.display = 'block';
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'none';
+    }
+
+    // Load initial data
+    async function loadInitialData() {
+      try {
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('authRequired').style.display = 'none';
+        
+        // Load quizzes and classes in parallel
+        const [quizzesResponse, classesResponse] = await Promise.all([
+          fetch('/api/quizzes'),
+          fetch('/my-classes')
+        ]);
+        
+        if (quizzesResponse.ok) {
+          availableQuizzes = await quizzesResponse.json();
+          console.log('Available quizzes:', availableQuizzes);
+          populateQuizSelect();
+        }
+        
+        if (classesResponse.ok) {
+          const classesData = await classesResponse.json();
+          userClasses = classesData.classes || [];
+          populateClassSelect();
+        }
+        
+        // Load initial personal stats
+        await loadPersonalStats();
+        
+        // Load initial leaderboard
+        await loadLeaderboard();
+        
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+        
+      } catch (error) {
+        console.error('Error loading initial data:', error);
+        showError('Eroare la încărcarea datelor');
+      }
+    }
+
+    // Populate selects
+    function populateQuizSelect() {
+      const select = document.getElementById('quizSelect');
+      select.innerHTML = '<option value="">Selectează chestionarul</option>';
+      
+      availableQuizzes.forEach(quiz => {
+        const option = document.createElement('option');
+        option.value = quiz.id;
+        option.textContent = quiz.title;
+        select.appendChild(option);
+      });
+    }
+
+    function populateClassSelect() {
+      const select = document.getElementById('classSelect');
+      const classSelectGroup = document.getElementById('classSelectGroup');
+      const classTab = document.getElementById('classTab');
+      
+      select.innerHTML = '<option value="">Selectează clasa</option>';
+      
+      if (userClasses.length > 0) {
+        userClasses.forEach(cls => {
+          const option = document.createElement('option');
+          option.value = cls.id;
+          option.textContent = cls.name;
+          select.appendChild(option);
+        });
+        
+        classSelectGroup.style.display = 'block';
+        classTab.style.display = 'block';
+      }
+    }
+
+    // Load personal stats
+    async function loadPersonalStats() {
+      try {
+        const params = new URLSearchParams();
+        if (selectedQuizId) params.append('quizId', selectedQuizId);
+        if (selectedClassId) params.append('classId', selectedClassId);
+        if (currentTab === 'national') params.append('national', 'true');
+        
+        const url = '/api/stats/personal' + (params.toString() ? '?' + params.toString() : '');
+        const response = await fetch(url);
+        
+        if (response.ok) {
+          const data = await response.json();
+          displayPersonalStats(data.stats);
+        } else {
+          console.error('Error loading personal stats');
+        }
+      } catch (error) {
+        console.error('Error loading personal stats:', error);
+      }
+    }
+
+    // Display personal stats
+    function displayPersonalStats(stats) {
+      const statsGrid = document.getElementById('statsGrid');
+      
+      if (!stats || stats.length === 0) {
+        const message = selectedQuizId ? 
+          'Nu ai completat încă acest chestionar.' : 
+          'Nu ai completat încă niciun chestionar.';
+        statsGrid.innerHTML = `<div class="empty-message">${message}</div>`;
+        return;
+      }
+      
+      // Calculate overall stats
+      const totalAttempts = stats.reduce((sum, stat) => sum + stat.attempts, 0);
+      const avgPercentage = stats.reduce((sum, stat) => sum + stat.avg_percentage, 0) / stats.length;
+      const bestPercentage = Math.max(...stats.map(stat => stat.best_percentage));
+      const avgTime = stats.reduce((sum, stat) => sum + stat.avg_time, 0) / stats.length;
+      
+      // Update header based on selection
+      let headerText = 'Statisticile Tale';
+      if (selectedQuizId) {
+        const quizTitle = availableQuizzes.find(q => q.id === selectedQuizId)?.title || 'Chestionar Selectat';
+        headerText = `Statisticile Tale - ${quizTitle}`;
+      }
+      
+      if (currentTab === 'national' && currentUser && currentUser.country) {
+        headerText += ` (${currentUser.country})`;
+      }
+      
+      document.querySelector('#personalStats h2').textContent = headerText;
+      
+      const html = `
+        <div class="stat-card">
+          <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <div class="stat-value">${totalAttempts}</div>
+          <div class="stat-label">Încercări Totale</div>
+        </div>
+        <div class="stat-card">
+          <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+          <div class="stat-value">${avgPercentage.toFixed(1)}%</div>
+          <div class="stat-label">Scor Mediu</div>
+        </div>
+        <div class="stat-card">
+          <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5C11 4 12 9 12 9s1-5 7.5-5a2.5 2.5 0 0 1 0 5H18"/>
+            <path d="M6 9v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9"/>
+          </svg>
+          <div class="stat-value">${bestPercentage.toFixed(1)}%</div>
+          <div class="stat-label">Cel Mai Bun Scor</div>
+        </div>
+        <div class="stat-card">
+          <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12,6 12,12 16,14"/>
+          </svg>
+          <div class="stat-value">${formatTimeWithDecimals(avgTime)}</div>
+          <div class="stat-label">Timp Mediu</div>
+        </div>
+      `;
+      
+      statsGrid.innerHTML = html;
+    }
+
+    // Load leaderboard
+    async function loadLeaderboard() {
+      try {
+        // Don't load leaderboard if no quiz is selected
+        if (!selectedQuizId) {
+          displayLeaderboard([]);
+          return;
+        }
+        
+        let url = '/api/leaderboard/global';
+        
+        if (currentTab === 'national') {
+          url = '/api/leaderboard/national';
+        } else if (currentTab === 'class' && selectedClassId) {
+          url = `/api/leaderboard/class/${selectedClassId}`;
+        }
+        
+        const params = new URLSearchParams();
+        if (selectedQuizId) params.append('quizId', selectedQuizId);
+        if (params.toString()) url += '?' + params.toString();
+        
+        console.log('Loading leaderboard for quiz:', selectedQuizId);
+        console.log('Leaderboard URL:', url);
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        console.log('Leaderboard response:', data);
+        
+        if (response.ok) {
+          displayLeaderboard(data.leaderboard, data);
+        } else {
+          showError(data.error || 'Eroare la încărcarea clasamentului');
+        }
+      } catch (error) {
+        console.error('Error loading leaderboard:', error);
+        showError('Eroare de conexiune');
+      }
+    }
+
+    // Display leaderboard
+    function displayLeaderboard(leaderboard, data) {
+      const content = document.getElementById('leaderboardContent');
+      
+      if (!leaderboard || leaderboard.length === 0) {
+        let message = selectedQuizId ? 
+          'Nu există rezultate pentru acest chestionar.' : 
+          'Selectează un chestionar pentru a vedea clasamentul.';
+        
+        if (currentTab === 'national' && data && data.country) {
+          message = selectedQuizId ? 
+            `Nu există rezultate pentru acest chestionar din ${data.country}.` : 
+            `Selectează un chestionar pentru a vedea clasamentul din ${data.country}.`;
+        }
+        
+        content.innerHTML = `<div class="empty-message">${message}</div>`;
+        return;
+      }
+      
+      // Add country header for national leaderboard
+      let headerHtml = '';
+      if (currentTab === 'national' && data && data.country) {
+        headerHtml = `
+          <div class="leaderboard-country-header">
+            <h3>🏆 Clasament Național - ${data.country}</h3>
+            <p>Compară-ți performanța cu alți studenți din țara ta</p>
+          </div>
+        `;
+      }
+      
+      let html = headerHtml;
+      leaderboard.forEach((entry, index) => {
+        const rank = index + 1;
+        const rankClass = rank === 1 ? 'top-1' : rank === 2 ? 'top-2' : rank === 3 ? 'top-3' : '';
+        const percentageClass = entry.percentage >= 80 ? 'excellent' : entry.percentage >= 60 ? 'good' : 'needs-improvement';
+        const studentInitial = entry.username.charAt(0).toUpperCase();
+        
+        html += `
+          <div class="table-row">
+            <div class="rank ${rankClass}">${rank}</div>
+            <div class="username">
+              <span>${entry.username}</span>
+            </div>
+            <div class="country">${entry.country || '🌍'}</div>
+            <div class="score">${entry.score}/${entry.total_questions}</div>
+            <div class="percentage ${percentageClass}">${entry.percentage}%</div>
+            <div class="time-taken">${formatTime(entry.time_taken)}</div>
+            <div class="date">${formatDate(entry.completed_at)}</div>
+          </div>`;
+      });
+      
+      content.innerHTML = html;
+    }
+
+    // Event listeners
+    function setupEventListeners() {
+      // Tab switching
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', function() {
+          const tab = this.dataset.tab;
+          switchTab(tab);
+        });
+      });
+      
+      // Quiz selection
+      document.getElementById('quizSelect').addEventListener('change', function() {
+        selectedQuizId = this.value || null;
+        loadPersonalStats();
+        loadLeaderboard();
+      });
+      
+      // Class selection
+      document.getElementById('classSelect').addEventListener('change', function() {
+        selectedClassId = this.value || null;
+        if (selectedClassId) {
+          switchTab('class');
+        }
+        loadPersonalStats();
+        loadLeaderboard();
+      });
+      
+      // Auth event listeners
+      setupAuthEventListeners();
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      
+      // Update tab buttons
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.toggle('active', button.dataset.tab === tab);
+      });
+      
+      // If switching to class tab but no class selected, select first one
+      if (tab === 'class' && !selectedClassId && userClasses.length > 0) {
+        selectedClassId = userClasses[0].id;
+        document.getElementById('classSelect').value = selectedClassId;
+      }
+      
+      loadLeaderboard();
+    }
+
+    // Utility functions
+    function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
+
+    function formatTimeWithDecimals(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return `${minutes}:${remainingSeconds.toFixed(2).padStart(5, '0')}`;
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString + 'Z');
+      return date.toLocaleDateString('ro-RO', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    }
+
+    function showError(message) {
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+      
+      setTimeout(() => {
+        errorDiv.style.display = 'none';
+      }, 5000);
+    }
+
+    // Theme toggle
+    function setupThemeToggle() {
+      const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+      const currentTheme = localStorage.getItem('theme');
+
+      if (currentTheme) {
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        if (currentTheme === 'dark') {
+          toggleSwitch.checked = true;
+        }
+      }
+
+      toggleSwitch.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          localStorage.setItem('theme', 'dark');
+          
+          // Update logos for dark theme
+          const logoImages = document.querySelectorAll('.logo-image, .footer-logo');
+          logoImages.forEach(img => {
+            img.onerror = function() {
+              console.warn('Failed to load logo_dark.png, falling back to logo.png');
+              this.src = 'logo.png';
+              this.onerror = null;
+            };
+            img.src = 'logo_dark.png';
+          });
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+          localStorage.setItem('theme', 'light');
+          
+          // Update logos for light theme
+          const logoImages = document.querySelectorAll('.logo-image, .footer-logo');
+          logoImages.forEach(img => {
+            img.onerror = function() {
+              console.warn('Failed to load logo_light.png, falling back to logo.png');
+              this.src = 'logo.png';
+              this.onerror = null;
+            };
+            img.src = 'logo_light.png';
+          });
+        }
+      });
+    }
+
+    // Mobile menu
+    function setupMobileMenu() {
+      const menuBtn = document.getElementById('mobileMenuBtn');
+      const closeBtn = document.getElementById('menuCloseBtn');
+      const navContainer = document.querySelector('.nav-container');
+      const backdrop = document.createElement('div');
+      backdrop.className = 'menu-backdrop';
+      document.body.appendChild(backdrop);
+
+      function updateMenuButtonVisibility() {
+        const isMobile = window.innerWidth <= 900;
+        if (navContainer.classList.contains('open')) {
+          menuBtn.style.display = 'none';
+        } else {
+          menuBtn.style.display = isMobile ? 'flex' : 'none';
+        }
+      }
+
+      function openMenu() {
+        if (window.innerWidth > 900) return;
+        navContainer.classList.add('open');
+        backdrop.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        updateMenuButtonVisibility();
+      }
+      
+      function closeMenu() {
+        navContainer.classList.remove('open');
+        backdrop.classList.remove('show');
+        document.body.style.overflow = '';
+        updateMenuButtonVisibility();
+      }
+
+      function handleResize() {
+        if (window.innerWidth > 900 && navContainer.classList.contains('open')) {
+          closeMenu();
+        }
+        updateMenuButtonVisibility();
+      }
+      
+      if (menuBtn) menuBtn.addEventListener('click', openMenu);
+      if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+      backdrop.addEventListener('click', closeMenu);
+      window.addEventListener('resize', handleResize);
+      
+      const navLinks = document.querySelectorAll('.nav-link, .nav-links a');
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          // Don't close menu if it's a dropdown trigger
+          if (link.classList.contains('isomer-dropdown-trigger') || link.classList.contains('user-dropdown-trigger')) {
+            return; // Let the dropdown handle its own behavior
+          }
+          if (window.innerWidth <= 900) {
+            closeMenu();
+          }
+        });
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && navContainer.classList.contains('open')) {
+          closeMenu();
+        }
+      });
+
+      updateMenuButtonVisibility();
+    }
+
+    // Setup isomer dropdown functionality
+    function setupIsomerDropdown() {
+      const dropdownTrigger = document.getElementById('isomerDropdownTrigger');
+      const dropdownMenu = document.getElementById('isomerDropdownMenu');
+      
+      if (!dropdownTrigger || !dropdownMenu) return;
+      
+      // Toggle dropdown on click
+      dropdownTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        console.log('Isomer dropdown clicked, screen width:', window.innerWidth);
+        
+        // On mobile, we want the dropdown to stay open within the mobile menu
+        if (window.innerWidth <= 900) {
+          dropdownMenu.classList.toggle('show');
+          dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+          console.log('Mobile dropdown toggled, show class:', dropdownMenu.classList.contains('show'));
+        } else {
+          // Desktop behavior
+          dropdownMenu.classList.toggle('show');
+          dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+        }
+      });
+      
+      // Only close on outside click for desktop
+      document.addEventListener('click', (e) => {
+        if (window.innerWidth > 900 && !dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+      
+      // Close dropdown when pressing Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+          dropdownTrigger.focus();
+        }
+      });
+    }
+
+    // Setup calcule dropdown functionality
+    function setupCalculeDropdown() {
+      const dropdownTrigger = document.getElementById('calculeDropdownTrigger');
+      const dropdownMenu = document.getElementById('calculeDropdownMenu');
+      
+      if (!dropdownTrigger || !dropdownMenu) return;
+      
+      // Toggle dropdown on click
+      dropdownTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        console.log('Calcule dropdown clicked, screen width:', window.innerWidth);
+        
+        // On mobile, we want the dropdown to stay open within the mobile menu
+        if (window.innerWidth <= 900) {
+          dropdownMenu.classList.toggle('show');
+          dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+          console.log('Mobile dropdown toggled, show class:', dropdownMenu.classList.contains('show'));
+        } else {
+          // Desktop behavior
+          dropdownMenu.classList.toggle('show');
+          dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+        }
+      });
+      
+      // Only close on outside click for desktop
+      document.addEventListener('click', (e) => {
+        if (window.innerWidth > 900 && !dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+      
+      // Close dropdown when pressing Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+          dropdownTrigger.focus();
+        }
+      });
+    }
+
+    // User dropdown
+    function setupUserDropdown() {
+      const dropdownTrigger = document.getElementById('userDropdownTrigger');
+      const dropdownMenu = document.getElementById('userDropdownMenu');
+      
+      if (!dropdownTrigger || !dropdownMenu) return;
+      
+      dropdownTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle('show');
+        dropdownTrigger.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+      });
+      
+      document.addEventListener('click', (e) => {
+        if (!dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+      
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
+          dropdownMenu.classList.remove('show');
+          dropdownTrigger.setAttribute('aria-expanded', 'false');
+          dropdownTrigger.focus();
+        }
+      });
+    }
+
+    // Authentication event listeners
+    function setupAuthEventListeners() {
+      const loginBtn = document.getElementById('loginBtn');
+      if (loginBtn) {
+        loginBtn.addEventListener('click', () => showAuthModal('login'));
+      }
+      
+      const registerBtn = document.getElementById('registerBtn');
+      if (registerBtn) {
+        registerBtn.addEventListener('click', () => showAuthModal('register'));
+      }
+      
+      const logoutBtn = document.getElementById('logoutBtn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', handleLogout);
+      }
+      
+      // Google OAuth event listeners
+      const googleLoginBtn = document.getElementById('googleLoginBtn');
+      if (googleLoginBtn) {
+        googleLoginBtn.addEventListener('click', handleGoogleAuth);
+      }
+      
+      const googleRegisterBtn = document.getElementById('googleRegisterBtn');
+      if (googleRegisterBtn) {
+        googleRegisterBtn.addEventListener('click', handleGoogleAuth);
+      }
+      
+      const showRegisterLink = document.getElementById('showRegister');
+      if (showRegisterLink) {
+        showRegisterLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          showAuthModal('register');
+        });
+      }
+      
+      const showLoginLink = document.getElementById('showLogin');
+      if (showLoginLink) {
+        showLoginLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          showAuthModal('login');
+        });
+      }
+      
+      const loginFormElement = document.getElementById('loginFormElement');
+      if (loginFormElement) {
+        loginFormElement.addEventListener('submit', handleLogin);
+      }
+      
+      const registerFormElement = document.getElementById('registerFormElement');
+      if (registerFormElement) {
+        registerFormElement.addEventListener('submit', handleRegister);
+      }
+      
+      const registerPassword = document.getElementById('registerPassword');
+      if (registerPassword) {
+        registerPassword.addEventListener('input', (e) => {
+          updatePasswordRequirements(e.target.value);
+        });
+      }
+      
+      const modal = document.getElementById('authModal');
+      const closeBtn = document.querySelector('.auth-close');
+      
+      if (closeBtn) {
+        closeBtn.addEventListener('click', hideAuthModal);
+      }
+      
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+            hideAuthModal();
+          }
+        });
+      }
+    }
+
+    // Authentication functions
+    function showAuthModal(mode = 'login') {
+      const modal = document.getElementById('authModal');
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      const authMessage = document.getElementById('authMessage');
+
+      authMessage.style.display = 'none';
+      authMessage.className = 'auth-message';
+
+      if (mode === 'login') {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+      } else {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        updatePasswordRequirements('');
+      }
+
+      modal.style.display = 'block';
+    }
+
+    function hideAuthModal() {
+      const modal = document.getElementById('authModal');
+      modal.style.display = 'none';
+      
+      document.getElementById('loginFormElement').reset();
+      document.getElementById('registerFormElement').reset();
+      
+      updatePasswordRequirements('');
+    }
+
+    async function handleLogin(event) {
+      event.preventDefault();
+      
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+
+      try {
+        const response = await fetch('/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showAuthMessage('Autentificare reușită!', 'success');
+          setTimeout(() => {
+            hideAuthModal();
+            checkAuthentication();
+          }, 1000);
+        } else {
+          showAuthMessage(data.error || 'Eroare la autentificare');
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        showAuthMessage('Eroare de conexiune. Încearcă din nou.');
+      }
+    }
+
+    async function handleRegister(event) {
+      event.preventDefault();
+      
+      const username = document.getElementById('registerUsername').value;
+      const password = document.getElementById('registerPassword').value;
+      const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
+
+      if (!isPasswordValid(password)) {
+        showAuthMessage('Parola nu îndeplinește toate cerințele');
+        return;
+      }
+
+      if (password !== passwordConfirm) {
+        showAuthMessage('Parolele nu coincid');
+        return;
+      }
+
+      try {
+        const response = await fetch('/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showAuthMessage('Cont creat cu succes! Te poți autentifica acum.', 'success');
+          setTimeout(() => {
+            showAuthModal('login');
+          }, 1500);
+        } else {
+          showAuthMessage(data.error || 'Eroare la crearea contului');
+        }
+      } catch (error) {
+        console.error('Registration error:', error);
+        showAuthMessage('Eroare de conexiune. Încearcă din nou.');
+      }
+    }
+
+    async function handleLogout() {
+      try {
+        const response = await fetch('/logout', {
+          method: 'POST',
+        });
+
+        if (response.ok) {
+          currentUser = null;
+          updateAuthUI();
+          showAuthRequired();
+        } else {
+          console.error('Logout failed');
+        }
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+    }
+
+    // Handle Google OAuth authentication
+    function handleGoogleAuth() {
+      window.location.href = '/auth/google';
+    }
+
+    // Check authentication status from URL parameters
+    function checkAuthenticationStatus() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const authStatus = urlParams.get('auth');
+      
+      if (authStatus === 'success') {
+        // Show success message
+        showAuthMessage('Autentificare cu Google reușită!', 'success');
+        // Clean up URL
+        const url = new URL(window.location);
+        url.searchParams.delete('auth');
+        window.history.replaceState({}, document.title, url);
+        // Check authentication status
+        setTimeout(() => {
+          checkAuthentication();
+        }, 1000);
+      } else if (authStatus === 'failed') {
+        // Show error message
+        showAuthMessage('Autentificarea cu Google a eșuat. Încearcă din nou.', 'error');
+        // Clean up URL
+        const url = new URL(window.location);
+        url.searchParams.delete('auth');
+        window.history.replaceState({}, document.title, url);
+      }
+    }
+
+    function showAuthMessage(message, type = 'error') {
+      const authMessage = document.getElementById('authMessage');
+      authMessage.textContent = message;
+      authMessage.className = `auth-message ${type}`;
+      authMessage.style.display = 'block';
+    }
+
+    function isPasswordValid(password) {
+      const requirements = validatePassword(password);
+      return requirements.length && requirements.uppercase && requirements.digit;
+    }
+
+    function validatePassword(password) {
+      return {
+        length: password.length >= 8,
+        uppercase: /[A-Z]/.test(password),
+        digit: /[0-9]/.test(password)
+      };
+    }
+
+    function updatePasswordRequirements(password) {
+      const requirements = validatePassword(password);
+      
+      const lengthReq = document.getElementById('req-length');
+      const uppercaseReq = document.getElementById('req-uppercase');
+      const digitReq = document.getElementById('req-digit');
+
+      if (lengthReq) {
+        lengthReq.classList.toggle('valid', requirements.length);
+        lengthReq.querySelector('.req-icon').textContent = requirements.length ? '✓' : '✗';
+      }
+
+      if (uppercaseReq) {
+        uppercaseReq.classList.toggle('valid', requirements.uppercase);
+        uppercaseReq.querySelector('.req-icon').textContent = requirements.uppercase ? '✓' : '✗';
+      }
+
+      if (digitReq) {
+        digitReq.classList.toggle('valid', requirements.digit);
+        digitReq.querySelector('.req-icon').textContent = requirements.digit ? '✓' : '✗';
+      }
+    }
+  </script>
+</body>
+</html> 
