@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <title>Atomify · Chestionare BAC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Chestionare de chimie pentru pregătirea BAC — sesiuni cronometrate, feedback imediat, statistici personale." />
+
+  <meta name="theme-color" content="#1F8F5C" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="logo_light.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link rel="stylesheet" href="v2/core.css" />
+  <link rel="stylesheet" href="v2/components.css" />
+  <link rel="stylesheet" href="v2/chrome.css" />
+  <link rel="stylesheet" href="v2/pages/chestionare.css" />
+
+  <!-- MathJax for LaTeX in questions/explanations -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath:  [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true,
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      },
+    };
+  </script>
+  <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+  <script src="logo-theme-switcher.js" defer></script>
+  <script src="pwa.js" defer></script>
+</head>
+<body>
+  <header class="site-header"></header>
+  <script src="auth.js"></script>
+  <script src="navbar.js"></script>
+  <script>initNavbar("chestionare");</script>
+
+  <main class="page-main">
+
+    <!-- Masthead -->
+    <section class="masthead reveal reveal-1">
+      <div class="masthead-eyebrow">Pregătire · Vol. VI</div>
+      <h1 class="masthead-title">Chestionare <span class="ital">BAC</span>.</h1>
+      <div class="masthead-meta">
+        Cronometrat · Feedback<br/>
+        Scor · Istoric
+      </div>
+    </section>
+
+    <!-- Auth required state -->
+    <section class="chapter reveal reveal-2" id="quizAuthRequired" hidden>
+      <div class="chapter-num">!</div>
+      <div class="chapter-body">
+        <h2 class="chapter-head">Autentificare necesară</h2>
+        <p class="chapter-sub">Chestionarele sunt disponibile doar pentru utilizatori autentificați — astfel îți putem salva istoricul și clasamentul.</p>
+        <div class="quiz-auth-required">
+          <span class="quiz-auth-required-eyebrow">Acces restricționat</span>
+          <h3 class="quiz-auth-required-title">Intră în cont pentru a accesa chestionarele</h3>
+          <p class="quiz-auth-required-body">Datele tale (răspunsuri, scoruri, încercări) sunt asociate contului. Poți crea unul gratuit sau folosi un cont existent.</p>
+          <button type="button" id="quizAuthLoginBtn" class="btn btn-cta">
+            Intră în cont
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Library view -->
+    <section class="chapter reveal reveal-2" id="quizLibraryView">
+      <div class="chapter-num">01</div>
+      <div class="chapter-body">
+        <h2 class="chapter-head">Alege un chestionar</h2>
+        <p class="chapter-sub">Fiecare chestionar este cronometrat și se închide automat la expirarea timpului. Răspunsurile parțiale sunt salvate și trimise.</p>
+        <div class="quiz-library" id="quizLibrary"></div>
+      </div>
+    </section>
+
+    <!-- Session view -->
+    <section class="chapter reveal reveal-2" id="quizSessionView" hidden>
+      <div class="chapter-num">02</div>
+      <div class="chapter-body">
+        <h2 class="chapter-head">Sesiune activă</h2>
+        <p class="chapter-sub">Răspunsurile sunt salvate automat. Poți naviga oricând între întrebări — punctele indică progresul tău.</p>
+
+        <div class="quiz-session" id="quizSession">
+          <header class="quiz-session-head">
+            <div class="quiz-session-info">
+              <span class="quiz-session-eyebrow" id="quizSessionEyebrow">Chestionar · BAC</span>
+              <span class="quiz-session-title" id="quizSessionTitle">—</span>
+            </div>
+            <div class="quiz-timer" id="quizTimer">
+              <span class="quiz-timer-label">Timp rămas</span>
+              <span class="quiz-timer-value" id="quizTimerValue">5:00</span>
+            </div>
+            <div class="quiz-score-chip">
+              <span class="quiz-score-chip-label">Răspunse</span>
+              <span class="quiz-score-chip-value">
+                <span class="num-current" id="quizScoreCurrent">0</span>/<span id="quizScoreTotal">0</span>
+              </span>
+            </div>
+          </header>
+
+          <div class="quiz-progress" id="quizProgress" style="--progress: 0%"></div>
+
+          <div class="quiz-dots-wrap">
+            <div class="quiz-dots" id="quizDots"></div>
+          </div>
+
+          <div class="quiz-body">
+            <span class="quiz-q-eyebrow" id="quizQEyebrow">Întrebarea 01</span>
+            <h3 class="quiz-q-title" id="quizQTitle"></h3>
+            <div id="quizOptions"></div>
+            <div id="quizFeedback"></div>
+          </div>
+
+          <div class="quiz-nav">
+            <button type="button" class="quiz-nav-btn" id="quizPrev">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M11 18l-6-6 6-6"/>
+              </svg>
+              Înapoi
+            </button>
+            <button type="button" class="quiz-finalize-btn" id="quizFinalizeBtn">
+              Finalizează testul
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12l5 5L20 7"/>
+              </svg>
+            </button>
+            <button type="button" class="quiz-nav-btn" id="quizNext">
+              Înainte
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Results panel (shown after submit, above the reviewable session) -->
+        <div id="quizResultsView" hidden style="margin-top: 1.5rem;"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Confirm-finalize modal -->
+  <div class="quiz-confirm" id="quizConfirm" role="dialog" aria-modal="true" aria-labelledby="quizConfirmTitle">
+    <div class="quiz-confirm-card">
+      <span class="quiz-confirm-eyebrow">Confirmare</span>
+      <h3 class="quiz-confirm-title" id="quizConfirmTitle">Trimite răspunsurile?</h3>
+      <p class="quiz-confirm-body" id="quizConfirmBody"></p>
+      <div class="quiz-confirm-actions">
+        <button type="button" class="quiz-nav-btn" id="quizConfirmNo">Anulează</button>
+        <button type="button" class="quiz-finalize-btn" id="quizConfirmYes">
+          Da, trimite
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12l5 5L20 7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Footer ─────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-lockup">
+        <a href="isomers.html" class="footer-mark">
+          <img src="logo_light.png" alt="" class="at-logo-light"/>
+          <img src="logo_dark.png" alt="" class="at-logo-dark" style="display:none"/>
+          <span>Atomify</span>
+        </a>
+        <p class="footer-tagline">Platformă educațională pentru învățarea chimiei — de la masa molară la izomeri și ecuații.</p>
+        <div class="footer-meta">Constanța · România</div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Calcule</h4>
+        <ul>
+          <li><a href="isomers.html">Generare izomeri</a></li>
+          <li><a href="equations.html">Echilibrare ecuații</a></li>
+          <li><a href="masa.html">Masă molară</a></li>
+          <li><a href="calcule.html">Calcule chimice</a></li>
+          <li><a href="bio.html">Bio · ADN/ARN</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Comunitate</h4>
+        <ul>
+          <li><a href="chestionare.html">Chestionare</a></li>
+          <li><a href="leaderboard.html">Clasament</a></li>
+          <li><a href="istoric.html">Istoric personal</a></li>
+          <li><a href="admin.html">Cont</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li class="contact-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            atomify66@gmail.com
+          </li>
+          <li class="contact-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            Constanța, RO
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-credits">
+        © 2026 ATOMIFY · TOATE DREPTURILE REZERVATE
+        <span class="made-by">Realizat de <strong>Siret Luca-Alexandru</strong> &amp; <strong>Zevri Matei-Tudor</strong></span>
+      </p>
+      <div class="footer-legal">
+        <a href="privacy.html">Confidențialitate</a>
+        <span class="sep">·</span>
+        <a href="#">Termeni</a>
+      </div>
+      <div class="footer-social">
+        <a href="#" aria-label="GitHub">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ─── Auth modal ─────────────────────────────────────── -->
+  <div id="authModal" class="auth-modal">
+    <div class="auth-modal-content">
+      <span class="auth-close" aria-label="Închide">&times;</span>
+
+      <div id="loginForm" class="auth-form">
+        <h2>Intră în cont</h2>
+        <form id="loginFormElement">
+          <div class="form-group">
+            <label for="loginUsername">Nume utilizator</label>
+            <input type="text" id="loginUsername" required maxlength="50" />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Parolă</label>
+            <input type="password" id="loginPassword" required />
+          </div>
+          <button type="submit" class="auth-submit-btn">Intră în cont</button>
+        </form>
+        <div class="auth-divider"><span>sau</span></div>
+        <button type="button" id="googleLoginBtn" class="google-auth-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          <span>Intră cu Google</span>
+        </button>
+        <p class="auth-switch">Nu ai cont? <a href="#" id="showRegister">Creează unul aici</a></p>
+      </div>
+
+      <div id="registerForm" class="auth-form" style="display:none;">
+        <h2>Creează cont</h2>
+        <form id="registerFormElement">
+          <div class="form-group">
+            <label for="registerUsername">Nume utilizator</label>
+            <input type="text" id="registerUsername" required maxlength="50" />
+          </div>
+          <div class="form-group">
+            <label for="registerPassword">Parolă</label>
+            <input type="password" id="registerPassword" required />
+            <div class="password-requirements">
+              <div class="requirement not-met" id="req-length"><span class="req-icon"></span> Cel puțin 8 caractere</div>
+              <div class="requirement not-met" id="req-uppercase"><span class="req-icon"></span> Cel puțin o literă mare (A-Z)</div>
+              <div class="requirement not-met" id="req-digit"><span class="req-icon"></span> Cel puțin o cifră (0-9)</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="registerPasswordConfirm">Confirmă parola</label>
+            <input type="password" id="registerPasswordConfirm" required />
+          </div>
+          <button type="submit" class="auth-submit-btn">Creează cont</button>
+        </form>
+        <div class="auth-divider"><span>sau</span></div>
+        <button type="button" id="googleRegisterBtn" class="google-auth-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          <span>Înregistrează-te cu Google</span>
+        </button>
+        <p class="auth-switch">Ai deja cont? <a href="#" id="showLogin">Intră în cont aici</a></p>
+      </div>
+
+      <div id="authMessage" class="auth-message"></div>
+    </div>
+  </div>
+
+  <script src="v2/shared.js" defer></script>
+  <script src="v2/pages/chestionare.js" defer></script>
+</body>
+</html>

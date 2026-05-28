@@ -1,0 +1,281 @@
+/* ──────────────────────────────────────────────────────────────────
+   Atomify Navbar — supplemental polish.
+   Loaded *after* style.css so it can override conflicting bits.
+   Pairs with navbar.js + auth.js.
+   ──────────────────────────────────────────────────────────────── */
+
+/* Prevent flash-of-stale-state: until AtomifyAuth resolves, hide both
+   the auth buttons and the user menu. We add `at-auth-known` once the
+   first /user fetch completes (auth.js → navbar.js → paintAuth). */
+body:not(.at-auth-known) #authButtons,
+body:not(.at-auth-known) #userInfo,
+body:not(.at-auth-known) #mobileAuthButtons,
+body:not(.at-auth-known) #mobileUserInfo {
+  visibility: hidden !important;
+}
+
+/* `hidden` attribute beats inline `style="display:..."` from old code. */
+[hidden] { display: none !important; }
+
+/* ── Avatar: colored gradient driven by username hash ─────────── */
+.at-avatar {
+  --at-avatar-hue: 230;
+  background: linear-gradient(135deg,
+    hsl(var(--at-avatar-hue), 70%, 55%) 0%,
+    hsl(calc(var(--at-avatar-hue) + 40), 70%, 45%) 100%) !important;
+  color: #fff !important;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.at-user-trigger:hover .at-avatar { transform: scale(1.05); }
+
+/* Slightly tighter chevron rotation easing */
+.at-chevron { transition: transform 0.22s cubic-bezier(.4,0,.2,1); }
+
+/* ── Dropdown polish ──────────────────────────────────────────── */
+.at-dropdown {
+  /* GPU-accelerated entrance — feels less laggy than top-only transition */
+  transform-origin: top right;
+  transform: translateY(-6px) scale(0.97);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.18s cubic-bezier(.4,0,.2,1),
+              opacity 0.18s cubic-bezier(.4,0,.2,1),
+              visibility 0s linear 0.18s;
+}
+.at-dropdown.show {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  visibility: visible;
+  transition: transform 0.18s cubic-bezier(.4,0,.2,1),
+              opacity 0.18s cubic-bezier(.4,0,.2,1),
+              visibility 0s;
+}
+
+.at-dropdown-headtext { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.at-dropdown-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+.at-dropdown-item {
+  border-radius: 8px;
+  transition: background 0.12s ease, color 0.12s ease, transform 0.12s ease;
+}
+.at-dropdown-item:hover { transform: translateX(2px); }
+.at-dropdown-item svg { flex-shrink: 0; opacity: 0.85; }
+.at-dropdown-item:hover svg { opacity: 1; }
+
+/* Light-mode dropdown items needed real text contrast */
+[data-theme="light"] .at-dropdown,
+body.light-mode .at-dropdown {
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18), 0 2px 6px rgba(15, 23, 42, 0.06);
+}
+[data-theme="light"] .at-dropdown-greeting,
+body.light-mode .at-dropdown-greeting { color: rgba(0,0,0,0.5); }
+[data-theme="light"] .at-dropdown-header,
+body.light-mode .at-dropdown-header { border-bottom-color: rgba(0,0,0,0.06); }
+[data-theme="light"] .at-dropdown-footer,
+body.light-mode .at-dropdown-footer { border-top-color: rgba(0,0,0,0.06); }
+[data-theme="light"] .at-logout,
+body.light-mode .at-logout { color: #dc2626; }
+[data-theme="light"] .at-logout:hover,
+body.light-mode .at-logout:hover { background: rgba(220, 38, 38, 0.08) !important; color: #b91c1c !important; }
+
+/* Mobile drawer — make it a touch faster + nicer easing */
+.at-mobile-drawer {
+  transition: transform 0.22s cubic-bezier(.4,0,.2,1),
+              opacity 0.22s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── Nav sub-dropdown (Izomeri → Bio, etc.) ───────────────────── */
+.at-nav-has-dropdown { position: relative; }
+
+.at-nav-dropdown-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0;
+}
+
+.at-sub-chevron {
+  opacity: 0.6;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+.at-nav-has-dropdown.open .at-sub-chevron { transform: rotate(180deg); opacity: 1; }
+
+.at-nav-subdropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  min-width: 175px;
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem;
+  background: var(--at-dd-bg, #1e293b);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.35);
+  z-index: 500;
+}
+.at-nav-has-dropdown.open .at-nav-subdropdown { display: block; }
+
+.at-nav-sublink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: 7px;
+  text-decoration: none;
+  color: inherit;
+  font-size: 0.875rem;
+  transition: background 0.13s ease;
+  white-space: nowrap;
+}
+.at-nav-sublink:hover { background: rgba(255,255,255,0.07); }
+.at-nav-sublink.active {
+  background: rgba(255,255,255,0.1);
+  font-weight: 600;
+}
+.at-nav-sublink svg { opacity: 0.75; flex-shrink: 0; }
+.at-nav-sublink:hover svg, .at-nav-sublink.active svg { opacity: 1; }
+
+[data-theme="light"] .at-nav-subdropdown,
+body.light-mode .at-nav-subdropdown {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.08);
+  box-shadow: 0 10px 28px rgba(15,23,42,0.15);
+}
+[data-theme="light"] .at-nav-sublink:hover,
+body.light-mode .at-nav-sublink:hover { background: rgba(0,0,0,0.05); }
+[data-theme="light"] .at-nav-sublink.active,
+body.light-mode .at-nav-sublink.active { background: rgba(66,133,244,0.1); }
+
+/* ── Badge earned toast ────────────────────────────────────────── */
+.at-badge-toast {
+  position: fixed;
+  right: 20px;
+  bottom: 24px;
+  z-index: 9999;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px 16px 16px;
+  min-width: 280px;
+  max-width: 380px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.2);
+  transform: translateX(120%);
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(.2,.8,.2,1), opacity 0.25s ease;
+}
+.at-badge-toast.show { transform: translateX(0); opacity: 1; }
+.at-badge-toast-icon {
+  font-size: 2rem;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.08);
+}
+.at-badge-toast-text { flex: 1; min-width: 0; }
+.at-badge-toast-title {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 2px;
+}
+.at-badge-toast-name {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.at-badge-toast-desc {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.35;
+  margin-bottom: 6px;
+}
+.at-badge-toast-points {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.12);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.at-badge-toast-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-size: 1.2rem;
+  cursor: pointer;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.at-badge-toast-close:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+.at-badge-toast.rarity-uncommon  { border-color: rgba(39, 174, 96, 0.4); }
+.at-badge-toast.rarity-rare      { border-color: rgba(52, 152, 219, 0.4); }
+.at-badge-toast.rarity-epic      { border-color: rgba(155, 89, 182, 0.4); }
+.at-badge-toast.rarity-legendary {
+  border-color: rgba(243, 156, 18, 0.5);
+  box-shadow: 0 20px 60px rgba(243,156,18,0.25), 0 4px 12px rgba(0,0,0,0.2);
+}
+
+@media (max-width: 520px) {
+  .at-badge-toast {
+    right: 12px;
+    left: 12px;
+    bottom: 12px;
+    min-width: 0;
+    max-width: none;
+  }
+}
+
+[data-theme="light"] .at-badge-toast,
+body.light-mode .at-badge-toast {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  color: #0f172a;
+  border-color: rgba(15,23,42,0.08);
+  box-shadow: 0 20px 60px rgba(15,23,42,0.15), 0 4px 12px rgba(15,23,42,0.06);
+}
+[data-theme="light"] .at-badge-toast-title,
+body.light-mode .at-badge-toast-title { color: rgba(15,23,42,0.55); }
+[data-theme="light"] .at-badge-toast-desc,
+body.light-mode .at-badge-toast-desc { color: rgba(15,23,42,0.7); }
+[data-theme="light"] .at-badge-toast-icon,
+body.light-mode .at-badge-toast-icon { background: rgba(15,23,42,0.05); }
+[data-theme="light"] .at-badge-toast-close,
+body.light-mode .at-badge-toast-close { color: rgba(15,23,42,0.5); }
+[data-theme="light"] .at-badge-toast-close:hover,
+body.light-mode .at-badge-toast-close:hover { background: rgba(15,23,42,0.06); color: #0f172a; }

@@ -1,0 +1,451 @@
+/* ============================================================
+   Atomify · v2 · bio (page)
+   ------------------------------------------------------------
+   DNA / RNA conversion. Relies on core.css + components.css.
+   ============================================================ */
+
+/* ─── 1 · Form layout ───────────────────────────────── */
+.bio-form { display: block; }
+
+.bio-form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+/* Field variant: tall, monospace textarea */
+.field--bio {
+  align-items: stretch;
+  min-height: 0;
+}
+.field--bio .field-input {
+  font-family: var(--font-mono);
+  font-variation-settings: normal;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1.55;
+  padding: 1rem 1.4rem;
+  padding-right: 3rem;
+  resize: vertical;
+  min-height: 140px;
+  display: block;
+  width: 100%;
+}
+.field--bio .field-clear {
+  top: 10px;
+  transform: none;
+}
+
+.bio-form-aux {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.bio-hint {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+}
+.bio-hint .nt-a { color: var(--green-deep); }
+.bio-hint .nt-t { color: var(--amber); }
+.bio-hint .nt-g { color: var(--cobalt); }
+.bio-hint .nt-c { color: var(--gold); }
+[data-theme="dark"] .bio-hint .nt-a,
+body.dark-mode .bio-hint .nt-a { color: var(--green); }
+[data-theme="dark"] .bio-hint .nt-g,
+body.dark-mode .bio-hint .nt-g { color: var(--cobalt); }
+[data-theme="dark"] .bio-hint .nt-c,
+body.dark-mode .bio-hint .nt-c { color: var(--gold-bright); }
+
+.bio-form-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+@media (max-width: 540px) {
+  .bio-form-aux { flex-direction: column; align-items: flex-start; }
+}
+
+/* ─── 2 · Specimen library ──────────────────────────── */
+.bio-examples {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  border: 1px solid var(--line);
+  border-radius: var(--r-3);
+  overflow: hidden;
+  background: var(--paper-2);
+}
+.bio-example {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 1.15rem 1.2rem 1rem;
+  min-height: 148px;
+  background: var(--paper-2);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  margin: 0;
+  transition: background-color 180ms ease, transform 120ms var(--ease-soft);
+}
+.bio-example:hover { background: var(--paper); z-index: 2; }
+.bio-example:active { transform: translateY(1px); }
+.bio-example:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: -2px;
+  z-index: 3;
+}
+.bio-example-num {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+}
+.bio-example-seq {
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  color: var(--ink);
+  word-break: break-all;
+  line-height: 1.35;
+  letter-spacing: 0.06em;
+}
+.bio-example-name {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  line-height: 1.3;
+  margin-top: auto;
+}
+
+/* ─── 3 · Result panel ─────────────────────────────── */
+.bio-panel {
+  margin-top: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-4);
+  background: var(--paper-2);
+  overflow: hidden;
+  animation: result-rise 0.5s var(--ease-out) both;
+}
+@keyframes result-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.bio-panel-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1.5rem;
+  padding: 1.4rem 1.75rem;
+  border-bottom: 1px solid var(--line);
+  align-items: end;
+}
+.bio-panel-head .label-mono { display: block; margin-bottom: 0.5rem; }
+.bio-panel-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ink);
+}
+.bio-panel-meta {
+  text-align: right;
+  white-space: nowrap;
+}
+.bio-panel-meta .num {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum";
+  font-weight: 500;
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  letter-spacing: -0.02em;
+  color: var(--green-deep);
+  line-height: 1;
+}
+[data-theme="dark"] .bio-panel-meta .num,
+body.dark-mode .bio-panel-meta .num { color: var(--green); }
+.bio-panel-meta-unit {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  margin-left: 0.4rem;
+}
+@media (max-width: 720px) {
+  .bio-panel-head { grid-template-columns: 1fr; }
+  .bio-panel-meta { text-align: left; }
+}
+
+/* Toolbar */
+.bio-panel-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.75rem;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.bio-toolbar-meta {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.bio-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: var(--r-2);
+  border: 1px solid var(--line-strong);
+  background: var(--paper-2);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 150ms, border-color 150ms, color 150ms;
+}
+.bio-copy-btn svg { width: 14px; height: 14px; }
+.bio-copy-btn:hover {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+[data-theme="dark"] .bio-copy-btn:hover,
+body.dark-mode .bio-copy-btn:hover {
+  background: var(--green);
+  color: #0B1220;
+  border-color: var(--green);
+}
+.bio-copy-btn.is-copied {
+  background: var(--green-tint);
+  color: var(--green-deep);
+  border-color: transparent;
+}
+[data-theme="dark"] .bio-copy-btn.is-copied,
+body.dark-mode .bio-copy-btn.is-copied { color: var(--green); }
+
+/* ─── 4 · Sequence rows ─────────────────────────────── */
+.bio-sequences {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+.bio-seq-row {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 1.5rem;
+  padding: 1rem 1.75rem;
+  border-bottom: 1px solid var(--line-soft);
+  align-items: baseline;
+}
+.bio-seq-row:last-child { border-bottom: 0; }
+.bio-seq-row--alt { background: var(--paper); }
+
+.bio-seq-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+.bio-seq-label-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.bio-seq-label-name {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1rem;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.bio-seq {
+  font-family: var(--font-mono);
+  font-size: 0.94rem;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+  color: var(--ink);
+  word-break: break-all;
+  font-feature-settings: "ss01";
+}
+.bio-seq .nt {
+  display: inline-block;
+  padding: 0 1px;
+  border-radius: 2px;
+}
+.bio-seq .nt-a { color: var(--green-deep); }
+.bio-seq .nt-t { color: var(--amber); }
+.bio-seq .nt-u { color: var(--amber); }
+.bio-seq .nt-g { color: var(--cobalt); }
+.bio-seq .nt-c { color: var(--gold); }
+[data-theme="dark"] .bio-seq .nt-a,
+body.dark-mode .bio-seq .nt-a { color: var(--green); }
+[data-theme="dark"] .bio-seq .nt-g,
+body.dark-mode .bio-seq .nt-g { color: var(--cobalt); }
+[data-theme="dark"] .bio-seq .nt-c,
+body.dark-mode .bio-seq .nt-c { color: var(--gold-bright); }
+
+/* Section heading between groups (DNA / ARN / etc) */
+.bio-seq-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1.75rem;
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.bio-seq-divider::before,
+.bio-seq-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line-strong);
+  max-width: 60px;
+}
+.bio-seq-divider-text {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+@media (max-width: 720px) {
+  .bio-seq-row {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+    padding: 0.9rem 1.25rem;
+  }
+}
+
+/* ─── 5 · Composition chart ──────────────────────────── */
+.bio-composition {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+.bio-comp-cell {
+  position: relative;
+  padding: 1.1rem 1.25rem 1.25rem;
+  border-right: 1px solid var(--line);
+  background: var(--paper-2);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.bio-comp-cell:last-child { border-right: 0; }
+.bio-comp-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.bio-comp-letter {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.4rem;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.bio-comp-letter.nt-a { color: var(--green-deep); }
+.bio-comp-letter.nt-t { color: var(--amber); }
+.bio-comp-letter.nt-g { color: var(--cobalt); }
+.bio-comp-letter.nt-c { color: var(--gold); }
+[data-theme="dark"] .bio-comp-letter.nt-a,
+body.dark-mode .bio-comp-letter.nt-a { color: var(--green); }
+[data-theme="dark"] .bio-comp-letter.nt-g,
+body.dark-mode .bio-comp-letter.nt-g { color: var(--cobalt); }
+[data-theme="dark"] .bio-comp-letter.nt-c,
+body.dark-mode .bio-comp-letter.nt-c { color: var(--gold-bright); }
+
+.bio-comp-count {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum";
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: var(--ink);
+  line-height: 1;
+}
+.bio-comp-pct {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum";
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+}
+.bio-comp-bar {
+  height: 4px;
+  background: var(--paper-3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.bio-comp-bar::after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: var(--pct, 0%);
+  border-radius: 2px;
+  transition: width 600ms var(--ease-out);
+}
+.bio-comp-cell.nt-a .bio-comp-bar::after { background: linear-gradient(90deg, var(--green-deep), var(--green)); }
+.bio-comp-cell.nt-t .bio-comp-bar::after { background: linear-gradient(90deg, var(--amber), var(--amber-bright)); }
+.bio-comp-cell.nt-g .bio-comp-bar::after { background: linear-gradient(90deg, var(--cobalt), #6E94D6); }
+.bio-comp-cell.nt-c .bio-comp-bar::after { background: linear-gradient(90deg, var(--gold), var(--gold-bright)); }
+[data-theme="dark"] .bio-comp-cell.nt-a .bio-comp-bar::after,
+body.dark-mode .bio-comp-cell.nt-a .bio-comp-bar::after { background: linear-gradient(90deg, var(--green), var(--green-bright)); }
+
+@media (max-width: 720px) {
+  .bio-composition { grid-template-columns: repeat(2, 1fr); }
+  .bio-comp-cell:nth-child(2) { border-right: 0; }
+  .bio-comp-cell:nth-child(1),
+  .bio-comp-cell:nth-child(2) { border-bottom: 1px solid var(--line); }
+}
+
+/* ─── 6 · Toast (copy feedback) ─────────────────────── */
+.bio-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--r-3);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 280ms var(--ease-out), opacity 200ms ease;
+  z-index: 9000;
+}
+.bio-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+[data-theme="dark"] .bio-toast,
+body.dark-mode .bio-toast {
+  background: var(--paper);
+  color: var(--ink);
+}

@@ -1,0 +1,242 @@
+/* ============================================================
+   Atomify · v2 · masa (page)
+   ------------------------------------------------------------
+   Page-specific styles only. Relies on core.css + components.css.
+   ============================================================ */
+
+/* ─── 1 · Form layout ───────────────────────────────── */
+.masa-form { display: block; }
+
+.masa-form-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: stretch;
+}
+@media (max-width: 720px) {
+  .masa-form-row { grid-template-columns: 1fr; }
+  .masa-form-row .btn-cta { width: 100%; }
+}
+
+.masa-form-aux {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 14px;
+}
+.masa-hint {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+}
+.masa-hint sub { font-size: 0.85em; vertical-align: -0.25em; }
+@media (max-width: 540px) {
+  .masa-form-aux {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+/* ─── 2 · Specimen grid ─────────────────────────────── */
+.specimen-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  border: 1px solid var(--line);
+  border-radius: var(--r-3);
+  overflow: hidden;
+  background: var(--paper-2);
+}
+
+.specimen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.25rem;
+  padding: 1.2rem 1.1rem 1rem;
+  min-height: 138px;
+  background: var(--paper-2);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  margin: 0;
+  transition: background-color 180ms ease, transform 120ms var(--ease-soft);
+}
+.specimen:hover { background: var(--paper); z-index: 2; }
+.specimen:hover .specimen-formula { color: var(--green-deep); }
+[data-theme="dark"] .specimen:hover .specimen-formula,
+body.dark-mode .specimen:hover .specimen-formula { color: var(--green); }
+.specimen:active { transform: translateY(1px); }
+.specimen:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: -2px;
+  z-index: 3;
+}
+
+.specimen-num {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+}
+.specimen-formula {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.55rem;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  line-height: 1;
+  transition: color 180ms ease;
+}
+.specimen-formula sub {
+  font-size: 0.6em;
+  font-weight: 500;
+  vertical-align: -0.18em;
+}
+.specimen-name {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  line-height: 1.3;
+}
+
+/* ─── 3 · Result panel ─────────────────────────────── */
+.result-panel {
+  margin-top: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-4);
+  background: var(--paper-2);
+  overflow: hidden;
+  animation: result-rise 0.5s var(--ease-out) both;
+}
+@keyframes result-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.result-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1.5rem;
+  padding: 1.5rem 1.75rem;
+  border-bottom: 1px solid var(--line);
+  align-items: end;
+}
+.result-formula-label,
+.result-mass-label {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.result-formula {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ink);
+  word-break: break-word;
+}
+.result-formula sub {
+  font-size: 0.55em;
+  font-weight: 500;
+  vertical-align: -0.2em;
+}
+.result-mass-block {
+  text-align: right;
+  white-space: nowrap;
+}
+.result-mass {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum";
+  font-weight: 500;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  letter-spacing: -0.02em;
+  color: var(--green-deep);
+  line-height: 1;
+}
+[data-theme="dark"] .result-mass,
+body.dark-mode .result-mass { color: var(--green); }
+.result-mass-unit {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  margin-left: 0.4rem;
+  font-weight: 400;
+}
+.result-mass-rounded {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  margin-top: 0.4rem;
+}
+@media (max-width: 720px) {
+  .result-head { grid-template-columns: 1fr; }
+  .result-mass-block { text-align: left; }
+}
+
+/* Composition rows inside the table */
+.composition-symbol {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+.composition-name {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1rem;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+}
+.composition-symbol-text {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--ink-muted);
+  letter-spacing: 0.05em;
+  display: block;
+  margin-top: 2px;
+}
+
+/* Per-row percent indicator */
+.pct-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.85rem;
+  min-width: 160px;
+}
+.pct-bar {
+  flex: 1;
+  height: 4px;
+  max-width: 110px;
+  background: var(--paper-3);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+.pct-bar::after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: var(--pct, 0%);
+  background: linear-gradient(90deg, var(--green-deep), var(--green));
+  border-radius: 2px;
+  transition: width 600ms var(--ease-out);
+}
+[data-theme="dark"] .pct-bar::after,
+body.dark-mode .pct-bar::after {
+  background: linear-gradient(90deg, var(--green), var(--green-bright));
+}

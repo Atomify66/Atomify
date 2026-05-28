@@ -1,0 +1,14 @@
+# Secrets
+v2/.env
+
+# Dependencies
+v2/node_modules/
+
+# Databases (generate la runtime)
+v2/*.db
+
+# Output generat de MAYGEN (izomeri)
+v2/c*.smi/
+
+# Logs
+v2/*.log

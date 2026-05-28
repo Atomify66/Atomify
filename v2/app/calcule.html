@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <title>Atomify · Modele de cristalizare</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Modele matematice de creștere a cristalelor — nucleație, JMAK, van't Hoff, numere adimensionale." />
+
+  <meta name="theme-color" content="#1F8F5C" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="logo_light.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link rel="stylesheet" href="v2/core.css" />
+  <link rel="stylesheet" href="v2/components.css" />
+  <link rel="stylesheet" href="v2/chrome.css" />
+  <link rel="stylesheet" href="v2/pages/calcule.css" />
+
+  <!-- MathJax — config first, then library -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath:  [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true,
+        tags: 'ams',
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      },
+      loader: { load: ['[tex]/ams'] },
+      chtml: { matchFontHeight: true },
+    };
+  </script>
+  <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+  <script src="logo-theme-switcher.js" defer></script>
+  <script src="pwa.js" defer></script>
+</head>
+<body>
+  <header class="site-header"></header>
+  <script src="auth.js"></script>
+  <script src="navbar.js"></script>
+  <script>initNavbar("calcule");</script>
+
+  <main class="page-main">
+
+    <!-- Masthead -->
+    <section class="masthead reveal reveal-1">
+      <div class="masthead-eyebrow">Calcul · Vol. V</div>
+      <h1 class="masthead-title">Creșterea <span class="ital">cristalelor</span>.</h1>
+      <div class="masthead-meta">
+        Cinetică · Termodinamică<br/>
+        6 modele · MathJax
+      </div>
+    </section>
+
+    <!-- TOC -->
+    <nav class="calc-toc reveal reveal-2" aria-label="Cuprinsul calculelor">
+      <a href="#calc-01">01 · Nucleație</a>
+      <a href="#calc-02">02 · Creștere</a>
+      <a href="#calc-03">03 · Avrami</a>
+      <a href="#calc-04">04 · Supersaturație</a>
+      <a href="#calc-05">05 · van't Hoff</a>
+      <a href="#calc-06">06 · Re · Pe · Ri</a>
+      <a href="#calc-07">07 · Navier–Stokes</a>
+    </nav>
+
+    <!-- 01 — Nucleation -->
+    <section id="calc-01" class="chapter reveal reveal-2">
+      <div class="chapter-num">01</div>
+      <div class="chapter-body">
+        <h2 class="chapter-head">Rata de nucleație clasică</h2>
+        <p class="chapter-sub">Bariera energetică a clusterului critic și raza nucleului în teoria clasică a nucleației.</p>
+
+        <div class="calc-prose">
+          <p>Rata de nucleație $J$ (per volum, per timp):</p>
+          $$J = A\,\exp\!\Big(-\frac{\Delta G^*}{k_B T}\Big)$$
+          <p>cu bariera de nucleație omogenă</p>
+          $$\Delta G^* = \frac{16\pi\,\sigma^3}{3(\Delta G_v)^2}$$
+          <p>unde $\sigma$ este tensiunea superficială, iar $\Delta G_v \approx \tfrac{R T}{V_m}\ln S$ pentru un raport de supersaturație $S$. Raza critică:
+          $r_c = \tfrac{2\sigma}{\Delta G_v}$.</p>
+        </div>
+
+        <div class="calc-panel">
+          <div class="calc-panel-head">
+            <span class="calc-panel-eyebrow">Intrări</span>
+            <span class="calc-panel-meta">5 parametri</span>
+          </div>
+          <div class="calc-fields">
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">σ</span> Tensiune superficială <span class="calc-unit">J/m²</span></span>
+              <input id="nuc_sigma" class="calc-input" type="number" step="1e-3" value="0.05" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">T</span> Temperatură <span class="calc-unit">K</span></span>
+              <input id="nuc_T" class="calc-input" type="number" step="1" value="298" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">S</span> Raport supersaturație <span class="calc-unit">C/C*</span></span>
+              <input id="nuc_S" class="calc-input" type="number" step="0.01" value="1.5" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">V<sub>m</sub></span> Volum molar <span class="calc-unit">m³/mol</span></span>
+              <input id="nuc_Vm" class="calc-input" type="number" step="1e-6" value="1.8e-5" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">A</span> Factor pre-exponențial <span class="calc-unit">1/(m³·s)</span></span>
+              <input id="nuc_A" class="calc-input" type="number" step="1e+20" value="1e29" />
+            </label>
+          </div>
+          <div class="calc-actions">
+            <span class="calc-actions-hint">ENTER · execută</span>
+            <button id="nuc_btn" type="button" class="calc-cta">
+              Calculează
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6"/>
+              </svg>
+            </button>
+          </div>
+          <div id="nuc_result" class="calc-output"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 — Growth -->
+    <section id="calc-02" class="chapter reveal reveal-3">
+      <div class="chapter-num">02</div>
+      <div class="chapter-body">
+        <h2 class="chapter-head">Rata de creștere — difuzie vs. suprafață</h2>
+        <p class="chapter-sub">Două regimuri limitante pentru creșterea liniară a cristalelor.</p>
+
+        <div class="calc-prose">
+          <p>Pentru raport de supersaturație $S$:</p>
+          $$G_{\text{diff}} = k_d\,(S - 1), \qquad G_{\text{surf}} = k_r\,(S - 1)$$
+          <p>$k_d$ reflectă transportul de masă ($D/\delta$), iar $k_r$ rata de atașare la suprafață.</p>
+        </div>
+
+        <div class="calc-panel">
+          <div class="calc-panel-head">
+            <span class="calc-panel-eyebrow">Intrări</span>
+            <span class="calc-panel-meta">3 parametri</span>
+          </div>
+          <div class="calc-fields">
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">S</span> Supersaturație <span class="calc-unit">–</span></span>
+              <input id="grow_S" class="calc-input" type="number" step="0.01" value="1.2" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">k<sub>d</sub></span> Coef. difuzie <span class="calc-unit">m/s per ΔS</span></span>
+              <input id="grow_kd" class="calc-input" type="number" step="1e-6" value="1e-5" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">k<sub>r</sub></span> Coef. suprafață <span class="calc-unit">m/s per ΔS</span></span>
+              <input id="grow_kr" class="calc-input" type="number" step="1e-6" value="5e-6" />
+            </label>
+          </div>
+          <div class="calc-actions">
+            <span class="calc-actions-hint">ENTER · execută</span>
+            <button id="grow_btn" type="button" class="calc-cta">
+              Calculează
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6"/>
+              </svg>
+            </button>
+          </div>
+          <div id="grow_result" class="calc-output"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 — Avrami -->
+    <section id="calc-03" class="chapter reveal reveal-4">
+      <div class="chapter-num">03</div>
+      <div class="chapter-body">
+        <h2 class="chapter-head">Ecuația Avrami (JMAK)</h2>
+        <p class="chapter-sub">Cinetică de cristalizare — fracție transformată și dimensiune medie.</p>
+
+        <div class="calc-prose">
+          $$Y(t) = 1 - \exp\!\big[-K\,t^n\big]$$
+          <p>$Y$ este fracția cristalizată la momentul $t$, $n$ exponentul Avrami, $K$ constanta de rată. Câmpurile opționale estimează diametrul mediu al cristalelor presupunând cristale sferice.</p>
+        </div>
+
+        <div class="calc-panel">
+          <div class="calc-panel-head">
+            <span class="calc-panel-eyebrow">Intrări · obligatorii</span>
+            <span class="calc-panel-meta">3 + 5 opționale</span>
+          </div>
+          <div class="calc-fields">
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">n</span> Exponent Avrami <span class="calc-unit">–</span></span>
+              <input id="av_n" class="calc-input" type="number" step="0.1" value="3.0" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">K</span> Constanta de rată <span class="calc-unit">1/sⁿ</span></span>
+              <input id="av_K" class="calc-input" type="number" step="1e-6" value="1e-4" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">t</span> Timp <span class="calc-unit">s</span></span>
+              <input id="av_t" class="calc-input" type="number" step="0.1" value="1000" />
+            </label>
+
+            <div class="calc-fields-divider"><span class="calc-fields-divider-text">Opțional · dimensiune medie</span></div>
+
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">C<sub>0</sub></span> Concentrație inițială <span class="calc-unit">kg/m³</span></span>
+              <input id="av_C0" class="calc-input" type="number" step="1" value="50" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">C*</span> Echilibru <span class="calc-unit">kg/m³</span></span>
+              <input id="av_Ceq" class="calc-input" type="number" step="1" value="20" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">V</span> Volum soluție <span class="calc-unit">m³</span></span>
+              <input id="av_V" class="calc-input" type="number" step="1e-4" value="0.001" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">N</span> Număr cristale <span class="calc-unit">–</span></span>
+              <input id="av_N" class="calc-input" type="number" step="1" value="1000000" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">ρ<sub>s</sub></span> Densitate cristal <span class="calc-unit">kg/m³</span></span>
+              <input id="av_rho" class="calc-input" type="number" step="1" value="1800" />
+            </label>
+          </div>
+          <div class="calc-actions">
+            <span class="calc-actions-hint">ENTER · execută</span>
+            <button id="av_btn" type="button" class="calc-cta">
+              Calculează
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6"/>
+              </svg>
+            </button>
+          </div>
+          <div id="av_result" class="calc-output"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 — Supersaturation -->
+    <section id="calc-04" class="chapter reveal reveal-5">
+      <div class="chapter-num">04</div>
+      <div class="chapter-body">
+        <h2 class="chapter-head">Raport de supersaturație</h2>
+        <p class="chapter-sub">$S = C / C^*$ — raportul concentrației actuale și al solubilității de echilibru.</p>
+
+        <div class="calc-panel">
+          <div class="calc-panel-head">
+            <span class="calc-panel-eyebrow">Intrări</span>
+            <span class="calc-panel-meta">2 parametri</span>
+          </div>
+          <div class="calc-fields">
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">C</span> Concentrație <span class="calc-unit">kg/m³</span></span>
+              <input id="sup_C" class="calc-input" type="number" step="0.1" value="30" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">C*</span> Echilibru <span class="calc-unit">kg/m³</span></span>
+              <input id="sup_Ceq" class="calc-input" type="number" step="0.1" value="25" />
+            </label>
+          </div>
+          <div class="calc-actions">
+            <span class="calc-actions-hint">ENTER · execută</span>
+            <button id="sup_btn" type="button" class="calc-cta">
+              Calculează
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6"/>
+              </svg>
+            </button>
+          </div>
+          <div id="sup_result" class="calc-output"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 — van't Hoff -->
+    <section id="calc-05" class="chapter reveal reveal-5">
+      <div class="chapter-num">05</div>
+      <div class="chapter-body">
+        <h2 class="chapter-head">Ecuația van't Hoff</h2>
+        <p class="chapter-sub">Dependența solubilității de temperatură, presupunând $\Delta H_{\text{sol}}$ constant.</p>
+
+        <div class="calc-prose">
+          $$\ln\frac{C_2}{C_1} = -\frac{\Delta H_{\text{sol}}}{R}\Big(\frac{1}{T_2} - \frac{1}{T_1}\Big)$$
+          <p>$R = 8{,}314\ \text{J/(mol·K)}$. ΔH > 0 corespunde dizolvării endotermice (solubilitatea crește cu $T$).</p>
+        </div>
+
+        <div class="calc-panel">
+          <div class="calc-panel-head">
+            <span class="calc-panel-eyebrow">Intrări</span>
+            <span class="calc-panel-meta">4 parametri</span>
+          </div>
+          <div class="calc-fields">
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">T<sub>1</sub></span> Temperatură <span class="calc-unit">K</span></span>
+              <input id="vant_T1" class="calc-input" type="number" step="0.1" value="293" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">C<sub>1</sub></span> Solubilitate la T₁ <span class="calc-unit">kg/m³</span></span>
+              <input id="vant_C1" class="calc-input" type="number" step="0.1" value="20" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">T<sub>2</sub></span> Temperatură țintă <span class="calc-unit">K</span></span>
+              <input id="vant_T2" class="calc-input" type="number" step="0.1" value="310" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">ΔH<sub>sol</sub></span> Entalpie dizolvare <span class="calc-unit">J/mol</span></span>
+              <input id="vant_dH" class="calc-input" type="number" step="100" value="35000" />
+            </label>
+          </div>
+          <div class="calc-actions">
+            <span class="calc-actions-hint">ENTER · execută</span>
+            <button id="vant_btn" type="button" class="calc-cta">
+              Calculează
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6"/>
+              </svg>
+            </button>
+          </div>
+          <div id="vant_result" class="calc-output"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 — Re, Pe, Ri -->
+    <section id="calc-06" class="chapter reveal reveal-5">
+      <div class="chapter-num">06</div>
+      <div class="chapter-body">
+        <h2 class="chapter-head">Numere adimensionale</h2>
+        <p class="chapter-sub">Reynolds, Péclet și Richardson — caracterizează regimul de curgere.</p>
+
+        <div class="calc-prose">
+          <ul>
+            <li><strong>Re</strong> — forțe inerțiale vs. forțe vâscoase: $\text{Re} = \rho v L / \mu$.</li>
+            <li><strong>Pe</strong> — advecție vs. difuzie: $\text{Pe} = v L / D$.</li>
+            <li><strong>Ri</strong> — flotabilitate vs. forfecare: $\text{Ri} = g \, (\Delta\rho/\rho) \, L / v^2$.</li>
+          </ul>
+          <p>Dacă $\rho_2$ e lăsat gol sau egal cu $\rho_1$, Ri tratează $\Delta\rho = 0$.</p>
+        </div>
+
+        <div class="calc-panel">
+          <div class="calc-panel-head">
+            <span class="calc-panel-eyebrow">Intrări</span>
+            <span class="calc-panel-meta">7 parametri (2 opționali)</span>
+          </div>
+          <div class="calc-fields">
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">ρ<sub>1</sub></span> Densitate fluid <span class="calc-unit">kg/m³</span></span>
+              <input id="dim_rho1" class="calc-input" type="number" step="1" value="1000" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">ρ<sub>2</sub></span> Densitate secundară <span class="calc-unit">kg/m³ · opțional</span></span>
+              <input id="dim_rho2" class="calc-input" type="number" step="1" placeholder="1000" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">v</span> Viteză <span class="calc-unit">m/s</span></span>
+              <input id="dim_v" class="calc-input" type="number" step="0.01" value="0.1" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">L</span> Lungime caracteristică <span class="calc-unit">m</span></span>
+              <input id="dim_L" class="calc-input" type="number" step="0.01" value="0.5" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">μ</span> Vâscozitate dinamică <span class="calc-unit">Pa·s</span></span>
+              <input id="dim_mu" class="calc-input" type="number" step="1e-3" value="0.001" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">D</span> Difuzivitate <span class="calc-unit">m²/s</span></span>
+              <input id="dim_D" class="calc-input" type="number" step="1e-6" value="1e-9" />
+            </label>
+            <label class="calc-field">
+              <span class="calc-field-label"><span class="calc-sym">g</span> Gravitație <span class="calc-unit">m/s² · opțional</span></span>
+              <input id="dim_g" class="calc-input" type="number" step="0.01" value="9.81" />
+            </label>
+          </div>
+          <div class="calc-actions">
+            <span class="calc-actions-hint">ENTER · execută</span>
+            <button id="dim_btn" type="button" class="calc-cta">
+              Calculează
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6"/>
+              </svg>
+            </button>
+          </div>
+          <div id="dim_result" class="calc-output"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 — Navier–Stokes regime (info only) -->
+    <section id="calc-07" class="chapter reveal reveal-5">
+      <div class="chapter-num">07</div>
+      <div class="chapter-body">
+        <h2 class="chapter-head">Regimul de curgere (Navier–Stokes)</h2>
+        <p class="chapter-sub">Formele simplificate care domină dinamica fluidelor în cristalizare.</p>
+
+        <div class="calc-prose">
+          <p>Ecuația Navier–Stokes pentru curgere incompresibilă cu gravitație:</p>
+          $$\rho\Big(\frac{\partial \mathbf{v}}{\partial t} + (\mathbf{v}\cdot\nabla)\mathbf{v}\Big) = -\nabla p + \mu\,\nabla^2 \mathbf{v} + \rho\,\mathbf{g}$$
+        </div>
+
+        <div class="calc-regime-list">
+          <div class="calc-regime">
+            <span class="calc-regime-eyebrow">Re mic</span>
+            <h3 class="calc-regime-title">Dominat de vâscozitate</h3>
+            <div class="calc-regime-body">
+              Inerția e neglijabilă — curgere Stokes (târâtoare):
+              $-\nabla p + \mu\nabla^2\mathbf{v} + \rho\mathbf{g} \approx 0$.
+              Curgerea e laminară și reversibilă.
+            </div>
+          </div>
+          <div class="calc-regime">
+            <span class="calc-regime-eyebrow">Re mare</span>
+            <h3 class="calc-regime-title">Dominat de inerție</h3>
+            <div class="calc-regime-body">
+              Termenul vâscos e mic — curgere Euler:
+              $\rho(\mathbf{v}\cdot\nabla)\mathbf{v} \approx -\nabla p + \rho\mathbf{g}$.
+              Poate deveni turbulent la Re foarte mare.
+            </div>
+          </div>
+          <div class="calc-regime">
+            <span class="calc-regime-eyebrow">Ri mare</span>
+            <h3 class="calc-regime-title">Dominat de flotabilitate</h3>
+            <div class="calc-regime-body">
+              Diferențele de densitate guvernează curgerea — convecție naturală, posibil stratificată.
+              Ri mic → flotabilitatea poate fi ignorată (convecție forțată).
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─── Footer ─────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-lockup">
+        <a href="isomers.html" class="footer-mark">
+          <img src="logo_light.png" alt="" class="at-logo-light"/>
+          <img src="logo_dark.png" alt="" class="at-logo-dark" style="display:none"/>
+          <span>Atomify</span>
+        </a>
+        <p class="footer-tagline">Platformă educațională pentru învățarea chimiei — de la masa molară la izomeri și ecuații.</p>
+        <div class="footer-meta">Constanța · România</div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Calcule</h4>
+        <ul>
+          <li><a href="isomers.html">Generare izomeri</a></li>
+          <li><a href="equations.html">Echilibrare ecuații</a></li>
+          <li><a href="masa.html">Masă molară</a></li>
+          <li><a href="calcule.html">Calcule chimice</a></li>
+          <li><a href="bio.html">Bio · ADN/ARN</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Comunitate</h4>
+        <ul>
+          <li><a href="chestionare.html">Chestionare</a></li>
+          <li><a href="leaderboard.html">Clasament</a></li>
+          <li><a href="istoric.html">Istoric personal</a></li>
+          <li><a href="admin.html">Cont</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li class="contact-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            atomify66@gmail.com
+          </li>
+          <li class="contact-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            Constanța, RO
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-credits">
+        © 2026 ATOMIFY · TOATE DREPTURILE REZERVATE
+        <span class="made-by">Realizat de <strong>Siret Luca-Alexandru</strong> &amp; <strong>Zevri Matei-Tudor</strong></span>
+      </p>
+      <div class="footer-legal">
+        <a href="privacy.html">Confidențialitate</a>
+        <span class="sep">·</span>
+        <a href="#">Termeni</a>
+      </div>
+      <div class="footer-social">
+        <a href="#" aria-label="GitHub">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ─── Auth modal ─────────────────────────────────────── -->
+  <div id="authModal" class="auth-modal">
+    <div class="auth-modal-content">
+      <span class="auth-close" aria-label="Închide">&times;</span>
+
+      <div id="loginForm" class="auth-form">
+        <h2>Intră în cont</h2>
+        <form id="loginFormElement">
+          <div class="form-group">
+            <label for="loginUsername">Nume utilizator</label>
+            <input type="text" id="loginUsername" required maxlength="50" />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Parolă</label>
+            <input type="password" id="loginPassword" required />
+          </div>
+          <button type="submit" class="auth-submit-btn">Intră în cont</button>
+        </form>
+        <div class="auth-divider"><span>sau</span></div>
+        <button type="button" id="googleLoginBtn" class="google-auth-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          <span>Intră cu Google</span>
+        </button>
+        <p class="auth-switch">Nu ai cont? <a href="#" id="showRegister">Creează unul aici</a></p>
+      </div>
+
+      <div id="registerForm" class="auth-form" style="display:none;">
+        <h2>Creează cont</h2>
+        <form id="registerFormElement">
+          <div class="form-group">
+            <label for="registerUsername">Nume utilizator</label>
+            <input type="text" id="registerUsername" required maxlength="50" />
+          </div>
+          <div class="form-group">
+            <label for="registerPassword">Parolă</label>
+            <input type="password" id="registerPassword" required />
+            <div class="password-requirements">
+              <div class="requirement not-met" id="req-length"><span class="req-icon"></span> Cel puțin 8 caractere</div>
+              <div class="requirement not-met" id="req-uppercase"><span class="req-icon"></span> Cel puțin o literă mare (A-Z)</div>
+              <div class="requirement not-met" id="req-digit"><span class="req-icon"></span> Cel puțin o cifră (0-9)</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="registerPasswordConfirm">Confirmă parola</label>
+            <input type="password" id="registerPasswordConfirm" required />
+          </div>
+          <button type="submit" class="auth-submit-btn">Creează cont</button>
+        </form>
+        <div class="auth-divider"><span>sau</span></div>
+        <button type="button" id="googleRegisterBtn" class="google-auth-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          <span>Înregistrează-te cu Google</span>
+        </button>
+        <p class="auth-switch">Ai deja cont? <a href="#" id="showLogin">Intră în cont aici</a></p>
+      </div>
+
+      <div id="authMessage" class="auth-message"></div>
+    </div>
+  </div>
+
+  <script src="v2/shared.js" defer></script>
+  <script src="v2/pages/calcule.js" defer></script>
+</body>
+</html>

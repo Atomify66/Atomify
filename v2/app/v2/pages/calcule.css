@@ -1,0 +1,460 @@
+/* ============================================================
+   Atomify · v2 · calcule (page)
+   ------------------------------------------------------------
+   Six interactive calculators for crystal-growth physics, with
+   MathJax-rendered formulas. Relies on core.css + components.css.
+   ============================================================ */
+
+/* ─── 1 · Page-level prose with inline math ───────────── */
+.calc-prose {
+  color: var(--ink-soft);
+  font-size: 0.98rem;
+  line-height: 1.7;
+  max-width: 68ch;
+  margin: 0 0 1.5rem;
+}
+.calc-prose strong { color: var(--ink); font-weight: 600; }
+.calc-prose em { color: var(--ink-2); font-style: italic; }
+.calc-prose .calc-display-math {
+  display: block;
+  margin: 1rem 0;
+  padding: 0.5rem 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.calc-prose mjx-container[display="true"] {
+  margin: 0.85rem 0 !important;
+  overflow-x: auto;
+  max-width: 100%;
+}
+.calc-prose ul {
+  margin: 0.6rem 0 1.1rem;
+  padding-left: 1.3rem;
+  color: var(--ink-soft);
+}
+.calc-prose ul li { margin-bottom: 0.4rem; }
+
+/* ─── 2 · Calculator panel ───────────────────────────── */
+.calc-panel {
+  margin-top: 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-4);
+  background: var(--paper-2);
+  overflow: hidden;
+}
+
+.calc-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+  flex-wrap: wrap;
+}
+.calc-panel-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.calc-panel-meta {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+}
+
+/* ─── 3 · Field grid ──────────────────────────────────── */
+.calc-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0;
+  padding: 0;
+  border-bottom: 1px solid var(--line);
+}
+.calc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.95rem 1.25rem;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line-soft);
+  background: var(--paper-2);
+}
+.calc-field:last-child { border-bottom: 0; }
+@media (min-width: 720px) {
+  .calc-field:nth-child(2n) { border-right: 0; }
+}
+.calc-field-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  line-height: 1.35;
+}
+.calc-field-label sub, .calc-field-label sup { font-size: 0.85em; }
+.calc-field-label .calc-sym {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 0.9rem;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--ink);
+}
+.calc-field-label .calc-unit {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+  text-transform: none;
+}
+.calc-input {
+  width: 100%;
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-2);
+  padding: 0.55rem 0.75rem;
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum";
+  font-size: 0.92rem;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+/* Live "as you type" preview — rendered as HTML (not MathJax) for zero-lag updates.
+   Shows up only when the value is in scientific notation (1e29 → 1 × 10²⁹). */
+.calc-input-preview {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 12;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.86rem;
+  letter-spacing: -0.005em;
+  color: var(--green-deep);
+  line-height: 1;
+  min-height: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.32rem;
+  margin-top: 2px;
+  opacity: 1;
+  transition: opacity 180ms ease;
+}
+.calc-input-preview:empty { opacity: 0; }
+.calc-input-preview::before {
+  content: '≡';
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 0.7rem;
+  color: var(--ink-muted);
+  letter-spacing: 0;
+}
+.calc-input-preview .preview-mantissa { font-family: var(--font-display); }
+.calc-input-preview .preview-mult {
+  display: inline-block;
+  margin: 0 0.18em;
+  color: var(--ink-2);
+  font-style: normal;
+  font-family: var(--font-body);
+  font-size: 0.78em;
+}
+.calc-input-preview .preview-base { font-family: var(--font-display); }
+.calc-input-preview sup {
+  font-size: 0.62em;
+  vertical-align: super;
+  line-height: 0;
+  margin-left: 0.06em;
+  font-style: normal;
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum";
+}
+[data-theme="dark"] .calc-input-preview,
+body.dark-mode .calc-input-preview { color: var(--green); }
+.calc-input::placeholder { color: var(--ink-muted); }
+.calc-input:focus {
+  border-color: var(--green-deep);
+  box-shadow: var(--focus-ring);
+  background: var(--paper);
+}
+[data-theme="dark"] .calc-input:focus,
+body.dark-mode .calc-input:focus { border-color: var(--green); }
+.calc-input::-webkit-outer-spin-button,
+.calc-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.calc-input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Field group divider (e.g. Avrami: required vs optional) */
+.calc-fields-divider {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 1.25rem;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line-soft);
+  border-top: 1px solid var(--line);
+}
+.calc-fields-divider-text {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.calc-fields-divider::before,
+.calc-fields-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+  max-width: 40px;
+}
+
+/* ─── 4 · Action row ─────────────────────────────────── */
+.calc-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.calc-actions-hint {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+}
+.calc-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  background: var(--ink);
+  color: var(--paper);
+  border: 1px solid var(--ink);
+  border-radius: var(--r-2);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background-color 150ms, border-color 150ms;
+}
+.calc-cta svg { width: 14px; height: 14px; }
+.calc-cta:hover { background: var(--green-deep); border-color: var(--green-deep); }
+[data-theme="dark"] .calc-cta,
+body.dark-mode .calc-cta {
+  background: var(--green);
+  color: #0B1220;
+  border-color: var(--green);
+}
+[data-theme="dark"] .calc-cta:hover,
+body.dark-mode .calc-cta:hover {
+  background: var(--green-bright);
+  border-color: var(--green-bright);
+}
+
+/* ─── 5 · Output (MathJax-rendered) ───────────────────── */
+.calc-output {
+  padding: 1.25rem 1.5rem 1.35rem;
+  background: var(--paper-2);
+  min-height: 56px;
+  color: var(--ink);
+  position: relative;
+  font-family: var(--font-body);
+  font-size: 0.96rem;
+  line-height: 1.55;
+}
+.calc-output:empty::before {
+  content: 'Rezultatul apare aici după ce apeși „Calculează".';
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+  font-style: italic;
+}
+.calc-output:not(:empty) {
+  border-left: 3px solid var(--green-deep);
+  background:
+    linear-gradient(90deg, var(--green-tint) 0%, transparent 30%),
+    var(--paper-2);
+  animation: calc-rise 0.4s var(--ease-out) both;
+}
+[data-theme="dark"] .calc-output:not(:empty),
+body.dark-mode .calc-output:not(:empty) { border-left-color: var(--green); }
+@keyframes calc-rise {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.calc-output mjx-container[display="true"] {
+  display: block;
+  margin: 0.15rem 0 !important;
+  overflow-x: auto;
+  max-width: 100%;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-3) transparent;
+}
+.calc-output mjx-container[display="true"]::-webkit-scrollbar { height: 5px; }
+.calc-output mjx-container[display="true"]::-webkit-scrollbar-track { background: transparent; }
+.calc-output mjx-container[display="true"]::-webkit-scrollbar-thumb {
+  background: var(--ink-3);
+  border-radius: 3px;
+}
+.calc-output mjx-container { color: var(--ink); }
+
+.calc-output--error:not(:empty) {
+  border-left-color: var(--amber);
+  background:
+    linear-gradient(90deg, var(--amber-tint) 0%, transparent 35%),
+    var(--paper-2);
+}
+.calc-output--error mjx-container { color: var(--amber); }
+
+/* Output internal structure: header + step view */
+.calc-result-head {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.4rem;
+}
+.calc-result-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--green-deep);
+}
+.calc-result-eyebrow--error { color: var(--amber); }
+[data-theme="dark"] .calc-result-eyebrow,
+body.dark-mode .calc-result-eyebrow { color: var(--green); }
+.calc-result-head::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.calc-step {
+  padding: 0.55rem 0 0.35rem;
+  position: relative;
+}
+.calc-step + .calc-step {
+  margin-top: 0.3rem;
+  border-top: 1px dashed var(--line);
+}
+.calc-step-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 0.1rem;
+}
+.calc-step--final .calc-step-label {
+  color: var(--green-deep);
+}
+[data-theme="dark"] .calc-step--final .calc-step-label,
+body.dark-mode .calc-step--final .calc-step-label { color: var(--green); }
+.calc-step--final mjx-container[display="true"] {
+  font-weight: 500;
+}
+
+/* ─── 6 · Static info chapter (Navier–Stokes) ─────────── */
+.calc-regime-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0;
+  margin-top: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-3);
+  overflow: hidden;
+  background: var(--paper-2);
+}
+.calc-regime {
+  padding: 1.1rem 1.25rem 1.2rem;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--paper-2);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.calc-regime-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.calc-regime-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.calc-regime-body {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+.calc-regime-body mjx-container { margin: 0.3rem 0 !important; }
+
+/* ─── 7 · Misc ────────────────────────────────────────── */
+.calc-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.6rem;
+  margin: 0 0 1.25rem;
+  padding: 0;
+}
+.calc-toc a {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: background-color 150ms, border-color 150ms, color 150ms;
+}
+.calc-toc a:hover {
+  background: var(--paper-tint);
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+.calc-toc a.is-active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+[data-theme="dark"] .calc-toc a.is-active,
+body.dark-mode .calc-toc a.is-active {
+  background: var(--green);
+  color: #0B1220;
+  border-color: var(--green);
+}

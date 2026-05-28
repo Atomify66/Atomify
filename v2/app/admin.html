@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <title>Atomify · Cont</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Gestionează contul tău Atomify — clase, chestionare, teme și preferințe personale." />
+
+  <meta name="theme-color" content="#1F8F5C" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="logo_light.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link rel="stylesheet" href="v2/core.css" />
+  <link rel="stylesheet" href="v2/components.css" />
+  <link rel="stylesheet" href="v2/chrome.css" />
+  <link rel="stylesheet" href="v2/pages/admin.css" />
+
+  <script src="logo-theme-switcher.js" defer></script>
+  <script src="pwa.js" defer></script>
+</head>
+<body>
+  <header class="site-header"></header>
+  <script src="auth.js"></script>
+  <script src="navbar.js"></script>
+  <script>initNavbar("admin");</script>
+
+  <main class="page-main">
+
+    <!-- Masthead -->
+    <section class="masthead reveal reveal-1">
+      <div class="masthead-eyebrow">Cont · Vol. X</div>
+      <h1 class="masthead-title">Contul tău, <span class="ital">administrat</span>.</h1>
+      <div class="masthead-meta">
+        Clase · Chestionare<br/>
+        Teme · Preferințe
+      </div>
+    </section>
+
+    <!-- Auth required (single-chapter gate) -->
+    <section class="chapter reveal reveal-2" id="admAuthRequired" hidden>
+      <div class="chapter-num">!</div>
+      <div class="chapter-body">
+        <h2 class="chapter-head">Autentificare necesară</h2>
+        <p class="chapter-sub">Setările contului, clasele și chestionarele sunt legate de contul tău — autentifică-te pentru a le accesa.</p>
+        <div class="adm-auth-required">
+          <span class="adm-auth-required-eyebrow">Acces restricționat</span>
+          <h3 class="adm-auth-required-title">Intră în cont pentru a accesa panoul</h3>
+          <p class="adm-auth-required-body">Toate datele asociate contului tău — clase, chestionare, teme și preferințe — sunt stocate securizat și legate de un cont. Creează unul gratuit sau folosește unul existent.</p>
+          <button type="button" id="admAuthLoginBtn" class="btn btn-cta">
+            Intră în cont
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <div id="admContent" hidden>
+
+      <!-- 01 — Identitate + quick stats -->
+      <section class="chapter reveal reveal-2">
+        <div class="chapter-num">01</div>
+        <div class="chapter-body">
+          <h2 class="chapter-head">Identitate</h2>
+          <p class="chapter-sub">Cine ești pe Atomify — rol, status și statisticile relevante contului tău.</p>
+
+          <div class="adm-hero">
+            <div class="adm-avatar" id="admAvatar">?</div>
+            <div class="adm-identity">
+              <h3 class="adm-identity-name" id="admName">—</h3>
+              <div class="adm-identity-tags" id="admTags"></div>
+              <div class="adm-identity-meta" id="admMeta">—</div>
+            </div>
+            <div class="adm-hero-aux" id="admHeroAux"></div>
+          </div>
+
+          <div class="adm-stats" id="admStats"></div>
+
+          <div id="admGlobalMessage" class="adm-message" style="margin-top: 1.25rem;"></div>
+        </div>
+      </section>
+
+      <!-- 02 — Rol (only if user has no role) -->
+      <section class="chapter reveal reveal-3" id="admChapterRole" hidden>
+        <div class="chapter-num">02</div>
+        <div class="chapter-body">
+          <h2 class="chapter-head">Alege-ți rolul</h2>
+          <p class="chapter-sub">Pentru a continua, te rugăm să alegi tipul contului. Rolul determină ce poți face — alătură-te claselor ca student sau creează-le ca profesor.</p>
+
+          <div class="adm-roles">
+            <button type="button" class="adm-role" data-role="student">
+              <div class="adm-role-eyebrow">
+                <span class="adm-role-num">01 · Student</span>
+                <span class="adm-role-glyph">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 10L12 5 2 10l10 5 10-5z"/>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                  </svg>
+                </span>
+              </div>
+              <h3 class="adm-role-title">Student</h3>
+              <p class="adm-role-body">Particip la teste, primesc invitații de la profesori și urmăresc clasamentele.</p>
+              <div class="adm-role-feats">
+                <span class="pill pill--green">Participă la teste</span>
+                <span class="pill pill--green">Primește invitații</span>
+                <span class="pill pill--green">Clasamente</span>
+              </div>
+            </button>
+
+            <button type="button" class="adm-role" data-role="professor">
+              <div class="adm-role-eyebrow">
+                <span class="adm-role-num">02 · Profesor</span>
+                <span class="adm-role-glyph">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 7l9-4 9 4-9 4-9-4z"/>
+                    <path d="M3 11l9 4 9-4"/>
+                    <path d="M3 15l9 4 9-4"/>
+                  </svg>
+                </span>
+              </div>
+              <h3 class="adm-role-title">Profesor</h3>
+              <p class="adm-role-body">Creez clase, invit studenți și administrez chestionare și teme pentru clasele mele.</p>
+              <div class="adm-role-feats">
+                <span class="pill pill--gold">Creare clase</span>
+                <span class="pill pill--gold">Gestionare studenți</span>
+                <span class="pill pill--gold">Chestionare</span>
+              </div>
+            </button>
+          </div>
+
+          <div id="admRoleMessage" class="adm-message" style="margin-top: 1.25rem;"></div>
+        </div>
+      </section>
+
+      <!-- 03 — Clasele tale -->
+      <section class="chapter reveal reveal-3" id="admChapterClasses" hidden>
+        <div class="chapter-num">02</div>
+        <div class="chapter-body">
+          <h2 class="chapter-head">Clasele tale</h2>
+          <p class="chapter-sub">Pentru profesori, gestionează clasele și invitațiile. Pentru studenți, vezi clasele la care participi și invitațiile primite.</p>
+
+          <!-- Professor: create class -->
+          <div class="adm-card" id="admCreateClassCard">
+            <div class="adm-card-head">
+              <h3 class="adm-card-title">Creează o clasă</h3>
+              <span class="adm-card-sub">Profesor</span>
+            </div>
+            <form id="admCreateClassForm" class="adm-form" autocomplete="off">
+              <div class="adm-form-row">
+                <div class="adm-form-group">
+                  <label class="adm-form-label" for="admClassName">Nume clasă</label>
+                  <input id="admClassName" class="adm-input" type="text" placeholder="Ex: Clasa 12A · Chimie" required />
+                </div>
+              </div>
+              <div class="adm-form-group">
+                <label class="adm-form-label" for="admClassDescription">Descriere (opțional)</label>
+                <textarea id="admClassDescription" class="adm-textarea" placeholder="Descrierea clasei…"></textarea>
+              </div>
+              <div class="adm-form-actions">
+                <button type="submit" class="btn btn-primary">Creează clasa</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Professor: list of own classes -->
+          <div class="adm-card" id="admMyClassesCard">
+            <div class="adm-card-head">
+              <h3 class="adm-card-title">Clasele mele</h3>
+              <span class="adm-card-sub">Profesor</span>
+            </div>
+            <div id="admMyClassesList"><div class="adm-loading">Se încarcă</div></div>
+          </div>
+
+          <!-- Student: pending invitations -->
+          <div class="adm-card" id="admInvitationsCard">
+            <div class="adm-card-head">
+              <h3 class="adm-card-title">Invitații pendente</h3>
+              <span class="adm-card-sub">Student</span>
+            </div>
+            <div id="admPendingInvitationsList"><div class="adm-loading">Se încarcă</div></div>
+          </div>
+
+          <!-- Student: joined classes -->
+          <div class="adm-card" id="admJoinedClassesCard">
+            <div class="adm-card-head">
+              <h3 class="adm-card-title">Clasele la care particip</h3>
+              <span class="adm-card-sub">Student</span>
+            </div>
+            <div id="admJoinedClassesList"><div class="adm-loading">Se încarcă</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 — Chestionarele tale (professor only) -->
+      <section class="chapter reveal reveal-4" id="admChapterQuizzes" hidden>
+        <div class="chapter-num">03</div>
+        <div class="chapter-body">
+          <h2 class="chapter-head">Chestionare</h2>
+          <p class="chapter-sub">Creează chestionare pentru clasele tale. Adaugă întrebări cu alegere multiplă sau răspuns text și marchează răspunsul corect.</p>
+
+          <div class="adm-card">
+            <div class="adm-card-head">
+              <h3 class="adm-card-title" id="admQuizFormTitle">Creează chestionar</h3>
+              <span class="adm-card-sub">Profesor</span>
+            </div>
+            <form id="admCreateQuizForm" class="adm-form" autocomplete="off">
+              <div class="adm-form-row">
+                <div class="adm-form-group">
+                  <label class="adm-form-label" for="admQuizClass">Clasa</label>
+                  <select id="admQuizClass" class="adm-select" required>
+                    <option value="">Selectează clasa</option>
+                  </select>
+                </div>
+                <div class="adm-form-group">
+                  <label class="adm-form-label" for="admQuizTimeLimit">Timp limită (min)</label>
+                  <input id="admQuizTimeLimit" class="adm-input" type="number" min="1" max="120" value="10" />
+                </div>
+              </div>
+              <div class="adm-form-group">
+                <label class="adm-form-label" for="admQuizTitle">Titlu</label>
+                <input id="admQuizTitle" class="adm-input" type="text" placeholder="Titlul chestionarului" required />
+              </div>
+              <div class="adm-form-group">
+                <label class="adm-form-label" for="admQuizDescription">Descriere (opțional)</label>
+                <textarea id="admQuizDescription" class="adm-textarea" placeholder="Descrierea chestionarului…"></textarea>
+              </div>
+
+              <div class="adm-form-group">
+                <span class="adm-form-label">Întrebări</span>
+                <div id="admQuestionsContainer"></div>
+                <div>
+                  <button type="button" id="admAddQuestionBtn" class="btn btn-ghost">+ Adaugă întrebare</button>
+                </div>
+              </div>
+
+              <div class="adm-form-actions">
+                <button type="submit" id="admQuizSubmitBtn" class="btn btn-primary">Creează chestionarul</button>
+                <button type="button" id="admQuizCancelEditBtn" class="btn btn-ghost" hidden>Anulează editarea</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="adm-card">
+            <div class="adm-card-head">
+              <h3 class="adm-card-title">Chestionarele mele</h3>
+              <span class="adm-card-sub">Profesor</span>
+            </div>
+            <div id="admMyQuizzesList"><div class="adm-loading">Se încarcă</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 — Teme (student only) -->
+      <section class="chapter reveal reveal-4" id="admChapterHomework" hidden>
+        <div class="chapter-num">04</div>
+        <div class="chapter-body">
+          <h2 class="chapter-head">Temele tale</h2>
+          <p class="chapter-sub">Temele atribuite de profesorii claselor tale. Apasă pe „Începe tema" pentru a deschide chestionarul corespunzător.</p>
+
+          <div id="admStudentHomeworkList"><div class="adm-loading">Se încarcă</div></div>
+        </div>
+      </section>
+
+      <!-- 06 — Preferințe -->
+      <section class="chapter reveal reveal-5">
+        <div class="chapter-num">05</div>
+        <div class="chapter-body">
+          <h2 class="chapter-head">Preferințe</h2>
+          <p class="chapter-sub">Țara de origine apare în clasamentele naționale. Newsletter-ul îți trimite cele mai recente actualizări și resurse de chimie.</p>
+
+          <div class="adm-card">
+            <div class="adm-card-head">
+              <h3 class="adm-card-title">Țara de origine</h3>
+              <span class="adm-card-sub">Clasament</span>
+            </div>
+            <form id="admCountryForm" class="adm-form" autocomplete="off">
+              <div class="adm-form-row">
+                <div class="adm-form-group">
+                  <label class="adm-form-label" for="admCountrySelect">Țara</label>
+                  <select id="admCountrySelect" class="adm-select" required>
+                    <option value="">Selectează țara</option>
+                    <option value="România">România</option>
+                    <option value="Moldova">Moldova</option>
+                    <option value="Albania">Albania</option>
+                    <option value="Andorra">Andorra</option>
+                    <option value="Armenia">Armenia</option>
+                    <option value="Austria">Austria</option>
+                    <option value="Azerbaijan">Azerbaijan</option>
+                    <option value="Belarus">Belarus</option>
+                    <option value="Belgium">Belgium</option>
+                    <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+                    <option value="Bulgaria">Bulgaria</option>
+                    <option value="Croatia">Croatia</option>
+                    <option value="Cyprus">Cyprus</option>
+                    <option value="Czech Republic">Czech Republic</option>
+                    <option value="Denmark">Denmark</option>
+                    <option value="Estonia">Estonia</option>
+                    <option value="Finland">Finland</option>
+                    <option value="France">France</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Germany">Germany</option>
+                    <option value="Greece">Greece</option>
+                    <option value="Hungary">Hungary</option>
+                    <option value="Iceland">Iceland</option>
+                    <option value="Ireland">Ireland</option>
+                    <option value="Italy">Italy</option>
+                    <option value="Kazakhstan">Kazakhstan</option>
+                    <option value="Kosovo">Kosovo</option>
+                    <option value="Latvia">Latvia</option>
+                    <option value="Liechtenstein">Liechtenstein</option>
+                    <option value="Lithuania">Lithuania</option>
+                    <option value="Luxembourg">Luxembourg</option>
+                    <option value="Malta">Malta</option>
+                    <option value="Monaco">Monaco</option>
+                    <option value="Montenegro">Montenegro</option>
+                    <option value="Netherlands">Netherlands</option>
+                    <option value="North Macedonia">North Macedonia</option>
+                    <option value="Norway">Norway</option>
+                    <option value="Poland">Poland</option>
+                    <option value="Portugal">Portugal</option>
+                    <option value="Russia">Russia</option>
+                    <option value="San Marino">San Marino</option>
+                    <option value="Serbia">Serbia</option>
+                    <option value="Slovakia">Slovakia</option>
+                    <option value="Slovenia">Slovenia</option>
+                    <option value="Spain">Spain</option>
+                    <option value="Sweden">Sweden</option>
+                    <option value="Switzerland">Switzerland</option>
+                    <option value="Turkey">Turkey</option>
+                    <option value="Ukraine">Ukraine</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="Vatican City">Vatican City</option>
+                    <option value="Other">Altă țară</option>
+                  </select>
+                  <div class="adm-form-help" id="admCountryCurrent" hidden>
+                    Țara curentă · <strong id="admCountryCurrentName">—</strong>
+                  </div>
+                </div>
+              </div>
+              <div class="adm-form-actions">
+                <button type="submit" class="btn btn-primary">Salvează țara</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="adm-card">
+            <div class="adm-card-head">
+              <h3 class="adm-card-title">Newsletter</h3>
+              <span class="adm-card-sub">Comunicare</span>
+            </div>
+
+            <div class="adm-nl-status">
+              <div class="adm-nl-cell">
+                <span class="adm-nl-cell-label">Status</span>
+                <span class="adm-nl-cell-value" id="admNlStatus">Se încarcă…</span>
+              </div>
+              <div class="adm-nl-cell">
+                <span class="adm-nl-cell-label">Email</span>
+                <span class="adm-nl-cell-value" id="admNlEmail">Se încarcă…</span>
+              </div>
+            </div>
+
+            <div class="adm-form-group">
+              <label class="adm-form-label" for="admNlEmailInput">Email pentru newsletter</label>
+              <input id="admNlEmailInput" class="adm-input" type="email" placeholder="email@example.com" />
+              <div class="adm-form-help">Poți folosi o adresă diferită de cea de autentificare.</div>
+            </div>
+
+            <div class="adm-form-actions">
+              <button type="button" id="admNlSubscribeBtn" class="btn btn-primary" hidden>Abonează-te</button>
+              <button type="button" id="admNlUnsubscribeBtn" class="btn btn-ghost" hidden>Dezabonează-te</button>
+            </div>
+          </div>
+
+          <div id="admPrefsMessage" class="adm-message"></div>
+        </div>
+      </section>
+
+      <!-- 07 — Securitate (non-Google users) -->
+      <section class="chapter reveal reveal-5" id="admChapterSecurity">
+        <div class="chapter-num">06</div>
+        <div class="chapter-body">
+          <h2 class="chapter-head">Securitate</h2>
+          <p class="chapter-sub">Schimbă parola contului. Parola nouă trebuie să aibă cel puțin 8 caractere, o literă mare și o cifră.</p>
+
+          <div class="adm-card">
+            <div class="adm-card-head">
+              <h3 class="adm-card-title">Schimbă parola</h3>
+              <span class="adm-card-sub">Cont</span>
+            </div>
+            <form id="admChangePasswordForm" class="adm-form" autocomplete="off">
+              <div class="adm-form-group">
+                <label class="adm-form-label" for="admCurrentPassword">Parola curentă</label>
+                <input id="admCurrentPassword" class="adm-input" type="password" required />
+              </div>
+              <div class="adm-form-group">
+                <label class="adm-form-label" for="admNewPassword">Parola nouă</label>
+                <input id="admNewPassword" class="adm-input" type="password" required />
+                <div class="adm-password-reqs">
+                  <div class="requirement not-met" id="admReqLength">Cel puțin 8 caractere</div>
+                  <div class="requirement not-met" id="admReqUppercase">Cel puțin o literă mare (A-Z)</div>
+                  <div class="requirement not-met" id="admReqDigit">Cel puțin o cifră (0-9)</div>
+                </div>
+              </div>
+              <div class="adm-form-group">
+                <label class="adm-form-label" for="admConfirmNewPassword">Confirmă parola nouă</label>
+                <input id="admConfirmNewPassword" class="adm-input" type="password" required />
+              </div>
+              <div class="adm-form-actions">
+                <button type="submit" class="btn btn-primary">Schimbă parola</button>
+              </div>
+            </form>
+            <div id="admSecurityMessage" class="adm-message"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 08 — Zona de risc -->
+      <section class="chapter reveal reveal-5">
+        <div class="chapter-num">07</div>
+        <div class="chapter-body">
+          <h2 class="chapter-head">Zona de risc</h2>
+          <p class="chapter-sub">Acțiunile din această secțiune sunt permanente. Procedează cu atenție — datele șterse nu pot fi recuperate.</p>
+
+          <div class="adm-card adm-danger">
+            <div class="adm-card-head">
+              <h3 class="adm-card-title">Șterge contul</h3>
+              <span class="adm-card-sub">Permanent</span>
+            </div>
+            <p class="adm-danger-warning"><strong>Atenție!</strong> Această acțiune este permanentă. Toate datele asociate contului tău — clase, chestionare, teme, scoruri — vor fi șterse definitiv.</p>
+
+            <form id="admDeleteAccountForm" class="adm-form" autocomplete="off">
+              <div class="adm-form-group" id="admDeletePwdGroup">
+                <label class="adm-form-label" for="admDeletePassword">Confirmă parola</label>
+                <input id="admDeletePassword" class="adm-input" type="password" required />
+              </div>
+
+              <div class="adm-form-group" id="admDeleteGoogleNote" hidden>
+                <div class="adm-message warning is-visible">
+                  <strong>Cont Google:</strong> Deoarece te-ai autentificat cu Google, nu este necesară confirmarea parolei.
+                </div>
+              </div>
+
+              <div class="adm-form-group">
+                <label class="adm-checkbox">
+                  <input type="checkbox" id="admConfirmDeletion" required />
+                  <span>Înțeleg că această acțiune este permanentă și îmi voi pierde toate datele.</span>
+                </label>
+              </div>
+
+              <div class="adm-form-actions">
+                <button type="submit" class="btn btn-danger">Șterge contul definitiv</button>
+              </div>
+            </form>
+            <div id="admDangerMessage" class="adm-message"></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- ─── Class details modal ────────────────────────────── -->
+  <div id="admClassModal" class="adm-modal" aria-hidden="true">
+    <div class="adm-modal-shell" role="dialog" aria-modal="true" aria-labelledby="admClassModalTitle">
+      <header class="adm-modal-head">
+        <h3 class="adm-modal-title" id="admClassModalTitle">Detalii clasă</h3>
+        <button type="button" class="adm-modal-close" id="admClassModalClose" aria-label="Închide">&times;</button>
+      </header>
+      <div class="adm-modal-body" id="admClassModalBody">
+
+        <div id="admClassStandardView">
+        <section class="adm-card">
+          <div class="adm-card-head">
+            <h3 class="adm-card-title">Invită student</h3>
+            <span class="adm-card-sub">Autocomplete</span>
+          </div>
+          <form id="admInviteForm" class="adm-form" autocomplete="off">
+            <div class="adm-form-group">
+              <label class="adm-form-label" for="admInviteUsername">Nume utilizator</label>
+              <div class="adm-autocomplete">
+                <input id="admInviteUsername" class="adm-input" type="text" placeholder="Introdu numele studentului" autocomplete="off" required />
+                <div id="admInviteDropdown" class="adm-autocomplete-dropdown"></div>
+              </div>
+              <div id="admInviteValidation" class="adm-validation"></div>
+            </div>
+            <div class="adm-form-actions">
+              <button type="submit" class="btn btn-primary">Trimite invitație</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="adm-card">
+          <div class="adm-card-head">
+            <h3 class="adm-card-title">Teme</h3>
+            <button id="admShowHomeworkFormBtn" class="btn btn-ghost" type="button">+ Temă nouă</button>
+          </div>
+
+          <div id="admHomeworkForm" hidden>
+            <form id="admHomeworkCreationForm" class="adm-form">
+              <div class="adm-form-group">
+                <label class="adm-form-label" for="admHomeworkTitle">Titlu</label>
+                <input id="admHomeworkTitle" class="adm-input" type="text" placeholder="Ex: Tema 1 · Chimia organică" required />
+              </div>
+              <div class="adm-form-group">
+                <label class="adm-form-label" for="admHomeworkDescription">Descriere (opțional)</label>
+                <textarea id="admHomeworkDescription" class="adm-textarea" placeholder="Instrucțiuni suplimentare"></textarea>
+              </div>
+              <div class="adm-form-group">
+                <label class="adm-form-label" for="admHomeworkQuiz">Chestionar</label>
+                <select id="admHomeworkQuiz" class="adm-select" required></select>
+              </div>
+              <div class="adm-form-row">
+                <div class="adm-form-group">
+                  <label class="adm-form-label" for="admHomeworkDueDate">Termen limită</label>
+                  <input id="admHomeworkDueDate" class="adm-input" type="datetime-local" required />
+                </div>
+                <div class="adm-form-group">
+                  <label class="adm-form-label" for="admHomeworkMaxAttempts">Încercări maxime</label>
+                  <select id="admHomeworkMaxAttempts" class="adm-select">
+                    <option value="1">1 încercare</option>
+                    <option value="2">2 încercări</option>
+                    <option value="3">3 încercări</option>
+                    <option value="5">5 încercări</option>
+                  </select>
+                </div>
+              </div>
+              <div class="adm-form-actions">
+                <button type="submit" class="btn btn-primary">Creează tema</button>
+                <button type="button" id="admCancelHomeworkBtn" class="btn btn-ghost">Anulează</button>
+              </div>
+            </form>
+          </div>
+
+          <div id="admClassHomeworkList"></div>
+        </section>
+
+        <section class="adm-card">
+          <div class="adm-card-head">
+            <h3 class="adm-card-title">Membri clasă</h3>
+          </div>
+          <div id="admClassMembersList"></div>
+        </section>
+
+        <section class="adm-card">
+          <div class="adm-card-head">
+            <h3 class="adm-card-title">Invitații pendente</h3>
+          </div>
+          <div id="admClassPendingList"></div>
+        </section>
+        </div>
+
+        <div id="admHomeworkDetailsView" hidden></div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─── Footer ─────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-lockup">
+        <a href="isomers.html" class="footer-mark">
+          <img src="logo_light.png" alt="" class="at-logo-light"/>
+          <img src="logo_dark.png" alt="" class="at-logo-dark" style="display:none"/>
+          <span>Atomify</span>
+        </a>
+        <p class="footer-tagline">Platformă educațională pentru învățarea chimiei — de la masa molară la izomeri și ecuații.</p>
+        <div class="footer-meta">Constanța · România</div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Calcule</h4>
+        <ul>
+          <li><a href="isomers.html">Generare izomeri</a></li>
+          <li><a href="equations.html">Echilibrare ecuații</a></li>
+          <li><a href="masa.html">Masă molară</a></li>
+          <li><a href="calcule.html">Calcule chimice</a></li>
+          <li><a href="bio.html">Bio · ADN/ARN</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Comunitate</h4>
+        <ul>
+          <li><a href="chestionare.html">Chestionare</a></li>
+          <li><a href="leaderboard.html">Clasament</a></li>
+          <li><a href="istoric.html">Istoric personal</a></li>
+          <li><a href="profile.html">Profilul meu</a></li>
+          <li><a href="admin.html">Cont</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li class="contact-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            atomify66@gmail.com
+          </li>
+          <li class="contact-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            Constanța, RO
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-credits">
+        © 2026 ATOMIFY · TOATE DREPTURILE REZERVATE
+        <span class="made-by">Realizat de <strong>Siret Luca-Alexandru</strong> &amp; <strong>Zevri Matei-Tudor</strong></span>
+      </p>
+      <div class="footer-legal">
+        <a href="privacy.html">Confidențialitate</a>
+        <span class="sep">·</span>
+        <a href="#">Termeni</a>
+      </div>
+      <div class="footer-social">
+        <a href="#" aria-label="GitHub">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ─── Auth modal (Atomify.initAuthModal) ─────────────── -->
+  <div id="authModal" class="auth-modal">
+    <div class="auth-modal-content">
+      <span class="auth-close" aria-label="Închide">&times;</span>
+
+      <div id="loginForm" class="auth-form">
+        <h2>Intră în cont</h2>
+        <form id="loginFormElement">
+          <div class="form-group">
+            <label for="loginUsername">Nume utilizator</label>
+            <input type="text" id="loginUsername" required maxlength="50" />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Parolă</label>
+            <input type="password" id="loginPassword" required />
+          </div>
+          <button type="submit" class="auth-submit-btn">Intră în cont</button>
+        </form>
+        <div class="auth-divider"><span>sau</span></div>
+        <button type="button" id="googleLoginBtn" class="google-auth-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          <span>Intră cu Google</span>
+        </button>
+        <p class="auth-switch">Nu ai cont? <a href="#" id="showRegister">Creează unul aici</a></p>
+      </div>
+
+      <div id="registerForm" class="auth-form" style="display:none;">
+        <h2>Creează cont</h2>
+        <form id="registerFormElement">
+          <div class="form-group">
+            <label for="registerUsername">Nume utilizator</label>
+            <input type="text" id="registerUsername" required maxlength="50" />
+          </div>
+          <div class="form-group">
+            <label for="registerPassword">Parolă</label>
+            <input type="password" id="registerPassword" required />
+            <div class="password-requirements">
+              <div class="requirement not-met" id="req-length"><span class="req-icon"></span> Cel puțin 8 caractere</div>
+              <div class="requirement not-met" id="req-uppercase"><span class="req-icon"></span> Cel puțin o literă mare (A-Z)</div>
+              <div class="requirement not-met" id="req-digit"><span class="req-icon"></span> Cel puțin o cifră (0-9)</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="registerPasswordConfirm">Confirmă parola</label>
+            <input type="password" id="registerPasswordConfirm" required />
+          </div>
+          <button type="submit" class="auth-submit-btn">Creează cont</button>
+        </form>
+        <div class="auth-divider"><span>sau</span></div>
+        <button type="button" id="googleRegisterBtn" class="google-auth-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          <span>Înregistrează-te cu Google</span>
+        </button>
+        <p class="auth-switch">Ai deja cont? <a href="#" id="showLogin">Intră în cont aici</a></p>
+      </div>
+
+      <div id="authMessage" class="auth-message"></div>
+    </div>
+  </div>
+
+  <script src="v2/shared.js" defer></script>
+  <script src="v2/pages/admin.js" defer></script>
+</body>
+</html>
